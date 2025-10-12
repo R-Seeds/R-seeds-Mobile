@@ -1,10 +1,10 @@
 // API Configuration Constants
 
-const SERVER_URL = 'https://agrifinance-production.up.railway.app'
-// const DEV_MODE = 'http://192.168.22.223:8089'
+const SERVER_URL = 'http://10.12.75.125:5050'
 
 export const API_CONFIG = {
   BASE_URL: SERVER_URL,
+  API_VERSION: 'v1',
   TIMEOUT: 60000,
 };
 
@@ -12,7 +12,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
-    SIGNUP: '/auth/signup',
+    SIGNUP: '/auth/register',
   },
   LOAN: {
     ALL: '/loans',

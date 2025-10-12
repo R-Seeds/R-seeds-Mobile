@@ -1,12 +1,14 @@
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BlurView } from "expo-blur";
 import { useState } from "react";
-import { UserType } from "@/types";
+import { SignupRequest, UserType } from "@/types";
 import Svg, { Path } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAvoidingView } from "react-native";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterScreen() {
+    const { register } = useAuth()
     const [userType, setUserType] = useState<UserType>(UserType.GRADUATE);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -15,6 +17,19 @@ export default function RegisterScreen() {
     const [industry, setIndustry] = useState('');
     const [country, setCountry] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const handleRegister = () => {
+        const request: SignupRequest = {
+            name,
+            email,
+            password,
+            role: userType,
+            finishYear: graduationYear,
+            organization: industry,
+            country
+        }
+        register(request)
+    }
 
     const extraInput = () => {
         if (userType === UserType.GRADUATE) {
@@ -121,7 +136,7 @@ export default function RegisterScreen() {
                                             keyboardType="default"
                                             autoCapitalize="none"
                                             className="flex-1 py-0 text-white placeholder:text-white w-full"
-                                            returnKeyType="next"
+                                            returnKeyType="done"
                                             value={password}
                                             onChangeText={setPassword}
                                             secureTextEntry={!isPasswordVisible}
@@ -131,7 +146,9 @@ export default function RegisterScreen() {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <TouchableOpacity className="p-4 rounded-3xl bg-teal-600 w-full">
+                                <TouchableOpacity className="p-4 rounded-3xl bg-teal-600 w-full"
+                                    onPress={handleRegister}
+                                >
                                     <Text className="text-white font-bold text-center">
                                         Signup as {userType.toLowerCase().charAt(0).toUpperCase() + userType.toLowerCase().slice(1)}
                                     </Text>

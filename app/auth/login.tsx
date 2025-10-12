@@ -3,8 +3,24 @@ import { BlurView } from "expo-blur";
 import { Link } from "expo-router";
 import Svg, { Path } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { LoginRequest } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginScreen() {
+    const {login} = useAuth()
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false)
+
+    const onSubmit = async() => {
+        const request: LoginRequest = {
+            email,
+            password
+        }
+        await login(request)
+    }
+
     return (
         <View className="flex-1 items-center justify-center">
             <Image
@@ -24,6 +40,8 @@ export default function LoginScreen() {
                     </View>
                     <View className="gap-y-4 ">
                         <TextInput
+                            value={email}
+                            onChangeText={setEmail}
                             placeholder="Email"
                             keyboardType="email-address"
                             autoCapitalize="none"
@@ -33,20 +51,25 @@ export default function LoginScreen() {
                         <View className="flex-row items-center  p-4 rounded-3xl border border-white text-white placeholder:text-white w-full"
                         >
                             <TextInput
+                                value={password}
+                                onChangeText={setPassword}
                                 placeholder="Password"
                                 keyboardType="default"
                                 autoCapitalize="none"
                                 className="flex-1 py-0 text-white placeholder:text-white w-full"
                                 returnKeyType="next"
+                                secureTextEntry={!showPassword}
+                                onSubmitEditing={onSubmit}
                             />
-                            <TouchableOpacity>
-                                <Ionicons name="eye-off-outline" size={20} color="white" />
+                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                                <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color="white" />
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View className="flex items-center gap-y-4">
                         <TouchableOpacity
                             className="bg-teal-600 p-3 rounded-3xl w-full items-center"
+                            onPress={onSubmit}
                         >
                             <Text className="text-white/80 font-bold text-lg">SIGN IN</Text>
                         </TouchableOpacity>
