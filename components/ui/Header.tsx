@@ -3,9 +3,9 @@ import { Image, View } from "react-native";
 
 export default function Header() {
     return (
-        <View className="bg-white items-center justify-between flex-row w-full px-4">
+        <View className="bg-white items-center justify-between flex-row w-full pr-4">
             <Image source={require("@/assets/images/logo.png")}
-                className="w-32 h-32"
+                className="w-28 h-28"
                 resizeMode="contain" />
 
             <View className='flex-row gap-x-4 items-center'>
