@@ -7,7 +7,7 @@ export default function Index() {
       className="h-full flex items-center justify-center"
     >
       <TouchableOpacity
-        onPress={() => router.push('/auth')}
+        onPress={() => router.push('/dashboard/graduate')}
       >
         <Text>Sign In</Text>
       </TouchableOpacity>
