@@ -1,10 +1,9 @@
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View,KeyboardAvoidingView } from "react-native";
 import { BlurView } from "expo-blur";
 import { useState } from "react";
 import { SignupRequest, UserType } from "@/types";
 import Svg, { Path } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
-import { KeyboardAvoidingView } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterScreen() {
