@@ -3,6 +3,7 @@ import Header from "@/components/ui/Header";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CardProject from "@/components/dashboard/cardProject";
+import TabNavigation from "@/components/ui/Tabs";
 
 export default function GraduateDashboard() {
     return (
@@ -47,6 +48,7 @@ export default function GraduateDashboard() {
                 </View>
 
             </ScrollView>
+            <TabNavigation/>
         </View>
     )
 }
