@@ -9,11 +9,11 @@ export default function GraduateDashboard() {
     return (
         <View className="flex-1 bg-white">
             <Header />
-            <ScrollView    
-                contentContainerClassName="max-w-full   p-4 gap-y-4 pb-24"  
+            <ScrollView
+                contentContainerClassName="max-w-full   p-4 gap-y-4 pb-32"
                 showsVerticalScrollIndicator={false}
             >
-                  {/* Spotlight project */}
+                {/* Spotlight project */}
                 <View className="flex-col gap-y-4 flex-1">
                     <Text className="text-lg font-semibold">Spotlight Projects</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
@@ -24,7 +24,7 @@ export default function GraduateDashboard() {
                         <SpotlightProject />
                     </ScrollView>
                 </View>
-               
+
                 {/* Wallet */}
                 <View className="flex-row flex-1 gap-x-4 border-2 shadow-lg bg-white border-gray-200 rounded-2xl py-6 px-4 items-center justify-between">
                     <MaterialIcons name="account-balance-wallet" size={35} color="#00C896" className="bg-gray-200 p-3 rounded-full" />
@@ -48,7 +48,7 @@ export default function GraduateDashboard() {
                 </View>
 
             </ScrollView>
-            <TabNavigation/>
+            <TabNavigation />
         </View>
     )
 }

@@ -48,11 +48,11 @@ export default function CardProject() {
                         <Text className="text-sm text-gray-500 font-semibold">123k Views</Text>
                     </View>
                 </View>
-                <Text className="text-gray-500 font-semibold">
+                <Text className="text-sm text-black ">
                     A wearable health device that monitors body conditions
                     like temperature, hydration, and immunity ... more
                 </Text>
-                <Text className="text-gray-500 font-semibold">
+                <Text className="text-sm text-black font-semibold">
                     Raised $5,200 of $10,000
                 </Text>
             </View>

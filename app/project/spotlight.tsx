@@ -1,9 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 export default function SpotlightProject() {
     return (
         <View className="flex-1 items-center bg-white">
+            <TouchableOpacity className="absolute left-5 top-10 bg-gray-300/30 rounded-full z-10 p-2"
+            onPress={()=>router.back()}>
+                <Ionicons name="close" color={'white'} size={25}/>
+            </TouchableOpacity>
             <Image source={require('@/assets/auth/main.png')}
                 className="w-full h-[70%]"
                 resizeMode="cover"
