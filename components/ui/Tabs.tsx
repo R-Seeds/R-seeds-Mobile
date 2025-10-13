@@ -10,19 +10,19 @@ export default function TabNavigation() {
     return (
         <SafeAreaView className="absolute flex-row justify-between items-center bg-white bottom-0  w-full border-t-2 border-gray-200 px-4">
             <TouchableOpacity className="">
-                <AntDesign name="home" size={30} color="black" />
+                <AntDesign name="home" size={30} color="gray" />
             </TouchableOpacity>
             <TouchableOpacity className="">
-                <FontAwesome6 name="compass" size={30} color="black" />
+                <FontAwesome6 name="compass" size={30} color="gray" />
             </TouchableOpacity>
             <TouchableOpacity className="">
-                <Octicons name="database" size={30} color="black" />
+                <Octicons name="database" size={30} color="gray" />
             </TouchableOpacity>
             <TouchableOpacity className="">
-                <Ionicons name="chatbubble-ellipses-outline" size={30} color="black" />
+                <Ionicons name="chatbubble-ellipses-outline" size={30} color="gray" />
             </TouchableOpacity>
             <TouchableOpacity className="">
-                <FontAwesome name="user-circle-o" size={30} color="black" />
+                <FontAwesome name="user-circle-o" size={30} color="gray" />
             </TouchableOpacity>
         </SafeAreaView>
     )

@@ -3,6 +3,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+import { router } from "expo-router";
 
 export default function CardProject() {
     return (
@@ -55,8 +56,14 @@ export default function CardProject() {
                     Raised $5,200 of $10,000
                 </Text>
             </View>
-            <View>
-
+            <View className="flex-row justify-between items-center gap-x-10 px-4 pb-4">
+                <TouchableOpacity className="border flex-1 border-teal-500 px-4 py-2 rounded-xl items-center"
+                    onPress={() => { router.push('/project/spotlight') }}>
+                    <Text className="text-teal-500 font-semibold">View Project</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className="bg-teal-500 flex-1 px-4 py-2 rounded-xl items-center">
+                    <Text className="text-white font-semibold">Follow</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )
