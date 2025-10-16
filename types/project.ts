@@ -61,3 +61,7 @@ export interface Project{
     createdAt: string;
     updatedAt: string;
 }
+
+
+export type TabProps = 'all' | 'finance' | 'business' | 'education' | 'health' | 'agriculture' | 'transportaion' | 'social' | 'e-commerce' | 'government'
+export const Tabs= ['all', 'finance', 'business', 'education', 'health', 'agriculture', 'transportaion', 'social', 'e-commerce', 'government']
