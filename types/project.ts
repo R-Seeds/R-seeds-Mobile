@@ -17,13 +17,13 @@ export enum ProjectStatus {
 }
 
 
-export interface FundingInfo{
+export interface FundingInfo {
     goal: number;
     raised: number;
     donors: number;
 }
 
-export interface Milestone{
+export interface Milestone {
     title: string;
     description: string;
     complationDate: string;
@@ -31,19 +31,19 @@ export interface Milestone{
     status: string;
 }
 
-export interface ProjectInteraction{
+export interface ProjectInteraction {
     likes: number;
     views: number;
     comments: string[];
     shares: number;
 }
 
-export interface ProjectLink{
+export interface ProjectLink {
     label: string;
     url: string;
 }
 
-export interface Project{
+export interface Project {
     id: string;
     title: string;
     category: ProjectCategory;
@@ -64,4 +64,4 @@ export interface Project{
 
 
 export type TabProps = 'all' | 'finance' | 'business' | 'education' | 'health' | 'agriculture' | 'transportaion' | 'social' | 'e-commerce' | 'government'
-export const Tabs= ['all', 'finance', 'business', 'education', 'health', 'agriculture', 'transportaion', 'social', 'e-commerce', 'government']
+export const Tabs: TabProps[] = ['all', 'finance', 'business', 'education', 'health', 'agriculture', 'transportaion', 'social', 'e-commerce', 'government']
