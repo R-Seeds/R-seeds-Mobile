@@ -3,6 +3,7 @@ import { User, LoginRequest, SignupRequest } from "@/types"
 import { createContext, useContext, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 import { Alert } from "react-native"
+import { router } from "expo-router"
 
 interface AuthContextType {
     isAuthenticated: boolean
@@ -24,9 +25,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const initializeAuth = async () => {
         try {
             const token = await SecureStore.getItemAsync("token")
+            console.log(token)
             if (token) {
                 setIsAuthenticated(true)
-            }
+                router.push('/dashboard/graduate')
+            }else router.push('/auth/login')
         } catch (error) {
             console.error(error)
         } finally {
@@ -41,6 +44,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if (!response.success) {
                 Alert.alert("Error", response.message)
             }
+            const token = response.data.token
+            await SecureStore.setItemAsync('token', token)
+            router.push('/')
         } catch (error) {
             console.error(error)
         }
@@ -52,6 +58,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if (!response.success) {
                 Alert.alert("Error", response.message)
             }
+            const token = response.data.token
+            await SecureStore.setItemAsync('token', token)
+            router.push('/')
         } catch (error) {
             console.error(error)
         }
