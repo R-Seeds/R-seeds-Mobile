@@ -10,7 +10,7 @@ export default function GraduateDashboard() {
         <View className="flex-1 bg-white">
             <Header />
             <ScrollView
-                contentContainerClassName="max-w-full   p-4 gap-y-4 pb-32"
+                contentContainerClassName="max-w-full p-4 pt-0 gap-y-4 pb-32"
                 showsVerticalScrollIndicator={false}
             >
                 {/* Spotlight project */}
