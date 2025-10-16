@@ -27,7 +27,7 @@ export default function TabNavigation() {
         {
             name: '/explore',
             icon: <FontAwesome6 name="compass" size={30} color={isCurrentScreen('/explore') ? "teal" : "gray"} />,
-            onPress: () => router.push('/explore')
+            onPress: () => router.push('/project')
         },
         {
             name: '/funding',

@@ -1,6 +1,6 @@
 // API Configuration Constants
 
-const SERVER_URL = 'http://10.12.75.125:5050'
+const SERVER_URL = 'https://r-seeds-backend-production.up.railway.app'
 
 export const API_CONFIG = {
   BASE_URL: SERVER_URL,
