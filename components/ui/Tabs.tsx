@@ -25,14 +25,14 @@ export default function TabNavigation() {
             onPress: () => router.push('/dashboard/graduate')
         },
         {
-            name: '/explore',
-            icon: <FontAwesome6 name="compass" size={30} color={isCurrentScreen('/explore') ? "teal" : "gray"} />,
+            name: '/project',
+            icon: <FontAwesome6 name="compass" size={30} color={isCurrentScreen('/project') ? "teal" : "gray"} />,
             onPress: () => router.push('/project')
         },
         {
-            name: '/funding',
-            icon: <Octicons name="database" size={30} color={isCurrentScreen('/funding') ? "teal" : "gray"} />,
-            onPress: () => router.push('/funding')
+            name: '/project/funding',
+            icon: <Octicons name="database" size={30} color={isCurrentScreen('/project/funding') ? "teal" : "gray"} />,
+            onPress: () => router.push('/project/funding')
         },
         {
             name: '/chat',
