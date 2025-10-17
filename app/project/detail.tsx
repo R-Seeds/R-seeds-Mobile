@@ -1,9 +1,18 @@
 import { View, Image, TouchableOpacity, Text, ScrollView } from "react-native";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-
+import Octicons from '@expo/vector-icons/Octicons';
+import ProjectMember from "@/components/project/projectMember";
+import Svg, { Path } from "react-native-svg";
 
 export default function ProjectScreen() {
+    const keyFeature = [
+        'Autonomous flight planning via mobile app.',
+        'HD video and thermal imaging cameras.',
+        'Modular payload system (cameras, sprayers, delivery boxes).',
+        'Real-time GPS tracking and geofencing.',
+        'Emergency return-to-home functionality.'
+    ]
     return (
         <View className="flex-1 bg-white items-center">
             <TouchableOpacity className="absolute left-5 top-10 bg-gray-500/80 rounded-full z-10 p-2 w-12 h-12"
@@ -14,8 +23,9 @@ export default function ProjectScreen() {
                 className="w-full h-[60%]"
                 resizeMode="cover"
             />
-            <ScrollView className="py-10 px-4 bg-white bottom-60 rounded-t-[50] flex-1 w-full"
-                contentContainerClassName=" w-full flex-1 gap-y-4 ">
+            <ScrollView className="py-10 px-4 bg-white absolute top-[30%] rounded-t-[50] h-[70%] w-full "
+                contentContainerClassName="w-full  gap-y-4 pb-40"
+                showsVerticalScrollIndicator={false}>
                 <View className="flex-row justify-between items-center">
                     <Text className="font-bold text-xl">Fin Tech</Text>
                     <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">Agriculture</Text>
@@ -39,22 +49,145 @@ export default function ProjectScreen() {
                     navigation, SkyScout can capture real-time data from above, making
                     it valuable for agriculture, logistics, disaster management, and security.
                 </Text>
-                <View className="flex-row gap-x-2">
-                    <View className="flex-1 flex-row gap-x-1 items-center">
-                        <Text className="font-semibold text-teal-500 items-center">
+                <View className="flex-row gap-x-2 items-start">
+                    <View className=" flex-row gap-x-1 items-center">
+                        <Text className="font-bold text-teal-500 items-center">
                             Mission
                         </Text>
                         <Ionicons name="arrow-forward" size={15} color="black" />
                     </View>
-                    <Text className="font-bold">
+                    <Text className=" test-sm flex-1">
                         To provide reliable, versatile, and cost-effective drone
                         solutions that empower communities, businesses, and
                         organizations.
                     </Text>
                 </View>
+                <View className="flex-row gap-x-2 items-start">
+                    <View className=" flex-row gap-x-1 items-center">
+                        <Text className="font-bold text-teal-500 items-center">
+                            Vision
+                        </Text>
+                        <Ionicons name="arrow-forward" size={15} color="black" />
+                    </View>
+                    <Text className=" test-sm flex-1">
+                        To provide reliable, versatile, and cost-effective drone
+                        solutions that empower communities, businesses, and
+                        organizations.
+                    </Text>
+                </View>
+                <View className="items-center gap-y-2">
+                    <Text className="font-bold text-xl text-teal-500">Key Features</Text>
+                    {keyFeature.map((feature, index) => (
+                        <View className="flex-row gap-x-2 items-center" key={index}>
+                            <Octicons name="dot-fill" size={15} color="black" />
+                            <Text className="test-sm flex-1">
+                                {feature}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+                <View className="items-center gap-y-2">
+                    <Text className="font-bold text-xl text-teal-500 w-full">Team</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                        contentContainerClassName="gap-x-4">
+                        <ProjectMember />
+                        <ProjectMember />
+                        <ProjectMember />
+                    </ScrollView>
+                </View>
+                <View className="items-center gap-y-2 relative">
+                    <Text className="font-bold text-xl text-teal-500 w-full">MileStone</Text>
+                    <View className="relative w-full">
+                        <View className="absolute top-1/2 -translate-y-1/2 w-full border-4 rounded-full border-teal-500" />
+                        <View className="items-center gap-x-2 flex-row justify-between">
+                            {[0, 1, 2, 3, 4].map((i) => (
+                                <View
+                                    key={i}
+                                    className={`w-6 h-6 rounded-full border-2 ${i <= 2 ? "border-teal-500 bg-white" : "border-gray-300 bg-white"
+                                        } flex items-center justify-center z-10`}
+                                >
+                                    {i === 2 && (
+                                        <Image className="absolute top-8 -left-2 w-12 h-12"
+                                            resizeMode="contain"
+                                            source={require('@/assets/components/milestone.png')} />
+                                    )}
+                                </View>
+                            ))}
+                        </View>
+                    </View>
+                    <View className="px-4 w-full">
+                        <View className="border-2 mt-12 border-teal-500 rounded-xl p-4 gap-y-4">
+                            <View className="flex-row gap-x-2 items-center ">
+                                <Text className=" font-bold text-teal-500 text-lg">System integration
+                                </Text>
+                                <Text className="text-gray-400 text-sm ">In Progress</Text>
+                            </View>
+                            <View className="flex-1">
+                                {keyFeature.map((feature, index) => (
+                                    <View className="flex-row gap-x-2 items-center" key={index}>
+                                        <Octicons name="dot-fill" size={10} color="black" />
+                                        <Text className="test-sm flex-1">
+                                            {feature}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
+                            <View className="gap-y-1 items-start">
+                                <View className="flex-row gap-x-2 items-center">
+                                    <Text className="font-bold text-teal-500 ">Completion:
+                                    </Text>
+                                    <Text className="">October 20,25</Text>
+                                </View>
+                                <View className="flex-row gap-x-2 items-center">
+                                    <Text className="font-bold text-teal-500 ">Total funds:
+                                    </Text>
+                                    <Text className="">$1000</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                <View className="w-full ">
+                    <Text className="font-bold text-xl text-teal-500">Funding Info</Text>
+                    <View className="w-full ml-4">
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Project Name:</Text>
+                            <Text>Fin Tech</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Funding Goal:</Text>
+                            <Text>$1000</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Current raised:</Text>
+                            <Text>$500</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Donors:</Text>
+                            <Text>37 contributors</Text>
+                        </View>
+                    </View>
+                </View>
+                <View className="w-full ">
+                    <Text className="font-bold text-xl text-teal-500">Links and Docs</Text>
+                    <View className="w-full ml-4">
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Project Website:</Text>
+                            <Text>https://projectwebsite.com</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Jira Link:</Text>
+                            <Text>https://jira.com</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Github Repo:</Text>
+                            <Text>https://github.com</Text>
+                        </View>
+                    </View>
+                </View>
             </ScrollView>
-            <TouchableOpacity className="absolute bottom-20  bg-teal-500 p-2 rounded-full">
-                <Text className="text-white font-semibold">Contribute Now</Text>
+            <TouchableOpacity className="absolute bottom-14  bg-teal-500/80 py-4 px-8 rounded-full">
+                <Text className="text-white font-semibold text-lg">Contribute Now</Text>
             </TouchableOpacity>
         </View>
     )
