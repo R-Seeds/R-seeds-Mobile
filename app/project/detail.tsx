@@ -103,11 +103,11 @@ export default function ProjectScreen() {
                             {[0, 1, 2, 3, 4].map((i) => (
                                 <View
                                     key={i}
-                                    className={`w-6 h-6 rounded-full border-4 ${i <= 2 ? "border-emerald-500 bg-white" : "border-gray-300 bg-white"
+                                    className={`w-6 h-6 rounded-full border-2 ${i <= 2 ? "border-teal-500 bg-white" : "border-gray-300 bg-white"
                                         } flex items-center justify-center z-10`}
                                 >
                                     {i === 2 && (
-                                        <Image className="absolute top-8 w-12 h-12"
+                                        <Image className="absolute top-8 -left-2 w-12 h-12"
                                             resizeMode="contain"
                                             source={require('@/assets/components/milestone.png')} />
                                     )}
@@ -115,9 +115,78 @@ export default function ProjectScreen() {
                             ))}
                         </View>
                     </View>
+                    <View className="px-4 w-full">
+                        <View className="border-2 mt-12 border-teal-500 rounded-xl p-4 gap-y-4">
+                            <View className="flex-row gap-x-2 items-center ">
+                                <Text className=" font-bold text-teal-500 text-lg">System integration
+                                </Text>
+                                <Text className="text-gray-400 text-sm ">In Progress</Text>
+                            </View>
+                            <View className="flex-1">
+                                {keyFeature.map((feature, index) => (
+                                    <View className="flex-row gap-x-2 items-center" key={index}>
+                                        <Octicons name="dot-fill" size={10} color="black" />
+                                        <Text className="test-sm flex-1">
+                                            {feature}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
+                            <View className="gap-y-1 items-start">
+                                <View className="flex-row gap-x-2 items-center">
+                                    <Text className="font-bold text-teal-500 ">Completion:
+                                    </Text>
+                                    <Text className="">October 20,25</Text>
+                                </View>
+                                <View className="flex-row gap-x-2 items-center">
+                                    <Text className="font-bold text-teal-500 ">Total funds:
+                                    </Text>
+                                    <Text className="">$1000</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                <View className="w-full ">
+                    <Text className="font-bold text-xl text-teal-500">Funding Info</Text>
+                    <View className="w-full ml-4">
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Project Name:</Text>
+                            <Text>Fin Tech</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Funding Goal:</Text>
+                            <Text>$1000</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Current raised:</Text>
+                            <Text>$500</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Donors:</Text>
+                            <Text>37 contributors</Text>
+                        </View>
+                    </View>
+                </View>
+                <View className="w-full ">
+                    <Text className="font-bold text-xl text-teal-500">Links and Docs</Text>
+                    <View className="w-full ml-4">
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Project Website:</Text>
+                            <Text>https://projectwebsite.com</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Jira Link:</Text>
+                            <Text>https://jira.com</Text>
+                        </View>
+                        <View className="gap-x-2 items-center w-full flex-row">
+                            <Text className="font-bold">Github Repo:</Text>
+                            <Text>https://github.com</Text>
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
-            <TouchableOpacity className="absolute bottom-20  bg-teal-500/80 py-4 px-8 rounded-full">
+            <TouchableOpacity className="absolute bottom-14  bg-teal-500/80 py-4 px-8 rounded-full">
                 <Text className="text-white font-semibold text-lg">Contribute Now</Text>
             </TouchableOpacity>
         </View>
