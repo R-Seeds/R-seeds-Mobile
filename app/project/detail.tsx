@@ -3,6 +3,7 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Octicons from '@expo/vector-icons/Octicons';
 import ProjectMember from "@/components/project/projectMember";
+import Svg, { Path } from "react-native-svg";
 
 export default function ProjectScreen() {
     const keyFeature = [
@@ -23,7 +24,7 @@ export default function ProjectScreen() {
                 resizeMode="cover"
             />
             <ScrollView className="py-10 px-4 bg-white absolute top-[30%] rounded-t-[50] h-[70%] w-full "
-                contentContainerClassName="w-full  gap-y-4 pb-20"
+                contentContainerClassName="w-full  gap-y-4 pb-40"
                 showsVerticalScrollIndicator={false}>
                 <View className="flex-row justify-between items-center">
                     <Text className="font-bold text-xl">Fin Tech</Text>
@@ -88,11 +89,32 @@ export default function ProjectScreen() {
                 <View className="items-center gap-y-2">
                     <Text className="font-bold text-xl text-teal-500 w-full">Team</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                    contentContainerClassName="gap-x-4">
+                        contentContainerClassName="gap-x-4">
                         <ProjectMember />
                         <ProjectMember />
                         <ProjectMember />
                     </ScrollView>
+                </View>
+                <View className="items-center gap-y-2 relative">
+                    <Text className="font-bold text-xl text-teal-500 w-full">MileStone</Text>
+                    <View className="relative w-full">
+                        <View className="absolute top-1/2 -translate-y-1/2 w-full border-4 rounded-full border-teal-500" />
+                        <View className="items-center gap-x-2 flex-row justify-between">
+                            {[0, 1, 2, 3, 4].map((i) => (
+                                <View
+                                    key={i}
+                                    className={`w-6 h-6 rounded-full border-4 ${i <= 2 ? "border-emerald-500 bg-white" : "border-gray-300 bg-white"
+                                        } flex items-center justify-center z-10`}
+                                >
+                                    {i === 2 && (
+                                        <Image className="absolute top-8 w-12 h-12"
+                                            resizeMode="contain"
+                                            source={require('@/assets/components/milestone.png')} />
+                                    )}
+                                </View>
+                            ))}
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
             <TouchableOpacity className="absolute bottom-20  bg-teal-500/80 py-4 px-8 rounded-full">
