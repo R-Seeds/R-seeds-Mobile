@@ -21,7 +21,6 @@ export default function SpotlightProject() {
                         security from one smart panel.</Text>
                 </View>
                 <View className="items-center">
-
                     <Image source={require('@/assets/auth/main.png')}
                         className="w-24 h-24 rounded-full p-4 bg-white bottom-10 border-4 border-white"
                         resizeMode="cover"
