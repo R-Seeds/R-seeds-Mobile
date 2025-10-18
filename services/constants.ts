@@ -38,6 +38,7 @@ export const API_ENDPOINTS = {
     DELETE: (id: string | number) => `/projects/${id}`,
     STATISTICS: '/projects/statistics',
     OVERVIEW: '/projects/overview',
+    UPLOAD: '/upload/projects',
   }, // Worker Management
   USER: {
     ALL: '/users',

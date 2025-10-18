@@ -75,6 +75,7 @@ export interface Project {
     description: string;
     mission: string;
     vision: string;
+    logo:string
     keyFeature: string;
     status: ProjectStatus;
     owner: User;

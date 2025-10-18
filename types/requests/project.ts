@@ -14,4 +14,5 @@ export interface ProjectCreateRequest {
     links: ProjectLink[];
     team: Graduate[];
     milestones: Milestone[];
+    logo:string
 }

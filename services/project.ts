@@ -1,6 +1,7 @@
 import { Project, ProjectCreateRequest, ApiResponse } from '@/types';
 import { client } from './client';
 import { API_ENDPOINTS } from './constants';
+import { AxiosProgressEvent, CancelToken } from 'axios';
 
 class ProjectService {
   async getProjects(): Promise<ApiResponse<Project[]>> {
@@ -47,6 +48,15 @@ class ProjectService {
     return await client.delete<void>(API_ENDPOINTS.PROJECT.DELETE(id));
   }
 
+   async uploadProjectAvatar(
+    file: string,
+    onUploadProgress?: (event: AxiosProgressEvent) => void,
+    cancelToken?: CancelToken,
+    timeout: number = 60000
+  ): Promise<ApiResponse<string>> {
+    
+    return await client.uploadFile<string>(API_ENDPOINTS.PROJECT.UPLOAD, file, onUploadProgress, cancelToken, timeout);
+  }
 
 }
 
