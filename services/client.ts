@@ -33,7 +33,6 @@ class ApiClient {
                 }
             },
             (error) => {
-                console.error('Request interceptor error:', error.message);
                 return Promise.reject(error);
             }
         );

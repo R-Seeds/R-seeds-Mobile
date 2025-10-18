@@ -1,19 +1,39 @@
 import { Graduate, User } from "./user";
 
 export enum MilestoneStatus {
-    IN_PROGRESS,
-    COMPLETED,
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
 }
 
 export enum ProjectCategory {
     EDUCATION,
     AGRICULTURE,
-    FINANCE
+    FINANCE,
+    BUSINESS,
+    HEALTH,
+    SOCIAL,
+    TRANSPORTATION,
+    ECOMMERCE,
+    GOVERNMENT,
 }
 
+type DropdownOption<T> = { label: string; value: T };
+
+export const ProjectCategoryOptions: DropdownOption<ProjectCategory>[] = [
+    { label: "Education", value: ProjectCategory.EDUCATION },
+    { label: "Agriculture", value: ProjectCategory.AGRICULTURE },
+    { label: "Finance", value: ProjectCategory.FINANCE },
+    { label: "Business", value: ProjectCategory.BUSINESS },
+    { label: "Health", value: ProjectCategory.HEALTH },
+    { label: "Social", value: ProjectCategory.SOCIAL },
+    { label: "Transportation", value: ProjectCategory.TRANSPORTATION },
+    { label: "E-commerce", value: ProjectCategory.ECOMMERCE },
+    { label: "Government", value: ProjectCategory.GOVERNMENT },
+];
+
 export enum ProjectStatus {
-    ACTIVE,
-    ARCHIVED
+    ACTIVE = "ACTIVE",
+    ARCHIVED = "ARCHIVED"
 }
 
 
@@ -26,9 +46,9 @@ export interface FundingInfo {
 export interface Milestone {
     title: string;
     description: string;
-    complationDate: string;
+    completionDate: string;
     budget: number;
-    status: string;
+    status: MilestoneStatus;
 }
 
 export interface ProjectInteraction {
@@ -50,7 +70,7 @@ export interface Project {
     description: string;
     mission: string;
     vision: string;
-    keyFeauture: string;
+    keyFeature: string;
     status: ProjectStatus;
     owner: User;
     fundingInfo: FundingInfo;

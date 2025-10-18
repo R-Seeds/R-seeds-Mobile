@@ -3,18 +3,15 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Octicons from '@expo/vector-icons/Octicons';
 import ProjectMember from "@/components/project/projectMember";
-import Svg, { Path } from "react-native-svg";
+import { useProjects } from "@/contexts/ProjectContext";
+import { StatusBar } from "expo-status-bar";
 
 export default function ProjectScreen() {
-    const keyFeature = [
-        'Autonomous flight planning via mobile app.',
-        'HD video and thermal imaging cameras.',
-        'Modular payload system (cameras, sprayers, delivery boxes).',
-        'Real-time GPS tracking and geofencing.',
-        'Emergency return-to-home functionality.'
-    ]
+    const { currentProject } = useProjects()
+
     return (
         <View className="flex-1 bg-white items-center">
+            <StatusBar style="light" />
             <TouchableOpacity className="absolute left-5 top-10 bg-gray-500/80 rounded-full z-10 p-2 w-12 h-12"
                 onPress={() => router.back()}>
                 <FontAwesome5 name="chevron-left" size={24} color="white" className="text-center " />
@@ -27,27 +24,34 @@ export default function ProjectScreen() {
                 contentContainerClassName="w-full  gap-y-4 pb-40"
                 showsVerticalScrollIndicator={false}>
                 <View className="flex-row justify-between items-center">
-                    <Text className="font-bold text-xl">Fin Tech</Text>
-                    <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">Agriculture</Text>
+                    <View className="flex-1">
+                        <Text className="font-bold text-xl">{currentProject?.title}</Text>
+                    </View>
+                    <View className="flex-row items-center gap-x-2">
+                        <TouchableOpacity 
+                            onPress={() => router.push(`/project/edit`)}
+                            className="bg-black p-2 rounded-full"
+                        >
+                            <Ionicons name="pencil" size={16} color="white" />
+                        </TouchableOpacity>
+                        <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">{currentProject?.category}</Text>
+                    </View>
                 </View>
                 <View className="flex-col gap-y-2">
                     <View className="w-full border-4 rounded-full border-teal-500" />
                     <View className="flex-row justify-between">
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Fund Raised</Text>
-                            <Text className="font-bold text-lg">$1000</Text>
+                            <Text className="font-bold text-lg">${currentProject?.fundingInfo.raised}</Text>
                         </View>
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Target</Text>
-                            <Text className="font-bold text-lg text-teal-500">$1000</Text>
+                            <Text className="font-bold text-lg text-teal-500">${currentProject?.fundingInfo.goal}</Text>
                         </View>
                     </View>
                 </View>
                 <Text className="font-semibold">
-                    SkyScout is an intelligent drone platform designed for aerial mapping,
-                    surveillance, and delivery. Equipped with advanced sensors and GPS
-                    navigation, SkyScout can capture real-time data from above, making
-                    it valuable for agriculture, logistics, disaster management, and security.
+                    {currentProject?.description}
                 </Text>
                 <View className="flex-row gap-x-2 items-start">
                     <View className=" flex-row gap-x-1 items-center">
@@ -57,9 +61,7 @@ export default function ProjectScreen() {
                         <Ionicons name="arrow-forward" size={15} color="black" />
                     </View>
                     <Text className=" test-sm flex-1">
-                        To provide reliable, versatile, and cost-effective drone
-                        solutions that empower communities, businesses, and
-                        organizations.
+                        {currentProject?.mission}
                     </Text>
                 </View>
                 <View className="flex-row gap-x-2 items-start">
@@ -70,14 +72,12 @@ export default function ProjectScreen() {
                         <Ionicons name="arrow-forward" size={15} color="black" />
                     </View>
                     <Text className=" test-sm flex-1">
-                        To provide reliable, versatile, and cost-effective drone
-                        solutions that empower communities, businesses, and
-                        organizations.
+                        {currentProject?.vision}
                     </Text>
                 </View>
                 <View className="items-center gap-y-2">
                     <Text className="font-bold text-xl text-teal-500">Key Features</Text>
-                    {keyFeature.map((feature, index) => (
+                    {currentProject?.keyFeature.split(',').map((feature, index) => (
                         <View className="flex-row gap-x-2 items-center" key={index}>
                             <Octicons name="dot-fill" size={15} color="black" />
                             <Text className="test-sm flex-1">
@@ -90,9 +90,15 @@ export default function ProjectScreen() {
                     <Text className="font-bold text-xl text-teal-500 w-full">Team</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
                         contentContainerClassName="gap-x-4">
-                        <ProjectMember />
-                        <ProjectMember />
-                        <ProjectMember />
+                        {currentProject?.team && currentProject.team.length > 0 ? (
+                            currentProject.team.map((member, index) => (
+                                <ProjectMember key={index} member={member} />
+                            ))
+                        ) : (
+                            <View className="flex-1 justify-center items-center py-4">
+                                <Text className="text-gray-500 text-center">No team members added yet</Text>
+                            </View>
+                        )}
                     </ScrollView>
                 </View>
                 <View className="items-center gap-y-2 relative">
@@ -118,12 +124,13 @@ export default function ProjectScreen() {
                     <View className="px-4 w-full">
                         <View className="border-2 mt-12 border-teal-500 rounded-xl p-4 gap-y-4">
                             <View className="flex-row gap-x-2 items-center ">
-                                <Text className=" font-bold text-teal-500 text-lg">System integration
+                                <Text className=" font-bold text-teal-500 text-lg">
+                                    {currentProject?.milestones[0].title}
                                 </Text>
-                                <Text className="text-gray-400 text-sm ">In Progress</Text>
+                                <Text className="text-gray-400 text-sm ">{currentProject?.milestones[0].status}</Text>
                             </View>
                             <View className="flex-1">
-                                {keyFeature.map((feature, index) => (
+                                {currentProject?.milestones[0].description.split(',').map((feature, index) => (
                                     <View className="flex-row gap-x-2 items-center" key={index}>
                                         <Octicons name="dot-fill" size={10} color="black" />
                                         <Text className="test-sm flex-1">
@@ -136,12 +143,12 @@ export default function ProjectScreen() {
                                 <View className="flex-row gap-x-2 items-center">
                                     <Text className="font-bold text-teal-500 ">Completion:
                                     </Text>
-                                    <Text className="">October 20,25</Text>
+                                    <Text className="">{new Date(currentProject?.milestones[0].completionDate!).toDateString()}</Text>
                                 </View>
                                 <View className="flex-row gap-x-2 items-center">
                                     <Text className="font-bold text-teal-500 ">Total funds:
                                     </Text>
-                                    <Text className="">$1000</Text>
+                                    <Text className="">${currentProject?.milestones[0].budget}</Text>
                                 </View>
                             </View>
                         </View>
@@ -152,37 +159,31 @@ export default function ProjectScreen() {
                     <View className="w-full ml-4">
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Project Name:</Text>
-                            <Text>Fin Tech</Text>
+                            <Text>{currentProject?.title}</Text>
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Funding Goal:</Text>
-                            <Text>$1000</Text>
+                            <Text>${currentProject?.fundingInfo.goal}</Text>
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Current raised:</Text>
-                            <Text>$500</Text>
+                            <Text>${currentProject?.fundingInfo.raised}</Text>
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Donors:</Text>
-                            <Text>37 contributors</Text>
+                            <Text>{currentProject?.fundingInfo.donors} contributors</Text>
                         </View>
                     </View>
                 </View>
                 <View className="w-full ">
                     <Text className="font-bold text-xl text-teal-500">Links and Docs</Text>
                     <View className="w-full ml-4">
-                        <View className="gap-x-2 items-center w-full flex-row">
-                            <Text className="font-bold">Project Website:</Text>
-                            <Text>https://projectwebsite.com</Text>
-                        </View>
-                        <View className="gap-x-2 items-center w-full flex-row">
-                            <Text className="font-bold">Jira Link:</Text>
-                            <Text>https://jira.com</Text>
-                        </View>
-                        <View className="gap-x-2 items-center w-full flex-row">
-                            <Text className="font-bold">Github Repo:</Text>
-                            <Text>https://github.com</Text>
-                        </View>
+                        {currentProject?.links.map((link, index) => (
+                            <View className="gap-x-2 items-center w-full flex-row" key={index}>
+                                <Text className="font-bold">{link.label}:</Text>
+                                <Text>{link.url}</Text>
+                            </View>
+                        ))}
                     </View>
                 </View>
             </ScrollView>
