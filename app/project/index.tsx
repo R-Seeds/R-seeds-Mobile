@@ -1,16 +1,16 @@
 import ExploreProject from "@/components/project/exploreProject";
+import CategoryFilter from "@/components/project/CategoryFilter";
+import StatusFilter from "@/components/project/StatusFilter";
 import Header from "@/components/ui/Header";
 import TabNavigation from "@/components/ui/Tabs";
-import { TabProps, Tabs } from "@/types";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useProjects } from "@/contexts/ProjectContext";
+import { ProjectCategoryOptions } from "@/types";
 
 
 export default function ExpoloreIndex() {
-    const{trendingProjects,projects}=useProjects()
-    const [currentTab, setCurrentTab] = useState<TabProps>('all')
+    const { trendingProjects, filteredProjects, selectedCategory, selectedStatus } = useProjects()
 
     return (
         <View className="flex-1 bg-white">
@@ -32,20 +32,9 @@ export default function ExpoloreIndex() {
                             <Text className="text-sm">Sort:Trending</Text>
                         </TouchableOpacity>
                     </View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                        contentContainerClassName="gap-x-2">
-                        {Tabs.map((tab, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() => setCurrentTab(tab)}
-                                className={`px-4 py-1 border border-teal-500 rounded-2xl ${currentTab === tab ? "bg-teal-500" : ""}`}
-                            >
-                                <Text className={currentTab === tab ? "font-semibold text-white" : "text-black"}>
-                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                    {/* Category Filter */}
+                    <CategoryFilter />
+                
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false}
                     contentContainerClassName="pb-36 gap-y-10">
@@ -66,12 +55,29 @@ export default function ExpoloreIndex() {
                         </ScrollView>
                     </View>
                     <View className="gap-y-4">
-                        <Text className="font-semibold ">Based on your interests</Text>
-                        {/* Display projects in pairs (2-2) */}
-                        {trendingProjects && trendingProjects.length > 0 ? (
-                            Array.from({ length: 2 }, (_, rowIndex) => {
+                        <Text className="font-semibold ">
+                            {(() => {
+                                const categoryLabel = selectedCategory 
+                                    ? ProjectCategoryOptions.find(opt => opt.value === selectedCategory)?.label 
+                                    : null;
+                                const statusLabel = selectedStatus ? selectedStatus : null;
+                                
+                                if (categoryLabel && statusLabel) {
+                                    return `${statusLabel} ${categoryLabel} Projects`;
+                                } else if (categoryLabel) {
+                                    return `${categoryLabel} Projects`;
+                                } else if (statusLabel) {
+                                    return `${statusLabel} Projects`;
+                                } else {
+                                    return 'All Projects';
+                                }
+                            })()}
+                        </Text>
+                        {/* Display filtered projects in pairs (2-2) */}
+                        {filteredProjects && filteredProjects.length > 0 ? (
+                            Array.from({ length: Math.ceil(filteredProjects.length / 2) }, (_, rowIndex) => {
                                 const startIndex = rowIndex * 2;
-                                const rowProjects = trendingProjects?.slice(startIndex, startIndex + 2) || [];
+                                const rowProjects = filteredProjects?.slice(startIndex, startIndex + 2) || [];
                                 return rowProjects.length > 0 ? (
                                     <View key={rowIndex} className="flex-row h-60 justify-between">
                                         {rowProjects.map((project) => (
@@ -82,7 +88,24 @@ export default function ExpoloreIndex() {
                             })
                         ) : (
                             <View className="h-60 justify-center items-center">
-                                <Text className="text-gray-500 text-center">No projects to show based on your interests</Text>
+                                <Text className="text-gray-500 text-center">
+                                    {(() => {
+                                        const categoryLabel = selectedCategory 
+                                            ? ProjectCategoryOptions.find(opt => opt.value === selectedCategory)?.label 
+                                            : null;
+                                        const statusLabel = selectedStatus ? selectedStatus.toLowerCase() : null;
+                                        
+                                        if (categoryLabel && statusLabel) {
+                                            return `No ${statusLabel} ${categoryLabel.toLowerCase()} projects found`;
+                                        } else if (categoryLabel) {
+                                            return `No ${categoryLabel.toLowerCase()} projects found`;
+                                        } else if (statusLabel) {
+                                            return `No ${statusLabel} projects found`;
+                                        } else {
+                                            return 'No projects found';
+                                        }
+                                    })()}
+                                </Text>
                             </View>
                         )}
                     </View>

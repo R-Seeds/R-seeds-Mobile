@@ -7,10 +7,11 @@ import InputArea from "@/components/ui/InputArea";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View, TouchableOpacity, Text, ScrollView } from "react-native";
+import { View, TouchableOpacity, Text, ScrollView, Image } from "react-native";
 import { FundingInfo, Graduate, Milestone, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus, ProjectCategoryOptions } from "@/types";
 import useProjectAction from "@/hooks/useProjectAction";
 import DropdownInput from "@/components/ui/DropDownInput";
+import * as ImagePicker from 'expo-image-picker';
 
 export default function CreateProjectScreen() {
     const { createProject } = useProjectAction()
@@ -28,6 +29,7 @@ export default function CreateProjectScreen() {
     const [members, setMembers] = useState<Graduate[]>([]);
     const [fundingInfo, setFundingInfo] = useState<FundingInfo>();
     const [links, setLinks] = useState<ProjectLink[]>([]);
+    const [projectImage, setProjectImage] = useState<string | null>(null);
 
     const addMember = (graduate: Graduate) =>
         setMembers([...members, graduate]);
@@ -54,6 +56,42 @@ export default function CreateProjectScreen() {
 
     const removeLink = (index: number) =>
         setLinks(links.filter((_, i) => i !== index));
+
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            setProjectImage(result.assets[0].uri);
+        }
+    };
+
+    const takePhoto = async () => {
+        // Request camera permissions
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Sorry, we need camera permissions to take photos!');
+            return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            setProjectImage(result.assets[0].uri);
+        }
+    };
+
+    const removeProjectImage = () => {
+        setProjectImage(null);
+    };
 
     const handleSubmit = async () => {
 
@@ -99,6 +137,48 @@ export default function CreateProjectScreen() {
                 <InputArea label="Mission" value={mission} setValue={setMission} />
                 <InputArea label="Vision" value={vision} setValue={setVision} />
                 <InputArea label="Key Features" value={keyFeature} setValue={setKeyFeature} />
+                
+                {/* Project Photo Upload Section */}
+                <View className="gap-y-4">
+                    <Text className="text-lg font-semibold">Project Photo</Text>
+                    {projectImage ? (
+                        <View className="relative">
+                            <Image 
+                                source={{ uri: projectImage }} 
+                                className="w-full h-48 rounded-lg"
+                                resizeMode="cover"
+                            />
+                            <TouchableOpacity 
+                                onPress={removeProjectImage}
+                                className="absolute top-2 right-2 bg-red-500 rounded-full p-2"
+                            >
+                                <Ionicons name="close" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View className="border-2 border-dashed border-gray-300 rounded-lg p-8 items-center gap-y-4">
+                            <Ionicons name="camera" size={48} color="#9CA3AF" />
+                            <Text className="text-gray-500 text-center">Add a photo to showcase your project</Text>
+                            <View className="flex-row gap-x-4">
+                                <TouchableOpacity 
+                                    onPress={takePhoto}
+                                    className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
+                                >
+                                    <Ionicons name="camera" size={20} color="white" />
+                                    <Text className="text-white font-semibold">Camera</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                    onPress={pickImage}
+                                    className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
+                                >
+                                    <Ionicons name="images" size={20} color="white" />
+                                    <Text className="text-white font-semibold">Gallery</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
+                </View>
+                
                 <View className="gap-y-4 ">
                     <Text className="text-lg font-semibold">Team Member</Text>
                     <TouchableOpacity onPress={() => { setMemberVisible(true) }}
