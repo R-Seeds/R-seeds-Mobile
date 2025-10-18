@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChatHeader, MessageBubble, MessageInput } from '@/components/chat';
 import { useChat } from '@/contexts/ChatContext';
 import { Message } from '@/types';

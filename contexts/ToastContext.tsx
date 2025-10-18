@@ -1,91 +1,132 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Toast, ToastContextType } from '@/types';
-import { ToastContainer } from '@/components/Toast';
+// toast.tsx
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { Animated, View, Text, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
+const TOAST_LIMIT = 1;
+const TOAST_REMOVE_DELAY = 4000;
 
-interface ToastProviderProps {
-  children: ReactNode;
-}
+type ToastType = "success" | "error" | "warning";
 
-export function ToastProvider({ children }: ToastProviderProps) {
+type Toast = {
+  id: string;
+  title?: string;
+  description?: string;
+  type?: ToastType;
+};
+
+const ToastContext = createContext<{
+  toasts: Toast[];
+  showToast: (toast: Omit<Toast, "id">) => void;
+  removeToast: (id: string) => void;
+}>({
+  toasts: [],
+  showToast: () => { },
+  removeToast: () => { },
+});
+
+export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const generateId = (): string => {
-    return `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const showToast = (toast: Omit<Toast, "id">) => {
+    const id = Date.now().toString();
+    const newToast = { id, ...toast };
+    setToasts((prev) => [newToast, ...prev].slice(0, TOAST_LIMIT));
+    setTimeout(() => removeToast(id), TOAST_REMOVE_DELAY);
   };
 
-  const showToast = (toastData: Omit<Toast, 'id'>) => {
-    const newToast: Toast = {
-      id: generateId(),
-      duration: 4000,
-      autoHide: true,
-      ...toastData,
-    };
-
-    setToasts(prev => [...prev, newToast]);
-
-    if (newToast.autoHide && newToast.duration) {
-      setTimeout(() => {
-        hideToast(newToast.id);
-      }, newToast.duration);
-    }
-  };
-
-  const hideToast = (id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
-  };
-
-  const clearAllToasts = () => {
-    setToasts([]);
-  };
-
-  const value: ToastContextType = {
-    toasts,
-    showToast,
-    hideToast,
-    clearAllToasts,
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
-    <ToastContext.Provider value={value}>
+    <ToastContext.Provider value={{ toasts, showToast, removeToast }}>
       {children}
-      <ToastContainer />
+      <ToastContainer toasts={toasts} onClose={removeToast} />
     </ToastContext.Provider>
   );
 }
 
 export function useToast() {
   const context = useContext(ToastContext);
-  if (context === undefined) {
-    throw new Error('useToast must be used within a ToastProvider');
+  if (!context) {
+    throw new Error("useToast must be used within a ToastProvider");
   }
-  
-  const { showToast, ...rest } = context;
-  
-  // Helper methods for easier usage
-  const showSuccess = (title: string, message?: string, options?: Partial<Toast>) => {
-    showToast({ title, message, type: 'success', ...options });
-  };
-  
-  const showError = (title: string, message?: string, options?: Partial<Toast>) => {
-    showToast({ title, message, type: 'error', ...options });
-  };
-  
-  const showInfo = (title: string, message?: string, options?: Partial<Toast>) => {
-    showToast({ title, message, type: 'info', ...options });
-  };
-  
-  const showWarning = (title: string, message?: string, options?: Partial<Toast>) => {
-    showToast({ title, message, type: 'warning', ...options });
-  };
-  
-  return {
-    ...rest,
-    showToast,
-    showSuccess,
-    showError,
-    showInfo,
-    showWarning,
-  };
+  return context;
+}
+
+function ToastContainer({
+  toasts,
+  onClose,
+}: {
+  toasts: Toast[];
+  onClose: (id: string) => void;
+}) {
+  return (
+    <View className="absolute top-10 left-5 right-5 z-50">
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} onClose={() => onClose(toast.id)} />
+      ))}
+    </View>
+  );
+}
+
+function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
+  const opacity = new Animated.Value(0);
+  const translateY = new Animated.Value(20);
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.spring(translateY, {
+        toValue: 0,
+        tension: 100,
+        friction: 10,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    return () => {
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    };
+  }, []);
+
+  return (
+    <Animated.View
+      className={`flex-row items-center justify-between p-4 rounded-xl mb-3 shadow-lg shadow-black/20
+         ${toast.type === "error" && "bg-red-600"}
+         ${toast.type === "warning" && "bg-yellow-600"}
+         ${toast.type === "success" && "bg-teal-600"}`}
+      style={{
+        opacity,
+        transform: [{ translateY }],
+      }}
+    >
+      <View className="flex-1 pr-3">
+        {toast.title && (
+          <Text className="text-white font-semibold text-base mb-1">
+            {toast.title}
+          </Text>
+        )}
+        {toast.description && (
+          <Text className="text-gray-200 text-sm">{toast.description}</Text>
+        )}
+      </View>
+      <TouchableOpacity
+        onPress={onClose}
+        className="p-1 -mr-2"
+        activeOpacity={0.7}
+      >
+        <Ionicons name="close" size={20} color="#fff" />
+      </TouchableOpacity>
+    </Animated.View>
+  );
 }
