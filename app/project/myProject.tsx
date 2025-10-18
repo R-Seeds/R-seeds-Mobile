@@ -20,6 +20,10 @@ export default function MyProjectScreen() {
                 </View>
                 <ScrollView contentContainerClassName="gap-y-4">
                     <MyProject />
+                    <MyProject />
+                    <MyProject />
+                    <MyProject />
+                    <MyProject />
                 </ScrollView>
             </View>
             <TabNavigation />
