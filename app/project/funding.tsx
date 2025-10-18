@@ -3,10 +3,12 @@ import TabNavigation from "@/components/ui/Tabs";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
 import FundingProject from "@/components/project/fundingProject";
+import { useProjects } from "@/contexts/ProjectContext";
 
 
 
 export default function MyProjectsScreen() {
+    const{projects}=useProjects()
     const [currentTab, setCurrentTab] = useState<'all' | 'active' | 'archieved'>('all')
     const tabs = ['all', 'active', 'archieved']
     return (
@@ -32,13 +34,9 @@ export default function MyProjectsScreen() {
                 </View>
                 <ScrollView contentContainerClassName="pb-40 gap-y-4"
                     showsVerticalScrollIndicator={false}>
-                    <FundingProject />
-
-                    <FundingProject />
-                    <FundingProject />
-                    <FundingProject />
-                    <FundingProject />
-
+                    {projects?.map((project) => (
+                        <FundingProject key={project.id} project={project} />
+                    ))}
                 </ScrollView>
 
             </View>

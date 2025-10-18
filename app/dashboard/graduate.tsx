@@ -4,8 +4,12 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CardProject from "@/components/dashboard/cardProject";
 import TabNavigation from "@/components/ui/Tabs";
+import { useProjects } from "@/contexts/ProjectContext";
 
 export default function GraduateDashboard() {
+    const data = useProjects();
+    const spotlightProjects = data?.spotlightProjects
+    const projects=data?.projects
     return (
         <View className="flex-1 bg-white">
             <Header />
@@ -18,10 +22,9 @@ export default function GraduateDashboard() {
                     <Text className="text-lg font-semibold">Spotlight Projects</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
                         contentContainerClassName="flex-row gap-x-4">
-                        <SpotlightProject />
-                        <SpotlightProject />
-                        <SpotlightProject />
-                        <SpotlightProject />
+                        {spotlightProjects?.map((project) => (
+                            <SpotlightProject key={project.id} project={project} />
+                        ))}
                     </ScrollView>
                 </View>
 
@@ -43,8 +46,9 @@ export default function GraduateDashboard() {
                 </View>
                 {/* Projects */}
                 <View className="flex-col gap-y-4 flex-1">
-                    <CardProject />
-                    <CardProject />
+                    {projects?.map((project) => (
+                        <CardProject key={project.id} project={project} />
+                    ))}
                 </View>
 
             </ScrollView>

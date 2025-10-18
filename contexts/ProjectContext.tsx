@@ -146,10 +146,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     )
 }
 
-export function useProjects() {
+export function useProjects():ProjectContextType {
     const context = useContext(ProjectContext)
     if (!context) {
-        console.error("useProject must be used in a ProjectProvider")
+        throw new Error("useProject must be used in a ProjectProvider")
+      
     }
     return context
 }

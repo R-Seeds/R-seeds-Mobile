@@ -5,9 +5,11 @@ import { TabProps, Tabs } from "@/types";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useProjects } from "@/contexts/ProjectContext";
 
 
 export default function ExpoloreIndex() {
+    const{trendingProjects,projects}=useProjects()
     const [currentTab, setCurrentTab] = useState<TabProps>('all')
 
     return (
@@ -52,24 +54,25 @@ export default function ExpoloreIndex() {
                         <Text className="font-semibold ">Most Viewed</Text>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}
                             contentContainerClassName="gap-x-4 h-60">
-                            <ExploreProject large={false} />
-                            <ExploreProject large={false} />
-                            <ExploreProject large={false} />
-                            <ExploreProject large={false} />
-                            <ExploreProject large={false} />
-                            <ExploreProject large={false} />
+                            {trendingProjects?.map((project) => (
+                                <ExploreProject key={project.id} project={project} large={false} />
+                            ))}
                         </ScrollView>
                     </View>
                     <View className="gap-y-4">
                         <Text className="font-semibold ">Based on your interests</Text>
-                        <View className="flex-row h-60 justify-between">
-                            <ExploreProject large />
-                            <ExploreProject large />
-                        </View>
-                        <View className="flex-row h-60 justify-between">
-                            <ExploreProject large />
-                            <ExploreProject large />
-                        </View>
+                        {/* Display projects in pairs (2-2) */}
+                        {Array.from({ length: 2 }, (_, rowIndex) => {
+                            const startIndex = rowIndex * 2;
+                            const rowProjects = trendingProjects?.slice(startIndex, startIndex + 2) || [];
+                            return rowProjects.length > 0 ? (
+                                <View key={rowIndex} className="flex-row h-60 justify-between">
+                                    {rowProjects.map((project) => (
+                                        <ExploreProject key={project.id} large project={project} />
+                                    ))}
+                                </View>
+                            ) : null;
+                        })}
                     </View>
 
                 </ScrollView>
