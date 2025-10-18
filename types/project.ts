@@ -8,7 +8,13 @@ export enum MilestoneStatus {
 export enum ProjectCategory {
     EDUCATION,
     AGRICULTURE,
-    FINANCE
+    FINANCE,
+    BUSINESS,
+    HEALTH,
+    SOCIAL,
+    TRANSPORTATION,
+    ECOMMERCE,
+    GOVERNMENT,
 }
 
 export enum ProjectStatus {
