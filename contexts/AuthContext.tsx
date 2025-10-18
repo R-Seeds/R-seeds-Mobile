@@ -4,6 +4,7 @@ import { createContext, useContext, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 import { Alert } from "react-native"
 import { router } from "expo-router"
+import { useToast } from "@/contexts/ToastContext"
 
 interface AuthContextType {
     isAuthenticated: boolean
@@ -18,6 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const { showToast } = useToast()
     const [user, setUser] = useState<User | null>(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [loading, setLoading] = useState(true)
@@ -30,8 +32,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setIsAuthenticated(true)
                 router.push('/dashboard/graduate')
             }else router.push('/auth/login')
+            showToast({
+                type: "success",
+                title: "Success",
+                message: "User authenticated successfully!"
+            })
         } catch (error) {
             console.error(error)
+            showToast({
+                type: "error",
+                title: "Error",
+                message: "Failed to authenticate user. Please try again."
+            })
         } finally {
             setLoading(false)
         }

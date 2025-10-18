@@ -63,7 +63,7 @@ function ToastContainer({
   onClose: (id: string) => void;
 }) {
   return (
-    <View className="absolute top-10 left-5 right-5 z-50">
+    <View className="absolute top-10 left-0 z-50 flex-1 w-full items-center px-4">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onClose={() => onClose(toast.id)} />
       ))}
@@ -101,7 +101,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
 
   return (
     <Animated.View
-      className={`flex-row items-center justify-between p-4 rounded-xl mb-3 shadow-lg shadow-black/20
+      className={`flex-row flex-1 items-center justify-between p-4 rounded-xl mb-3 shadow-lg shadow-black/20
          ${toast.type === "error" && "bg-red-600"}
          ${toast.type === "warning" && "bg-yellow-600"}
          ${toast.type === "success" && "bg-teal-600"}`}
@@ -117,7 +117,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
           </Text>
         )}
         {toast.message && (
-          <Text className="text-gray-200 text-sm">{toast.message}</Text>
+          <Text className="text-white text-sm">{toast.message}</Text>
         )}
       </View>
       <TouchableOpacity
