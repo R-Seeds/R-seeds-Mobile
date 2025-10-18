@@ -80,9 +80,15 @@ export default function ProjectScreen() {
                     <Text className="font-bold text-xl text-teal-500 w-full">Team</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
                         contentContainerClassName="gap-x-4">
-                        {currentProject?.team.map((member, index) => (
-                            <ProjectMember key={index} member={member} />
-                        ))}
+                        {currentProject?.team && currentProject.team.length > 0 ? (
+                            currentProject.team.map((member, index) => (
+                                <ProjectMember key={index} member={member} />
+                            ))
+                        ) : (
+                            <View className="flex-1 justify-center items-center py-4">
+                                <Text className="text-gray-500 text-center">No team members added yet</Text>
+                            </View>
+                        )}
                     </ScrollView>
                 </View>
                 <View className="items-center gap-y-2 relative">

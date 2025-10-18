@@ -22,9 +22,15 @@ export default function GraduateDashboard() {
                     <Text className="text-lg font-semibold">Spotlight Projects</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
                         contentContainerClassName="flex-row gap-x-4">
-                        {spotlightProjects?.map((project) => (
-                            <SpotlightProject key={project.id} project={project} />
-                        ))}
+                        {spotlightProjects && spotlightProjects.length > 0 ? (
+                            spotlightProjects.map((project) => (
+                                <SpotlightProject key={project.id} project={project} />
+                            ))
+                        ) : (
+                            <View className="flex-1 justify-center items-center py-10">
+                                <Text className="text-gray-500 text-center">No spotlight projects available</Text>
+                            </View>
+                        )}
                     </ScrollView>
                 </View>
 
@@ -46,9 +52,16 @@ export default function GraduateDashboard() {
                 </View>
                 {/* Projects */}
                 <View className="flex-col gap-y-4 flex-1">
-                    {projects?.map((project) => (
-                        <CardProject key={project.id} project={project} />
-                    ))}
+                    {projects && projects.length > 0 ? (
+                        projects.map((project) => (
+                            <CardProject key={project.id} project={project} />
+                        ))
+                    ) : (
+                        <View className="flex-1 justify-center items-center py-10">
+                            <Text className="text-gray-500 text-center text-lg">No projects found</Text>
+                            <Text className="text-gray-400 text-center text-sm mt-2">Projects will appear here when available</Text>
+                        </View>
+                    )}
                 </View>
 
             </ScrollView>

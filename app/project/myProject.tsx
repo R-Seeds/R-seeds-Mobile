@@ -4,8 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 import MyProject from "@/components/project/myProject";
 import { router } from "expo-router";
+import { useProjects } from "@/contexts/ProjectContext";
 
 export default function MyProjectScreen() {
+    const{myProjects}=useProjects()
     return (
         <View className="flex-1 bg-white">
             <Header />
@@ -19,11 +21,16 @@ export default function MyProjectScreen() {
                     </TouchableOpacity>
                 </View>
                 <ScrollView contentContainerClassName="gap-y-4">
-                    <MyProject />
-                    <MyProject />
-                    <MyProject />
-                    <MyProject />
-                    <MyProject />
+                    {myProjects && myProjects.length > 0 ? (
+                        myProjects.map((project) => (
+                            <MyProject key={project.id} project={project} />
+                        ))
+                    ) : (
+                        <View className="flex-1 justify-center items-center py-20">
+                            <Text className="text-gray-500 text-center text-lg">No projects yet</Text>
+                            <Text className="text-gray-400 text-center text-sm mt-2">Create your first project to get started</Text>
+                        </View>
+                    )}
                 </ScrollView>
             </View>
             <TabNavigation />
