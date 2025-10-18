@@ -1,8 +1,8 @@
 import Header from "@/components/ui/Header";
 import TabNavigation from "@/components/ui/Tabs";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import FundingProject from "@/components/project/fundingProject";
 
 
 
@@ -30,6 +30,17 @@ export default function MyProjectsScreen() {
                         ))}
                     </ScrollView>
                 </View>
+                <ScrollView contentContainerClassName="pb-40 gap-y-4"
+                    showsVerticalScrollIndicator={false}>
+                    <FundingProject />
+
+                    <FundingProject />
+                    <FundingProject />
+                    <FundingProject />
+                    <FundingProject />
+
+                </ScrollView>
+
             </View>
             <TabNavigation />
         </View>
