@@ -7,6 +7,7 @@ interface ProjectContextType {
     projects: Project[];
     myProjects: Project[];
     trendingProjects: Project[];
+    spotlightProjects: Project[];
     currentProject: Project | null;
     loading: boolean;
     setCurrentProject: (project: Project | null) => void;
@@ -24,6 +25,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     const [projects, setProjects] = useState<Project[]>([]);
     const [myProjects, setMyProjects] = useState<Project[]>([]);
     const [trendingProjects, setTrendingProjects] = useState<Project[]>([]);
+    const [spotlightProjects, setSpotlightProjects] = useState<Project[]>([]);
     const [currentProject, setCurrentProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -56,6 +58,18 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             setLoading(false);
         }
     };
+
+    const fetchSpotlighProjects=async()=>{
+        try {
+            setLoading(true);
+            const { data } = await projectService.getSpotlightProjects();
+            setSpotlightProjects(data);
+        } catch (error: any) {
+            console.error("Error fetching spotlight projects:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const fetchTrendingProjects = async () => {
         try {
@@ -108,6 +122,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         fetchProjects();
         fetchTrendingProjects();
+        fetchSpotlighProjects();
     }, []);
 
     return (
@@ -115,6 +130,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             projects, 
             myProjects,
             trendingProjects,
+            spotlightProjects,
             currentProject, 
             loading,
             setCurrentProject,
