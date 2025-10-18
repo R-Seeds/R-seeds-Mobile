@@ -1,8 +1,8 @@
 import { Graduate, User } from "./user";
 
 export enum MilestoneStatus {
-    IN_PROGRESS,
-    COMPLETED,
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
 }
 
 export enum ProjectCategory {
@@ -18,8 +18,8 @@ export enum ProjectCategory {
 }
 
 export enum ProjectStatus {
-    ACTIVE,
-    ARCHIVED
+    ACTIVE = "ACTIVE",
+    ARCHIVED = "ARCHIVED"
 }
 
 
@@ -32,9 +32,9 @@ export interface FundingInfo {
 export interface Milestone {
     title: string;
     description: string;
-    complationDate: string;
+    completionDate: string;
     budget: number;
-    status: string;
+    status: MilestoneStatus;
 }
 
 export interface ProjectInteraction {

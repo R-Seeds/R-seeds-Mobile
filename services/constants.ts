@@ -28,25 +28,23 @@ export const API_ENDPOINTS = {
     DASHBOARD: '/projects/dashboard',
     CREATE: '/projects',
     BY_ID: (id: string | number) => `/projects/${id}`,
+    MY_PROJECTS: '/projects/my',
+    BY_CATEGORY: (category: string) => `/projects/category/${category}`,
+    BY_STATUS: (status: string) => `/projects/status/${status}`,
+    TRENDING: '/projects/trending',
+    SPOTLIGHT: '/projects/spotlight',
+    SEARCH: (title: string) => `/projects/search?title=${title}`,
     UPDATE: (id: string | number) => `/projects/${id}`,
     DELETE: (id: string | number) => `/projects/${id}`,
     STATISTICS: '/projects/statistics',
     OVERVIEW: '/projects/overview',
-    GOAL: {
-      CREATE: '/projects/goal',
-      UPDATE: (id: string) => `/goal/task/${id}`,
-      DELETE: (id: string) => `/goal/task/${id}`
-    },
-    TASK: {
-      CREATE: '/projects/task',
-      DONE: (id: string) => `/projects/task/done/${id}`,
-      UPDATE: (id: string) => `/projects/task/${id}`,
-      DELETE: (id: string) => `/projects/task/${id}`
-    }
   }, // Worker Management
-  WORKERS: {
-    ALL: '/projects/workers',
-    CREATE: '/projects/worker',
+  USER: {
+    ALL: '/users',
+    ME: '/users/me',
+    GRADUATE: '/users/graduates',
+    SPONSORS: '/users/sponsors',
+    CREATE: '/users',
     REPORTS: '/worker-reports',
     REPORT: (id: string) => `/worker-reports/${id}`,
     BY_ID: (id: string) => `/projects/workers/${id}`,

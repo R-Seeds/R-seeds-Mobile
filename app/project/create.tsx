@@ -8,57 +8,72 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View, TouchableOpacity, Text, ScrollView } from "react-native";
+import { FundingInfo, Graduate, Milestone, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus } from "@/types";
+import useProjectAction from "@/hooks/useProjectAction";
 
 export default function CreateProjectScreen() {
+    const { createProject } = useProjectAction()
+    const [title, setTitle] = useState("");
+    const [category, setCategory] = useState<ProjectCategory>(ProjectCategory.EDUCATION);
+    const [description, setDescription] = useState("");
+    const [mission, setMission] = useState("");
+    const [vision, setVision] = useState("");
+    const [keyFeature, setKeyFeature] = useState("");
     const [memberVisible, setMemberVisible] = useState(false);
     const [mileStoneVisible, setMileStoneVisible] = useState(false);
     const [fundingVisible, setFundingVisible] = useState(false);
     const [linksVisible, setLinksVisible] = useState(false);
 
-    const [members, setMembers] = useState([{ graduate: "", role: "" }]);
-    const [fundingInfo, setFundingInfo] = useState([
-        { title: "", description: "", status: "", budget: "", date: "" },
-    ]);
-    const [links, setLinks] = useState([
-        { title: "", url: "" },
-    ]);
+    const [members, setMembers] = useState<Graduate[]>([]);
+    const [fundingInfo, setFundingInfo] = useState<FundingInfo>();
+    const [links, setLinks] = useState<ProjectLink[]>([]);
 
-    const addMember = () =>
-        setMembers([...members, { graduate: "", role: "" }]);
+    const addMember = (graduate: Graduate) =>
+        setMembers([...members, graduate]);
 
     const removeMember = (index: number) =>
         setMembers(members.filter((_, i) => i !== index));
 
-    const [milestones, setMilestones] = useState([
-        { title: "", description: "", status: "", budget: "", date: "" },
-    ]);
+    const [milestones, setMilestones] = useState<Milestone[]>([]);
 
-    const addMilestone = () =>
-        setMilestones([
-            ...milestones,
-            { title: "", description: "", status: "", budget: "", date: "" },
-        ]);
+    const addMilestone = (milestone: Milestone) =>
+        setMilestones([...milestones, milestone]);
 
     const removeMilestone = (index: number) =>
         setMilestones(milestones.filter((_, i) => i !== index));
 
-    const addFundingInfo = () =>
-        setFundingInfo([
-            ...fundingInfo,
-            { title: "", description: "", status: "", budget: "", date: "" },
-        ]);
+    const addFundingInfo = (fundingInfo: FundingInfo) =>
+        setFundingInfo(fundingInfo);
 
-    const removeFundingInfo = (index: number) =>
-        setFundingInfo(fundingInfo.filter((_, i) => i !== index));
+    const removeFundingInfo = () =>
+        setFundingInfo(undefined);
 
-    const addLink = () =>
-        setLinks([
-            ...links,
-            { title: "", url: "" },
-        ]);
+    const addLink = (link: ProjectLink) =>
+        setLinks([...links, link]);
 
     const removeLink = (index: number) =>
         setLinks(links.filter((_, i) => i !== index));
+
+    const handleSubmit = async() => {
+
+        if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo) {
+            return
+        }
+        const projectData: ProjectCreateRequest = {
+            title,
+            status: ProjectStatus.ACTIVE,
+            category,
+            description,
+            mission,
+            vision,
+            keyFeature,
+            team: members,
+            milestones,
+            fundingInfo,
+            links
+        }
+       await createProject(projectData)
+    }
 
     return (
         <View className="flex-1 p-4 pb-10">
@@ -72,12 +87,12 @@ export default function CreateProjectScreen() {
             <ScrollView contentContainerClassName="pt-10 pb-20 gap-y-4"
                 showsVerticalScrollIndicator={false}
             >
-                <Input />
-                <Input />
-                <InputArea />
-                <InputArea />
-                <InputArea />
-                <InputArea />
+                <Input label="Title" value={title} setValue={setTitle} />
+                <Input label="Category" value={category} setValue={setCategory} />
+                <InputArea label="Description" value={description} setValue={setDescription} />
+                <InputArea label="Mission" value={mission} setValue={setMission} />
+                <InputArea label="Vision" value={vision} setValue={setVision} />
+                <InputArea label="Key Features" value={keyFeature} setValue={setKeyFeature} />
                 <View className="gap-y-4 ">
                     <Text className="text-lg font-semibold">Team Member</Text>
                     <TouchableOpacity onPress={() => { setMemberVisible(true) }}
@@ -112,7 +127,8 @@ export default function CreateProjectScreen() {
                 </View>
 
             </ScrollView>
-            <TouchableOpacity className="bg-teal-500 rounded-full py-4 flex-row items-center gap-x-2 justify-center ">
+            <TouchableOpacity className="bg-teal-500 rounded-full py-4 flex-row items-center gap-x-2 justify-center "
+                onPress={handleSubmit}>
                 <Text className="text-white text-lg font-semibold">Create Project</Text>
             </TouchableOpacity>
 

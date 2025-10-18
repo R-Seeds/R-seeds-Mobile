@@ -7,17 +7,32 @@ import {
     TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { FundingInfo } from "@/types";
+import { useState } from "react";
 
 interface Props {
     visible: boolean;
     onClose: () => void;
-    fundingInfo: { title: string; description: string; status: string; budget: string; date: string }[];
-    setFundingInfo: (fundingInfo: { title: string; description: string; status: string; budget: string; date: string }[]) => void;
-    addFundingInfo: () => void;
-    removeFundingInfo: (index: number) => void;
+    fundingInfo: FundingInfo | undefined;
+    setFundingInfo: (fundingInfo: FundingInfo) => void;
+    addFundingInfo: (fundingInfo: FundingInfo) => void;
+    removeFundingInfo: () => void;
 }
 
 export default function FundingInfoModal({ visible, onClose, fundingInfo, setFundingInfo, addFundingInfo, removeFundingInfo }: Props) {
+    const handleSave = () => {
+        const newFundingInfo: FundingInfo = {
+            goal: Number(goal) || 0,
+            raised: Number(raised) || 0,
+            donors: Number(donors) || 0,
+        };
+        addFundingInfo(newFundingInfo);
+        onClose();
+    };
+
+    const [goal, setGoal] = useState(fundingInfo?.goal?.toString() || "");
+    const [raised, setRaised] = useState(fundingInfo?.raised?.toString() || "");
+    const [donors, setDonors] = useState(fundingInfo?.donors?.toString() || "");
 
     return (
         <Modal
@@ -35,89 +50,58 @@ export default function FundingInfoModal({ visible, onClose, fundingInfo, setFun
                                 Funding Information
                             </Text>
 
-                            {fundingInfo.map((funding, index) => (
-                                <View
-                                    key={index}
-                                    className="bg-gray-100 rounded-xl p-3 mb-4 space-y-2"
-                                >
+                            <View className="space-y-4">
+                                <View>
+                                    <Text className="text-sm font-medium text-gray-700 mb-2">Funding Goal</Text>
                                     <TextInput
-                                        placeholder="Milestone Title"
-                                        className="bg-white rounded-lg px-3 py-2 border border-gray-200"
-                                        value={funding.title}
-                                        onChangeText={(t) => {
-                                            const updated = [...fundingInfo];
-                                            updated[index].title = t;
-                                            setFundingInfo(updated);
-                                        }}
-                                    />
-
-                                    <TextInput
-                                        placeholder="Short Description"
-                                        className="bg-white rounded-lg px-3 py-2 border border-gray-200"
-                                        value={funding.description}
-                                        onChangeText={(t) => {
-                                            const updated = [...fundingInfo];
-                                            updated[index].description = t;
-                                            setFundingInfo(updated);
-                                        }}
-                                    />
-
-                                    <TouchableOpacity className="bg-white rounded-lg px-3 py-2 border border-gray-200 flex-row justify-between items-center">
-                                        <Text className="text-gray-500">
-                                            {funding.status || "Status"}
-                                        </Text>
-                                        <Ionicons name="chevron-down" size={18} color="#555" />
-                                    </TouchableOpacity>
-
-                                    <TextInput
-                                        placeholder="Budget"
-                                        className="bg-white rounded-lg px-3 py-2 border border-gray-200"
+                                        placeholder="Enter funding goal amount"
+                                        className="bg-white rounded-lg px-3 py-3 border border-gray-200"
                                         keyboardType="numeric"
-                                        value={funding.budget}
-                                        onChangeText={(t) => {
-                                            const updated = [...fundingInfo];
-                                            updated[index].budget = t;
-                                            setFundingInfo(updated);
-                                        }}
+                                        value={goal}
+                                        onChangeText={setGoal}
                                     />
-
-                                    <TextInput
-                                        placeholder="Expected Completion Date"
-                                        className="bg-white rounded-lg px-3 py-2 border border-gray-200"
-                                        value={funding.date}
-                                        onChangeText={(t) => {
-                                            const updated = [...fundingInfo];
-                                            updated[index].date = t;
-                                            setFundingInfo(updated);
-                                        }}
-                                    />
-
-                                    {fundingInfo.length > 1 && (
-                                        <TouchableOpacity
-                                            onPress={() => removeFundingInfo(index)}
-                                            className="absolute top-2 right-2 bg-red-500 rounded-full p-1"
-                                        >
-                                            <Ionicons name="trash" size={16} color="white" />
-                                        </TouchableOpacity>
-                                    )}
                                 </View>
-                            ))}
+
+                                <View>
+                                    <Text className="text-sm font-medium text-gray-700 mb-2">Amount Raised</Text>
+                                    <TextInput
+                                        placeholder="Enter amount raised so far"
+                                        className="bg-white rounded-lg px-3 py-3 border border-gray-200"
+                                        keyboardType="numeric"
+                                        value={raised}
+                                        onChangeText={setRaised}
+                                    />
+                                </View>
+
+                                <View>
+                                    <Text className="text-sm font-medium text-gray-700 mb-2">Number of Donors</Text>
+                                    <TextInput
+                                        placeholder="Enter number of donors"
+                                        className="bg-white rounded-lg px-3 py-3 border border-gray-200"
+                                        keyboardType="numeric"
+                                        value={donors}
+                                        onChangeText={setDonors}
+                                    />
+                                </View>
+                            </View>
+
+                            {fundingInfo && (
+                                <TouchableOpacity
+                                    onPress={removeFundingInfo}
+                                    className="mt-4 border border-red-300 rounded-lg py-2"
+                                >
+                                    <Text className="text-center text-red-600">
+                                        Remove Funding Information
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
 
                             <TouchableOpacity
-                                onPress={addFundingInfo}
-                                className="border border-dashed border-gray-400 rounded-full py-2 mb-4"
-                            >
-                                <Text className="text-center text-gray-600">
-                                    Add Another Funding Information
-                                </Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                onPress={onClose}
-                                className="bg-teal-600 rounded-md py-3"
+                                onPress={handleSave}
+                                className="bg-teal-600 rounded-md py-3 mt-6"
                             >
                                 <Text className="text-center text-white font-semibold">
-                                    Save Project Funding Information
+                                    Save Funding Information
                                 </Text>
                             </TouchableOpacity>
                         </View>

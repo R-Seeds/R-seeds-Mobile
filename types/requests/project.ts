@@ -1,4 +1,4 @@
-import { ProjectCategory, ProjectStatus, ProjectInteraction, ProjectLink, Milestone, FundingInfo } from "../project";
+import { ProjectCategory, ProjectStatus, ProjectLink, Milestone, FundingInfo } from "../project";
 import { Graduate } from "../user";
 
 
@@ -8,10 +8,9 @@ export interface ProjectCreateRequest {
     description: string;
     mission: string;
     vision: string;
-    keyFeauture: string;
+    keyFeature: string;
     status: ProjectStatus;
     fundingInfo: FundingInfo;
-    interaction: ProjectInteraction;
     links: ProjectLink[];
     team: Graduate[];
     milestones: Milestone[];

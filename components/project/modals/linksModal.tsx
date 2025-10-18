@@ -7,13 +7,14 @@ import {
     TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ProjectLink } from "@/types";
 
 interface Props {
     visible: boolean;
     onClose: () => void;
-    links: { title: string; url: string }[];
-    setLinks: (links: { title: string; url: string }[]) => void;
-    addLink: () => void;
+    links: ProjectLink[];
+    setLinks: (links: ProjectLink[]) => void;
+    addLink: (link: ProjectLink) => void;
     removeLink: (index: number) => void;
 }
 
@@ -32,7 +33,7 @@ export default function LinksModal({ visible, onClose, links, setLinks, addLink,
                     <TouchableWithoutFeedback>
                         <View className="bg-white w-full rounded-3xl p-5 shadow-lg">
                             <Text className="text-center text-lg font-semibold text-teal-600 mb-4">
-                                Milestones
+                                Links & Documents
                             </Text>
 
                             {links.map((link, index) => (
@@ -41,18 +42,18 @@ export default function LinksModal({ visible, onClose, links, setLinks, addLink,
                                     className="bg-gray-100 rounded-xl p-3 mb-4 space-y-2"
                                 >
                                     <TextInput
-                                        placeholder="Link Title"
+                                        placeholder="Link Label"
                                         className="bg-white rounded-lg px-3 py-2 border border-gray-200"
-                                        value={link.title}
+                                        value={link.label}
                                         onChangeText={(t) => {
                                             const updated = [...links];
-                                            updated[index].title = t;
+                                            updated[index].label = t;
                                             setLinks(updated);
                                         }}
                                     />
 
                                     <TextInput
-                                        placeholder="Short Description"
+                                        placeholder="URL"
                                         className="bg-white rounded-lg px-3 py-2 border border-gray-200"
                                         value={link.url}
                                         onChangeText={(t) => {
@@ -76,7 +77,13 @@ export default function LinksModal({ visible, onClose, links, setLinks, addLink,
                             ))}
 
                             <TouchableOpacity
-                                onPress={addLink}
+                                onPress={() => {
+                                    const newLink: ProjectLink = {
+                                        label: "",
+                                        url: "",
+                                    };
+                                    addLink(newLink);
+                                }}
                                 className="border border-dashed border-gray-400 rounded-full py-2 mb-4"
                             >
                                 <Text className="text-center text-gray-600">

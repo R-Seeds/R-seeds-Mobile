@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const initializeAuth = async () => {
         try {
-            const token = await SecureStore.getItemAsync("token")
+            const token = await SecureStore.getItemAsync("auth_token")
             console.log(token)
             if (token) {
                 setIsAuthenticated(true)
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 Alert.alert("Error", response.message)
             }
             const token = response.data.token
-            await SecureStore.setItemAsync('token', token)
+            await SecureStore.setItemAsync('auth_token', token)
             router.push('/')
         } catch (error) {
             console.error(error)
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 Alert.alert("Error", response.message)
             }
             const token = response.data.token
-            await SecureStore.setItemAsync('token', token)
+            await SecureStore.setItemAsync('auth_token', token)
             router.push('/')
         } catch (error) {
             console.error(error)

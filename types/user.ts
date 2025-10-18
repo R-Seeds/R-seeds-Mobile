@@ -13,7 +13,6 @@ export interface User {
     password: string;
     role: UserType;
     country: string|null;
-    savedProjects: Project[];
     createdAt: string;
     updatedAt: string;
 }
