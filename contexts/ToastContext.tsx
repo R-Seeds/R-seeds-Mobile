@@ -10,8 +10,8 @@ type ToastType = "success" | "error" | "warning";
 
 type Toast = {
   id: string;
-  title?: string;
-  description?: string;
+  title: string;
+  message: string;
   type?: ToastType;
 };
 
@@ -116,8 +116,8 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
             {toast.title}
           </Text>
         )}
-        {toast.description && (
-          <Text className="text-gray-200 text-sm">{toast.description}</Text>
+        {toast.message && (
+          <Text className="text-gray-200 text-sm">{toast.message}</Text>
         )}
       </View>
       <TouchableOpacity

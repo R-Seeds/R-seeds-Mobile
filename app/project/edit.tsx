@@ -8,7 +8,8 @@ import { FontAwesome5, Ionicons, AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState, useEffect } from "react";
 import { View, TouchableOpacity, Text, ScrollView, ActivityIndicator } from "react-native";
-import { FundingInfo, Graduate, Milestone, Project, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus } from "@/types";
+import { FundingInfo, Graduate, Milestone, Project, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus, ProjectCategoryOptions } from "@/types";
+import DropdownInput from "@/components/ui/DropDownInput";
 import useProjectAction from "@/hooks/useProjectAction";
 import { useProjects } from "@/contexts/ProjectContext";
 
@@ -130,10 +131,13 @@ export default function EditProjectScreen() {
 
             <ScrollView contentContainerClassName="pt-10 pb-20 gap-y-4" showsVerticalScrollIndicator={false}>
                 <Input label="Project Title" value={title} setValue={setTitle} />
-                <Input label="Category" value={category.toString()} setValue={(value) => {
-                    // For now, just keep the category as string - proper enum handling would need a dropdown
-                    console.log('Category change:', value);
-                }} />
+                <DropdownInput
+                    label="Category"
+                    placeholder="Select a category"
+                    value={category}
+                    options={ProjectCategoryOptions}
+                    onChange={setCategory}
+                />
                 <InputArea label="Description" value={description} setValue={setDescription} />
                 <InputArea label="Mission" value={mission} setValue={setMission} />
                 <InputArea label="Vision" value={vision} setValue={setVision} />

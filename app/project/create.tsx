@@ -8,8 +8,9 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View, TouchableOpacity, Text, ScrollView } from "react-native";
-import { FundingInfo, Graduate, Milestone, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus } from "@/types";
+import { FundingInfo, Graduate, Milestone, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus, ProjectCategoryOptions } from "@/types";
 import useProjectAction from "@/hooks/useProjectAction";
+import DropdownInput from "@/components/ui/DropDownInput";
 
 export default function CreateProjectScreen() {
     const { createProject } = useProjectAction()
@@ -54,7 +55,7 @@ export default function CreateProjectScreen() {
     const removeLink = (index: number) =>
         setLinks(links.filter((_, i) => i !== index));
 
-    const handleSubmit = async() => {
+    const handleSubmit = async () => {
 
         if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo) {
             return
@@ -72,11 +73,11 @@ export default function CreateProjectScreen() {
             fundingInfo,
             links
         }
-       await createProject(projectData)
+        await createProject(projectData)
     }
 
     return (
-        <View className="flex-1 p-4 pb-10">
+        <View className="flex-1 p-4 pb-10 bg-white">
             <View className="flex-row items-center gap-x-14 pt-4 ">
                 <TouchableOpacity className=" bg-gray-500/80 rounded-full z-10 p-2 w-12 h-12"
                     onPress={() => router.back()}>
@@ -88,7 +89,12 @@ export default function CreateProjectScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <Input label="Title" value={title} setValue={setTitle} />
-                <Input label="Category" value={category} setValue={setCategory} />
+                <DropdownInput
+                    label="Category"
+                    placeholder="Select Category"
+                    value={category}
+                    options={ProjectCategoryOptions}
+                    onChange={(data) => setCategory(data as ProjectCategory)} />
                 <InputArea label="Description" value={description} setValue={setDescription} />
                 <InputArea label="Mission" value={mission} setValue={setMission} />
                 <InputArea label="Vision" value={vision} setValue={setVision} />

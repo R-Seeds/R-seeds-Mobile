@@ -17,6 +17,20 @@ export enum ProjectCategory {
     GOVERNMENT,
 }
 
+type DropdownOption<T> = { label: string; value: T };
+
+export const ProjectCategoryOptions: DropdownOption<ProjectCategory>[] = [
+    { label: "Education", value: ProjectCategory.EDUCATION },
+    { label: "Agriculture", value: ProjectCategory.AGRICULTURE },
+    { label: "Finance", value: ProjectCategory.FINANCE },
+    { label: "Business", value: ProjectCategory.BUSINESS },
+    { label: "Health", value: ProjectCategory.HEALTH },
+    { label: "Social", value: ProjectCategory.SOCIAL },
+    { label: "Transportation", value: ProjectCategory.TRANSPORTATION },
+    { label: "E-commerce", value: ProjectCategory.ECOMMERCE },
+    { label: "Government", value: ProjectCategory.GOVERNMENT },
+];
+
 export enum ProjectStatus {
     ACTIVE = "ACTIVE",
     ARCHIVED = "ARCHIVED"
