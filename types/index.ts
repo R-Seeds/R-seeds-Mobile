@@ -4,3 +4,4 @@ export * from './project';
 export * from './requests';
 export * from './auth';
 export * from './toast';
+export * from './chat';
