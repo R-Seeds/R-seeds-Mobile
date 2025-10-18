@@ -39,6 +39,10 @@ class ProjectService {
     return await client.post<Project>(API_ENDPOINTS.PROJECT.CREATE, data);
   }
 
+  async updateProject(id: string | number, data: ProjectCreateRequest): Promise<ApiResponse<Project>> {
+    return await client.put<Project>(API_ENDPOINTS.PROJECT.UPDATE(id), data);
+  }
+
   async deleteProject(id: string | number): Promise<ApiResponse<void>> {
     return await client.delete<void>(API_ENDPOINTS.PROJECT.DELETE(id));
   }

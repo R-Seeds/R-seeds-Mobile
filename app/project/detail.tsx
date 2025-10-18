@@ -24,8 +24,18 @@ export default function ProjectScreen() {
                 contentContainerClassName="w-full  gap-y-4 pb-40"
                 showsVerticalScrollIndicator={false}>
                 <View className="flex-row justify-between items-center">
-                    <Text className="font-bold text-xl">{currentProject?.title}</Text>
-                    <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">{currentProject?.category}</Text>
+                    <View className="flex-1">
+                        <Text className="font-bold text-xl">{currentProject?.title}</Text>
+                    </View>
+                    <View className="flex-row items-center gap-x-2">
+                        <TouchableOpacity 
+                            onPress={() => router.push(`/project/edit`)}
+                            className="bg-black p-2 rounded-full"
+                        >
+                            <Ionicons name="pencil" size={16} color="white" />
+                        </TouchableOpacity>
+                        <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">{currentProject?.category}</Text>
+                    </View>
                 </View>
                 <View className="flex-col gap-y-2">
                     <View className="w-full border-4 rounded-full border-teal-500" />
