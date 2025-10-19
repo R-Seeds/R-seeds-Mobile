@@ -4,9 +4,13 @@ import { StatusBar } from "expo-status-bar";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useToast } from "@/contexts/ToastContext";
 import TabNavigation from "@/components/ui/Tabs";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProjects } from "@/contexts/ProjectContext";
 
 export default function ProfileScreen() {
     const { showToast } = useToast();
+    const { logout, user, userType } = useAuth();
+    const { myProjects } = useProjects();
 
     const handleSavedProjectsPress = () => {
         router.push('/project/myProject');
@@ -24,7 +28,7 @@ export default function ProfileScreen() {
         showToast({
             title: "Payment Methods",
             message: "Manage your payment methods and billing information.",
-            type: "warning"
+            type: "success"
         });
     };
 
@@ -56,9 +60,12 @@ export default function ProfileScreen() {
         showToast({
             title: "Logout",
             message: "Are you sure you want to logout?",
-            type: "error"
+            type: "success"
         });
+        logout()
     };
+
+    if (!user) return
 
     return (
         <View className="flex-1 bg-white">
@@ -75,23 +82,24 @@ export default function ProfileScreen() {
                         source={require('@/assets/images/profile.jpg')}
                         className="w-24 h-24 rounded-full border-4 border-white"
                     />
-                   </View>
+                </View>
 
                 {/* User Info */}
                 <View className="mt-4 items-center">
-                    <Text className="font-bold text-xl text-gray-800">Nadia Uwimana</Text>
-                    <Text className="text-teal-500 font-medium text-base">Sponsor</Text>
+                    <Text className="font-bold text-xl text-gray-800">{user?.name}</Text>
+                    <Text className="text-teal-500 font-medium text-base">{user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}</Text>
                 </View>
 
                 {/* Stats Section */}
-                <View className="flex-row mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mx-4">
-                    <View className="flex-1 items-center py-4 px-6">
-                        <Text className="font-bold text-xl text-gray-800">$2,350</Text>
-                        <Text className="text-gray-500 text-sm font-medium">Funded</Text>
-                    </View>
+                <View className="flex-row mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mx-2">
+                    {userType !== "USER" && (<View className="flex-1 items-center py-4 px-6">
+                        <Text className="font-bold text-xl text-gray-800">$0</Text>
+                        <Text className="text-gray-500 text-sm font-medium">{userType === "SPONSOR" ? "Funded" : "Raised funds"}</Text>
+                    </View>)}
+
                     <View className="w-px bg-gray-200" />
                     <View className="flex-1 items-center py-4 px-6">
-                        <Text className="font-bold text-xl text-gray-800">8</Text>
+                        <Text className="font-bold text-xl text-gray-800">{myProjects?.length}</Text>
                         <Text className="text-gray-500 text-sm font-medium">Projects</Text>
                     </View>
                     <View className="w-px bg-gray-200" />
@@ -103,8 +111,8 @@ export default function ProfileScreen() {
             </View>
             {/* Menu Items */}
             <ScrollView
-                className="mt-4"
-                contentContainerStyle={{ paddingTop: 60, paddingBottom: 140 }}
+                className=""
+                contentContainerClassName="pt-4 pb-40"
                 showsVerticalScrollIndicator={false}
                 bounces={false}
                 scrollEnabled={true}
@@ -119,7 +127,7 @@ export default function ProfileScreen() {
                             <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
                                 <AntDesign name="save" size={20} color="#14b8a6" />
                             </View>
-                            <Text className="text-gray-800 text-lg font-medium">Saved projects</Text>
+                            <Text className="text-gray-800 text-lg font-medium">My projects</Text>
                         </View>
                         <Ionicons name="chevron-forward" size={20} color="#6b7280" />
                     </TouchableOpacity>

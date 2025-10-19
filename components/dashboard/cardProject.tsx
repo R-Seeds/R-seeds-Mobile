@@ -6,9 +6,11 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { router } from "expo-router";
 import { Project } from "@/types";
 import { useProjects } from "@/contexts/ProjectContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CardProject({ project }: { project: Project }) {
     const { setCurrentProject } = useProjects()
+    const { userType } = useAuth()
     return (
         <View className=" w-full items-center border border-gray-300 rounded-2xl ">
             <View className="flex-row justify-between items-center p-4 w-full ">
@@ -64,7 +66,9 @@ export default function CardProject({ project }: { project: Project }) {
                     <Text className="text-teal-500 font-semibold">View Project</Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="bg-teal-500 flex-1 px-4 py-2 rounded-xl items-center">
-                    <Text className="text-white font-semibold">Follow</Text>
+                    <Text className="text-white font-semibold">
+                        {userType === "SPONSOR" ? "Fund Now" : "Follow"}
+                    </Text>
                 </TouchableOpacity>
             </View>
         </View>

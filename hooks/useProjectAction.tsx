@@ -1,5 +1,5 @@
 import { projectService } from "@/services";
-import { ProjectCreateRequest } from "@/types";
+import { ProjectCreateRequest, ProjectUpdateRequest } from "@/types";
 import { useToast } from "@/contexts/ToastContext";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -32,11 +32,13 @@ export default function useProjectAction() {
         }
     }
 
-    const updateProject = async (id: string | number, data: ProjectCreateRequest) => {
+    const updateProject = async (id: string | number, data: ProjectUpdateRequest) => {
         try {
             setLoading(true);
+
+            console.log('updating project',data)
             const response = await projectService.updateProject(id, data);
-            console.log(response);
+      
             showToast({
                 type: "success",
                 title: "Success",

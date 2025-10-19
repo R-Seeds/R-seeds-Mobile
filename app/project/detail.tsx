@@ -5,10 +5,11 @@ import Octicons from '@expo/vector-icons/Octicons';
 import ProjectMember from "@/components/project/projectMember";
 import { useProjects } from "@/contexts/ProjectContext";
 import { StatusBar } from "expo-status-bar";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProjectScreen() {
     const { currentProject } = useProjects()
-    console.log(currentProject)
+    const { userType } = useAuth()
 
     if (!currentProject) return (
         <View className="flex-1 bg-white items-center">
@@ -204,7 +205,9 @@ export default function ProjectScreen() {
                 </View>
             </ScrollView>
             <TouchableOpacity className="absolute bottom-14  bg-teal-500/80 py-4 px-8 rounded-full">
-                <Text className="text-white font-semibold text-lg">Contribute Now</Text>
+                <Text className="text-white font-semibold text-lg">
+                    {userType === "SPONSOR" ? "Contribute" : "Follow"}
+                </Text>
             </TouchableOpacity>
         </View>
     )

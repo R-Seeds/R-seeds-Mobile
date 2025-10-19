@@ -5,7 +5,7 @@ import { useToast } from '@/contexts/ToastContext';
 import Toast from './Toast';
 
 export default function ToastContainer() {
-  const { toasts, hideToast } = useToast();
+  const { toasts, removeToast } = useToast();
 
   if (toasts.length === 0) {
     return null;
@@ -18,7 +18,7 @@ export default function ToastContainer() {
           <Toast
             key={toast.id}
             toast={toast}
-            onDismiss={hideToast}
+            onDismiss={removeToast}
           />
         ))}
       </View>
