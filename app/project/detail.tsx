@@ -188,7 +188,7 @@ export default function ProjectScreen() {
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Donors:</Text>
-                            <Text>{currentProject?.fundingInfo.donors} contributors</Text>
+                            <Text>{currentProject?.donors.length} contributors</Text>
                         </View>
                     </View>
                 </View>

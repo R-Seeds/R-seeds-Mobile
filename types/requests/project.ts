@@ -14,7 +14,7 @@ export interface ProjectCreateRequest {
     links: ProjectLink[];
     team: Graduate[];
     milestones: Milestone[];
-    logo:string
+    logo: string
 }
 
 export interface ProjectUpdateRequest {
@@ -29,4 +29,5 @@ export interface ProjectUpdateRequest {
     links: ProjectLink[];
     team: Graduate[];
     milestones: Milestone[];
-    logo:string}
+    logo: string
+}

@@ -24,7 +24,7 @@ export default function FundingProject({ project }: { project: Project }) {
                     <View className="flex-row gap-x-1">
                         <Text className="text-black font-bold">{userType === "SPONSOR" ? "You gave" : "Donors"}:</Text>
                         <Text className="text-teal-500 font-bold">
-                            {userType === "SPONSOR" ? "$500" : project.fundingInfo.donors}
+                            {userType === "SPONSOR" ? "$500" : project.donors.length}
                         </Text>
                     </View>
                     <View className="flex-row gap-x-1">

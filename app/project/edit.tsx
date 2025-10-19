@@ -17,7 +17,7 @@ import { projectService } from "@/services";
 
 export default function EditProjectScreen() {
 
-    const { updateProject,loading } = useProjectAction();
+    const { updateProject, loading } = useProjectAction();
     const { currentProject } = useProjects()
 
     const [projectData, setProjectData] = useState<Project | null>(null);
@@ -51,7 +51,7 @@ export default function EditProjectScreen() {
             setLoadingProject(false);
         }
         loadProject();
-    }, [ currentProject]);
+    }, [currentProject]);
 
     const populateForm = (project: Project) => {
         setTitle(project.title);
@@ -135,10 +135,10 @@ export default function EditProjectScreen() {
 
         try {
             let logoUrl = projectImage;
-            
+
             // Check if image is a new local file (starts with file://) or existing URL
             const isNewImage = projectImage.startsWith('file://') || projectImage.startsWith('content://');
-            
+
             if (isNewImage) {
                 // Upload new photo
                 setUploading(true);
@@ -213,8 +213,8 @@ export default function EditProjectScreen() {
                     <Text className="text-lg font-semibold">Project Photo <Text className="text-red-500">*</Text></Text>
                     {projectImage ? (
                         <View className="relative">
-                            <Image 
-                                source={{ uri: projectImage }} 
+                            <Image
+                                source={{ uri: projectImage }}
                                 className="w-full h-48 rounded-lg"
                                 resizeMode="cover"
                             />
@@ -224,7 +224,7 @@ export default function EditProjectScreen() {
                                     <Text className="text-white mt-2 font-semibold">Uploading...</Text>
                                 </View>
                             )}
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 onPress={removeProjectImage}
                                 className="absolute top-2 right-2 bg-red-500 rounded-full p-2"
                                 disabled={uploading}
@@ -237,14 +237,14 @@ export default function EditProjectScreen() {
                             <Ionicons name="camera" size={48} color="#9CA3AF" />
                             <Text className="text-gray-500 text-center">Add a photo to showcase your project</Text>
                             <View className="flex-row gap-x-4">
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     onPress={takePhoto}
                                     className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
                                 >
                                     <Ionicons name="camera" size={20} color="white" />
                                     <Text className="text-white font-semibold">Camera</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     onPress={pickImage}
                                     className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
                                 >
@@ -329,7 +329,6 @@ export default function EditProjectScreen() {
                         <View className="bg-gray-50 p-4 rounded-lg">
                             <Text className="font-semibold text-gray-900">Target: ${fundingInfo.goal}</Text>
                             <Text className="text-gray-600">Current: ${fundingInfo.raised}</Text>
-                            <Text className="text-gray-600">Donors: {fundingInfo.donors}</Text>
                             <TouchableOpacity
                                 onPress={removeFundingInfo}
                                 className="bg-red-500 p-2 rounded-lg mt-2 items-center"
@@ -376,9 +375,8 @@ export default function EditProjectScreen() {
             </ScrollView>
 
             <TouchableOpacity
-                className={`rounded-full py-4 flex-row items-center gap-x-2 justify-center ${
-                    (loading || uploading) ? 'bg-gray-400' : 'bg-teal-500'
-                }`}
+                className={`rounded-full py-4 flex-row items-center gap-x-2 justify-center ${(loading || uploading) ? 'bg-gray-400' : 'bg-teal-500'
+                    }`}
                 onPress={handleSubmit}
                 disabled={loading || uploading}
             >
