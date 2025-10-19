@@ -19,6 +19,11 @@ export enum ProjectCategory {
 
 type DropdownOption<T> = { label: string; value: T };
 
+export enum ProjectStatus {
+    ACTIVE = "ACTIVE",
+    ARCHIVED = "ARCHIVED"
+}
+
 export const ProjectCategoryOptions: DropdownOption<ProjectCategory>[] = [
     { label: "Education", value: ProjectCategory.EDUCATION },
     { label: "Agriculture", value: ProjectCategory.AGRICULTURE },
@@ -31,10 +36,10 @@ export const ProjectCategoryOptions: DropdownOption<ProjectCategory>[] = [
     { label: "Government", value: ProjectCategory.GOVERNMENT },
 ];
 
-export enum ProjectStatus {
-    ACTIVE = "ACTIVE",
-    ARCHIVED = "ARCHIVED"
-}
+export const ProjectStatusOptions: DropdownOption<ProjectStatus>[] = [
+    { label: "Active", value: ProjectStatus.ACTIVE },
+    { label: "Archived", value: ProjectStatus.ARCHIVED },
+];
 
 
 export interface FundingInfo {
@@ -70,6 +75,7 @@ export interface Project {
     description: string;
     mission: string;
     vision: string;
+    logo:string
     keyFeature: string;
     status: ProjectStatus;
     owner: User;

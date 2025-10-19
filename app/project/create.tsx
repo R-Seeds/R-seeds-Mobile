@@ -7,13 +7,16 @@ import InputArea from "@/components/ui/InputArea";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View, TouchableOpacity, Text, ScrollView } from "react-native";
+import { View, TouchableOpacity, Text, ScrollView, Image } from "react-native";
 import { FundingInfo, Graduate, Milestone, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus, ProjectCategoryOptions } from "@/types";
 import useProjectAction from "@/hooks/useProjectAction";
 import DropdownInput from "@/components/ui/DropDownInput";
+import * as ImagePicker from 'expo-image-picker';
+import { projectService } from "@/services";
 
 export default function CreateProjectScreen() {
     const { createProject } = useProjectAction()
+    const [uploading, setUploading] = useState(false);
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState<ProjectCategory>(ProjectCategory.EDUCATION);
     const [description, setDescription] = useState("");
@@ -28,6 +31,7 @@ export default function CreateProjectScreen() {
     const [members, setMembers] = useState<Graduate[]>([]);
     const [fundingInfo, setFundingInfo] = useState<FundingInfo>();
     const [links, setLinks] = useState<ProjectLink[]>([]);
+    const [projectImage, setProjectImage] = useState<string | null>(null);
 
     const addMember = (graduate: Graduate) =>
         setMembers([...members, graduate]);
@@ -55,26 +59,81 @@ export default function CreateProjectScreen() {
     const removeLink = (index: number) =>
         setLinks(links.filter((_, i) => i !== index));
 
-    const handleSubmit = async () => {
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 0.8,
+        });
 
-        if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo) {
-            return
+        if (!result.canceled) {
+            setProjectImage(result.assets[0].uri);
         }
-        const projectData: ProjectCreateRequest = {
-            title,
-            status: ProjectStatus.ACTIVE,
-            category,
-            description,
-            mission,
-            vision,
-            keyFeature,
-            team: members,
-            milestones,
-            fundingInfo,
-            links
+    };
+
+    const takePhoto = async () => {
+        // Request camera permissions
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Sorry, we need camera permissions to take photos!');
+            return;
         }
-        await createProject(projectData)
-    }
+
+        const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            setProjectImage(result.assets[0].uri);
+        }
+    };
+
+    const removeProjectImage = () => {
+        setProjectImage(null);
+    };
+
+    const handleSubmit = async () => {
+        // Validation - Photo is now required
+        if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo || !projectImage) {
+            return;
+        }
+
+        try {
+            // Step 1: Upload photo (required)
+            setUploading(true);
+            const uploadResponse = await projectService.uploadProjectAvatar(projectImage);
+            if (!uploadResponse.success || !uploadResponse.data) {
+                throw new Error('Failed to upload project photo');
+            }
+            const logoUrl = uploadResponse.data;
+            setUploading(false);
+
+            // Step 2: Create project with logo URL
+            const projectData: ProjectCreateRequest = {
+                title,
+                status: ProjectStatus.ACTIVE,
+                category,
+                description,
+                mission,
+                vision,
+                keyFeature,
+                logo: logoUrl,
+                team: members,
+                milestones,
+                fundingInfo,
+                links
+            };
+            
+            await createProject(projectData);
+        } catch (error) {
+            setUploading(false);
+            console.error('Project creation error:', error);
+            // Error handling is done in useProjectAction hook
+        }
+    };
 
     return (
         <View className="flex-1 p-4 pb-10 bg-white">
@@ -99,6 +158,55 @@ export default function CreateProjectScreen() {
                 <InputArea label="Mission" value={mission} setValue={setMission} />
                 <InputArea label="Vision" value={vision} setValue={setVision} />
                 <InputArea label="Key Features" value={keyFeature} setValue={setKeyFeature} />
+                
+                {/* Project Photo Upload Section */}
+                <View className="gap-y-4">
+                    <Text className="text-lg font-semibold">Project Photo <Text className="text-red-500">*</Text></Text>
+                    {projectImage ? (
+                        <View className="relative">
+                            <Image 
+                                source={{ uri: projectImage }} 
+                                className="w-full h-48 rounded-lg"
+                                resizeMode="cover"
+                            />
+                            {uploading && (
+                                <View className="absolute inset-0 bg-black/50 rounded-lg items-center justify-center">
+                                    <Ionicons name="cloud-upload" size={32} color="white" />
+                                    <Text className="text-white mt-2 font-semibold">Uploading...</Text>
+                                </View>
+                            )}
+                            <TouchableOpacity 
+                                onPress={removeProjectImage}
+                                className="absolute top-2 right-2 bg-red-500 rounded-full p-2"
+                                disabled={uploading}
+                            >
+                                <Ionicons name="close" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View className="border-2 border-dashed border-gray-300 rounded-lg p-8 items-center gap-y-4">
+                            <Ionicons name="camera" size={48} color="#9CA3AF" />
+                            <Text className="text-gray-500 text-center">Add a photo to showcase your project</Text>
+                            <View className="flex-row gap-x-4">
+                                <TouchableOpacity 
+                                    onPress={takePhoto}
+                                    className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
+                                >
+                                    <Ionicons name="camera" size={20} color="white" />
+                                    <Text className="text-white font-semibold">Camera</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                    onPress={pickImage}
+                                    className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
+                                >
+                                    <Ionicons name="images" size={20} color="white" />
+                                    <Text className="text-white font-semibold">Gallery</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
+                </View>
+                
                 <View className="gap-y-4 ">
                     <Text className="text-lg font-semibold">Team Member</Text>
                     <TouchableOpacity onPress={() => { setMemberVisible(true) }}
@@ -133,9 +241,21 @@ export default function CreateProjectScreen() {
                 </View>
 
             </ScrollView>
-            <TouchableOpacity className="bg-teal-500 rounded-full py-4 flex-row items-center gap-x-2 justify-center "
-                onPress={handleSubmit}>
-                <Text className="text-white text-lg font-semibold">Create Project</Text>
+            <TouchableOpacity 
+                className={`rounded-full py-4 flex-row items-center gap-x-2 justify-center ${
+                    uploading ? 'bg-gray-400' : 'bg-teal-500'
+                }`}
+                onPress={handleSubmit}
+                disabled={uploading}
+            >
+                {uploading ? (
+                    <>
+                        <Ionicons name="cloud-upload" size={20} color="white" />
+                        <Text className="text-white text-lg font-semibold">Uploading Photo...</Text>
+                    </>
+                ) : (
+                    <Text className="text-white text-lg font-semibold">Create Project</Text>
+                )}
             </TouchableOpacity>
 
             {memberVisible && (<TeamMemberModal

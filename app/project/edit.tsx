@@ -7,11 +7,13 @@ import InputArea from "@/components/ui/InputArea";
 import { FontAwesome5, Ionicons, AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text, ScrollView, ActivityIndicator } from "react-native";
+import { View, TouchableOpacity, Text, ScrollView, ActivityIndicator, Image } from "react-native";
 import { FundingInfo, Graduate, Milestone, Project, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus, ProjectCategoryOptions } from "@/types";
 import DropdownInput from "@/components/ui/DropDownInput";
 import useProjectAction from "@/hooks/useProjectAction";
 import { useProjects } from "@/contexts/ProjectContext";
+import * as ImagePicker from 'expo-image-picker';
+import { projectService } from "@/services";
 
 export default function EditProjectScreen() {
 
@@ -37,6 +39,8 @@ export default function EditProjectScreen() {
     const [fundingInfo, setFundingInfo] = useState<FundingInfo>();
     const [links, setLinks] = useState<ProjectLink[]>([]);
     const [milestones, setMilestones] = useState<Milestone[]>([]);
+    const [projectImage, setProjectImage] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     // Load project data
     useEffect(() => {
@@ -60,6 +64,7 @@ export default function EditProjectScreen() {
         setFundingInfo(project.fundingInfo);
         setLinks(project.links || []);
         setMilestones(project.milestones || []);
+        setProjectImage(project.logo || null);
     };
 
     const addMember = (graduate: Graduate) =>
@@ -86,26 +91,86 @@ export default function EditProjectScreen() {
     const removeLink = (index: number) =>
         setLinks(links.filter((_, i) => i !== index));
 
-    const handleSubmit = async () => {
-        if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo) {
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            setProjectImage(result.assets[0].uri);
+        }
+    };
+
+    const takePhoto = async () => {
+        // Request camera permissions
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Sorry, we need camera permissions to take photos!');
             return;
         }
 
-        const projectUpdateData: ProjectCreateRequest = {
-            title,
-            status: projectData?.status || ProjectStatus.ACTIVE,
-            category,
-            description,
-            mission,
-            vision,
-            keyFeature,
-            team: members,
-            milestones,
-            fundingInfo,
-            links
-        };
+        const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 0.8,
+        });
 
-        await updateProject(currentProject!.id, projectUpdateData);
+        if (!result.canceled) {
+            setProjectImage(result.assets[0].uri);
+        }
+    };
+
+    const removeProjectImage = () => {
+        setProjectImage(null);
+    };
+
+    const handleSubmit = async () => {
+        // Validation - Photo is required
+        if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo || !projectImage) {
+            return;
+        }
+
+        try {
+            let logoUrl = projectImage;
+            
+            // Check if image is a new local file (starts with file://) or existing URL
+            const isNewImage = projectImage.startsWith('file://') || projectImage.startsWith('content://');
+            
+            if (isNewImage) {
+                // Upload new photo
+                setUploading(true);
+                const uploadResponse = await projectService.uploadProjectAvatar(projectImage);
+                if (!uploadResponse.success || !uploadResponse.data) {
+                    throw new Error('Failed to upload project photo');
+                }
+                logoUrl = uploadResponse.data;
+                setUploading(false);
+            }
+
+            // Update project with logo URL
+            const projectUpdateData: ProjectCreateRequest = {
+                title,
+                status: projectData?.status || ProjectStatus.ACTIVE,
+                category,
+                description,
+                mission,
+                vision,
+                keyFeature,
+                logo: logoUrl,
+                team: members,
+                milestones,
+                fundingInfo,
+                links
+            };
+
+            await updateProject(currentProject!.id, projectUpdateData);
+        } catch (error) {
+            setUploading(false);
+            console.error('Project update error:', error);
+        }
     };
 
     if (loadingProject) {
@@ -142,6 +207,54 @@ export default function EditProjectScreen() {
                 <InputArea label="Mission" value={mission} setValue={setMission} />
                 <InputArea label="Vision" value={vision} setValue={setVision} />
                 <InputArea label="Key Features" value={keyFeature} setValue={setKeyFeature} />
+
+                {/* Project Photo Upload Section */}
+                <View className="gap-y-4">
+                    <Text className="text-lg font-semibold">Project Photo <Text className="text-red-500">*</Text></Text>
+                    {projectImage ? (
+                        <View className="relative">
+                            <Image 
+                                source={{ uri: projectImage }} 
+                                className="w-full h-48 rounded-lg"
+                                resizeMode="cover"
+                            />
+                            {uploading && (
+                                <View className="absolute inset-0 bg-black/50 rounded-lg items-center justify-center">
+                                    <Ionicons name="cloud-upload" size={32} color="white" />
+                                    <Text className="text-white mt-2 font-semibold">Uploading...</Text>
+                                </View>
+                            )}
+                            <TouchableOpacity 
+                                onPress={removeProjectImage}
+                                className="absolute top-2 right-2 bg-red-500 rounded-full p-2"
+                                disabled={uploading}
+                            >
+                                <Ionicons name="close" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View className="border-2 border-dashed border-gray-300 rounded-lg p-8 items-center gap-y-4">
+                            <Ionicons name="camera" size={48} color="#9CA3AF" />
+                            <Text className="text-gray-500 text-center">Add a photo to showcase your project</Text>
+                            <View className="flex-row gap-x-4">
+                                <TouchableOpacity 
+                                    onPress={takePhoto}
+                                    className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
+                                >
+                                    <Ionicons name="camera" size={20} color="white" />
+                                    <Text className="text-white font-semibold">Camera</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                    onPress={pickImage}
+                                    className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
+                                >
+                                    <Ionicons name="images" size={20} color="white" />
+                                    <Text className="text-white font-semibold">Gallery</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
+                </View>
 
                 {/* Team Members Section */}
                 <View className="gap-y-4">
@@ -263,11 +376,18 @@ export default function EditProjectScreen() {
             </ScrollView>
 
             <TouchableOpacity
-                className="bg-teal-500 rounded-full py-4 flex-row items-center gap-x-2 justify-center"
+                className={`rounded-full py-4 flex-row items-center gap-x-2 justify-center ${
+                    (loading || uploading) ? 'bg-gray-400' : 'bg-teal-500'
+                }`}
                 onPress={handleSubmit}
-                disabled={loading}
+                disabled={loading || uploading}
             >
-                {loading ? (
+                {uploading ? (
+                    <>
+                        <Ionicons name="cloud-upload" size={20} color="white" />
+                        <Text className="text-white text-lg font-semibold">Uploading Photo...</Text>
+                    </>
+                ) : loading ? (
                     <ActivityIndicator size="small" color="white" />
                 ) : (
                     <Text className="text-white text-lg font-semibold">Save Changes</Text>

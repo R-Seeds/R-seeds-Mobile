@@ -1,117 +1,215 @@
-import { FontAwesome, Ionicons, FontAwesome6, MaterialIcons, Fontisto, AntDesign } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useToast } from "@/contexts/ToastContext";
+import TabNavigation from "@/components/ui/Tabs";
 
 export default function ProfileScreen() {
-    const { showSuccess, showError, showInfo, showWarning } = useToast();
+    const { showToast } = useToast();
+
+    const handleSavedProjectsPress = () => {
+        router.push('/project/myProject');
+    };
 
     const handleAccountPress = () => {
-        showInfo("Account", "Account settings will be available soon!");
+        showToast({
+            title: "Account",
+            message: "Account settings will be available soon!",
+            type: "success"
+        });
     };
 
     const handlePaymentPress = () => {
-        showWarning("Payment Info", "Please verify your payment details.");
+        showToast({
+            title: "Payment Methods",
+            message: "Manage your payment methods and billing information.",
+            type: "warning"
+        });
     };
 
     const handleNotificationPress = () => {
-        showSuccess("Notifications", "Notification preferences updated!");
+        showToast({
+            title: "Notifications",
+            message: "Notification preferences updated!",
+            type: "success"
+        });
+    };
+
+    const handleLanguagePress = () => {
+        showToast({
+            title: "Language",
+            message: "Language and region settings coming soon!",
+            type: "success"
+        });
+    };
+
+    const handlePreferencePress = () => {
+        showToast({
+            title: "Preferences",
+            message: "App preferences will be available soon!",
+            type: "success"
+        });
     };
 
     const handleLogoutPress = () => {
-        showError("Logout", "Are you sure you want to logout?");
+        showToast({
+            title: "Logout",
+            message: "Are you sure you want to logout?",
+            type: "error"
+        });
     };
 
     return (
         <View className="flex-1 bg-white">
             <StatusBar style="light" />
+
             <View className="absolute -top-20 -left-10 w-[200%] h-56 bg-teal-500 rotate-[-12deg]" />
 
-            <View className="mt-32 items-center">
-                <Image
-                    source={require('@/assets/images/profile.jpg')}
-                    className="w-32 h-32 rounded-full border-4 border-white"
-                />
-            </View>
-            <View className="mt-4 w-full items-center">
-                <Text className="font-bold text-xl">Hacker</Text>
-                <Text className="text-teal-500">Rca Graduate</Text>
-            </View>
-            <ScrollView contentContainerClassName="gap-y-10 px-4 pb-20">
-                <View className="border-2 border-gray-300 flex-row items-center rounded-xl justify-between">
-                    <View className="flex-col items-center  p-4 border-r border-gray-300">
-                        <Text className="font-bold text-lg">$5000</Text>
-                        <Text className="text-teal-500 font-semibold">Fund Raised</Text>
+
+            {/* Profile Content */}
+            <View className="mt-32 items-center px-6 z-10">
+                {/* Profile Picture */}
+                <View className="relative">
+                    <Image
+                        source={require('@/assets/images/profile.jpg')}
+                        className="w-24 h-24 rounded-full border-4 border-white"
+                    />
+                   </View>
+
+                {/* User Info */}
+                <View className="mt-4 items-center">
+                    <Text className="font-bold text-xl text-gray-800">Nadia Uwimana</Text>
+                    <Text className="text-teal-500 font-medium text-base">Sponsor</Text>
+                </View>
+
+                {/* Stats Section */}
+                <View className="flex-row mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mx-4">
+                    <View className="flex-1 items-center py-4 px-6">
+                        <Text className="font-bold text-xl text-gray-800">$2,350</Text>
+                        <Text className="text-gray-500 text-sm font-medium">Funded</Text>
                     </View>
-                    <View className="flex-col items-center  p-4 pr-0 border-r border-gray-300">
-                        <Text className="font-bold text-lg">8</Text>
-                        <Text className="text-teal-500 font-semibold">Projects</Text>
+                    <View className="w-px bg-gray-200" />
+                    <View className="flex-1 items-center py-4 px-6">
+                        <Text className="font-bold text-xl text-gray-800">8</Text>
+                        <Text className="text-gray-500 text-sm font-medium">Projects</Text>
                     </View>
-                    <View className="flex-col items-center  p-4  border-gray-600 ">
-                        <Text className="font-bold text-lg">10</Text>
-                        <Text className="text-teal-500 font-semibold">Following</Text>
+                    <View className="w-px bg-gray-200" />
+                    <View className="flex-1 items-center py-4 px-6">
+                        <Text className="font-bold text-xl text-gray-800">10</Text>
+                        <Text className="text-gray-500 text-sm font-medium">Following</Text>
                     </View>
                 </View>
-                <View className="px-4 gap-y-6">
-                    <TouchableOpacity className="flex-row gap-x-2  items-center justify-between"
-                        onPress={() => router.push('/project/myProject')}>
-                        <View className="flex-row gap-x-2  items-center">
-                            <AntDesign name="fund-projection-screen" size={30} color="teal" />
-                            <Text className=" text-lg">My Projects</Text>
+            </View>
+            {/* Menu Items */}
+            <ScrollView
+                className="mt-4"
+                contentContainerStyle={{ paddingTop: 60, paddingBottom: 140 }}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+                scrollEnabled={true}
+            >
+                <View className="px-6 gap-y-1">
+                    {/* Saved Projects */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between py-4 px-1"
+                        onPress={handleSavedProjectsPress}
+                    >
+                        <View className="flex-row items-center gap-x-4">
+                            <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
+                                <AntDesign name="save" size={20} color="#14b8a6" />
+                            </View>
+                            <Text className="text-gray-800 text-lg font-medium">Saved projects</Text>
                         </View>
-                        <Ionicons name="arrow-forward" size={24} color="black" />
+                        <Ionicons name="chevron-forward" size={20} color="#6b7280" />
                     </TouchableOpacity>
-                    <TouchableOpacity className="flex-row gap-x-2  items-center justify-between"
-                        onPress={handleAccountPress}>
-                        <View className="flex-row gap-x-2  items-center">
-                            <FontAwesome6 name="user-large" size={30} color="teal" />
-                            <Text className="text-lg">Account</Text>
-                        </View>
-                        <Ionicons name="arrow-forward" size={24} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity className="flex-row gap-x-2  items-center justify-between"
-                        onPress={handlePaymentPress}>
-                        <View className="flex-row gap-x-2  items-center">
-                            <MaterialIcons name="payment" size={30} color="teal" />
-                            <Text className="text-lg">Payments info</Text>
-                        </View>
-                        <Ionicons name="arrow-forward" size={24} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity className="flex-row gap-x-2  items-center justify-between"
-                        onPress={handleNotificationPress}>
-                        <View className="flex-row gap-x-2  items-center">
-                            <FontAwesome name="bell" size={30} color="teal" />
-                            <Text className="text-lg">Notifications</Text>
-                        </View>
-                        <Ionicons name="arrow-forward" size={24} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity className="flex-row gap-x-2  items-center justify-between"
-                        onPress={() => router.push('/project/myProject')}>
-                        <View className="flex-row gap-x-2  items-center">
-                            <Fontisto name="world-o" size={30} color="teal" />
-                            <Text className="text-lg">Language and Region</Text>
-                        </View>
-                        <Ionicons name="arrow-forward" size={24} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity className="flex-row gap-x-2  items-center justify-between"
-                        onPress={() => router.push('/project/myProject')}>
-                        <View className="flex-row gap-x-2  items-center">
-                            <FontAwesome name="gear" size={30} color="teal" />
-                            <Text className="text-lg">Preference</Text>
-                        </View>
-                        <Ionicons name="arrow-forward" size={24} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity className="flex-row gap-x-2  items-center justify-between"
-                        onPress={handleLogoutPress}>
-                        <View className="flex-row gap-x-2  items-center">
-                            <AntDesign name="logout" size={30} color="red" />
-                            <Text className="font-semibold ">Logout</Text>
-                        </View>
 
+                    {/* Account Info */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between py-4 px-1"
+                        onPress={handleAccountPress}
+                    >
+                        <View className="flex-row items-center gap-x-4">
+                            <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
+                                <Ionicons name="person-outline" size={20} color="#14b8a6" />
+                            </View>
+                            <Text className="text-gray-800 text-lg font-medium">Account info</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+                    </TouchableOpacity>
+
+                    {/* Payment Methods */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between py-4 px-1"
+                        onPress={handlePaymentPress}
+                    >
+                        <View className="flex-row items-center gap-x-4">
+                            <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
+                                <MaterialIcons name="payment" size={20} color="#14b8a6" />
+                            </View>
+                            <Text className="text-gray-800 text-lg font-medium">Payment Methods</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+                    </TouchableOpacity>
+
+                    {/* Notifications */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between py-4 px-1"
+                        onPress={handleNotificationPress}
+                    >
+                        <View className="flex-row items-center gap-x-4">
+                            <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
+                                <Ionicons name="notifications-outline" size={20} color="#14b8a6" />
+                            </View>
+                            <Text className="text-gray-800 text-lg font-medium">Notifications</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+                    </TouchableOpacity>
+
+                    {/* Language and Region */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between py-4 px-1"
+                        onPress={handleLanguagePress}
+                    >
+                        <View className="flex-row items-center gap-x-4">
+                            <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
+                                <Ionicons name="globe-outline" size={20} color="#14b8a6" />
+                            </View>
+                            <Text className="text-gray-800 text-lg font-medium">Language and Region</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+                    </TouchableOpacity>
+
+                    {/* Preference */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between py-4 px-1"
+                        onPress={handlePreferencePress}
+                    >
+                        <View className="flex-row items-center gap-x-4">
+                            <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
+                                <Ionicons name="settings-outline" size={20} color="#14b8a6" />
+                            </View>
+                            <Text className="text-gray-800 text-lg font-medium">Preference</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color="#6b7280" />
+                    </TouchableOpacity>
+
+                    {/* Logout */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-between py-4 px-1 mt-4"
+                        onPress={handleLogoutPress}
+                    >
+                        <View className="flex-row items-center gap-x-4">
+                            <View className="w-10 h-10 bg-red-100 rounded-full items-center justify-center">
+                                <Ionicons name="log-out-outline" size={20} color="#ef4444" />
+                            </View>
+                            <Text className="text-red-500 text-lg font-medium">Logout</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
+
+            <TabNavigation />
         </View>
     )
 }

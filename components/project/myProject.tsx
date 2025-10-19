@@ -5,7 +5,7 @@ import { View, Image, Text, TouchableOpacity } from "react-native";
 export default function MyProject({ project }: { project: Project }) {
     return (
         <View className="w-full rounded-2xl overflow-hidden border-2 border-gray-300 flex-row">
-            <Image source={require('@/assets/auth/main.png')}
+            <Image source={{ uri: project.logo }}
                 className="w-32 h-full"
                 resizeMode="cover" />
 

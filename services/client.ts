@@ -42,7 +42,7 @@ class ApiClient {
             (response: AxiosResponse) => response,
             async (error) => {
                 try {
-                    
+
                     if (error.response) {
                         const apiError: ApiError = {
                             status: error.status,
@@ -207,25 +207,42 @@ class ApiClient {
 
     async uploadFile<T>(
         endpoint: string,
-        file: File,
+        fileUri: string,
         onUploadProgress?: (event: AxiosProgressEvent) => void,
         cancelToken?: CancelToken,
         timeout?: number
     ): Promise<ApiResponse<T>> {
         try {
+            // extract filename from uri
+            const filename = fileUri.split("/").pop() ?? "upload.jpg";
+
+            // detect file extension
+            const ext = filename.split(".").pop()?.toLowerCase();
+
+            // basic mime detection
+            let type = "image/jpeg";
+            if (ext === "png") type = "image/png";
+            else if (ext === "jpg" || ext === "jpeg") type = "image/jpeg";
+            else if (ext === "gif") type = "image/gif";
+
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append("file", {
+                uri: fileUri,
+                type,
+                name: filename,
+            } as any);
+
             const response = await this.axiosInstance.post<ApiResponse<T>>(endpoint, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    "Content-Type": "multipart/form-data",
                 },
                 onUploadProgress,
                 cancelToken,
                 timeout: timeout ?? API_CONFIG.TIMEOUT,
             });
+
             return response.data;
         } catch (error) {
-
             throw error;
         }
     }

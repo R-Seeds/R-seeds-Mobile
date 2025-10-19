@@ -8,6 +8,18 @@ import { StatusBar } from "expo-status-bar";
 
 export default function ProjectScreen() {
     const { currentProject } = useProjects()
+    console.log(currentProject)
+
+    if (!currentProject) return (
+        <View className="flex-1 bg-white items-center">
+            <Text className="text-gray-500 text-center">No project selected</Text>
+            <TouchableOpacity className="absolute left-5 top-10 bg-gray-500/80 rounded-full z-10 p-2 w-12 h-12"
+                onPress={() => router.back()}>
+                <FontAwesome5 name="chevron-left" size={24} color="white" className="text-center " />
+            </TouchableOpacity>
+        </View>
+    )
+    const progress = currentProject.fundingInfo.raised / currentProject.fundingInfo.goal
 
     return (
         <View className="flex-1 bg-white items-center">
@@ -16,7 +28,7 @@ export default function ProjectScreen() {
                 onPress={() => router.back()}>
                 <FontAwesome5 name="chevron-left" size={24} color="white" className="text-center " />
             </TouchableOpacity>
-            <Image source={require('@/assets/auth/main.png')}
+            <Image source={{ uri: currentProject?.logo }}
                 className="w-full h-[60%]"
                 resizeMode="cover"
             />
@@ -28,9 +40,9 @@ export default function ProjectScreen() {
                         <Text className="font-bold text-xl">{currentProject?.title}</Text>
                     </View>
                     <View className="flex-row items-center gap-x-2">
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             onPress={() => router.push(`/project/edit`)}
-                            className="bg-black p-2 rounded-full"
+                            className="bg-teal-600 p-2 rounded-full"
                         >
                             <Ionicons name="pencil" size={16} color="white" />
                         </TouchableOpacity>
@@ -38,8 +50,12 @@ export default function ProjectScreen() {
                     </View>
                 </View>
                 <View className="flex-col gap-y-2">
-                    <View className="w-full border-4 rounded-full border-teal-500" />
-                    <View className="flex-row justify-between">
+                    <View className="w-full h-3 bg-gray-200 rounded-full overflow-hidden border border-gray-50">
+                        <View
+                            className="h-full bg-teal-500 rounded-full"
+                            style={{ width: `${Math.min(progress * 100, 100)}%` }}
+                        />
+                    </View>  <View className="flex-row justify-between">
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Fund Raised</Text>
                             <Text className="font-bold text-lg">${currentProject?.fundingInfo.raised}</Text>

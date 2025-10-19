@@ -1,16 +1,23 @@
-import { createContext, ReactNode, useContext, useState, useEffect } from "react";
-import { Project } from "@/types";
+import { createContext, ReactNode, useContext, useState, useEffect, useMemo } from "react";
+import { Project, ProjectCategory, ProjectStatus } from "@/types";
 import { projectService } from "@/services";
 import { router } from "expo-router";
 
 interface ProjectContextType {
     projects: Project[];
+    filteredProjects: Project[];
     myProjects: Project[];
     trendingProjects: Project[];
     spotlightProjects: Project[];
     currentProject: Project | null;
+    selectedCategory: ProjectCategory | null;
+    selectedStatus: ProjectStatus | null;
     loading: boolean;
     setCurrentProject: (project: Project | null) => void;
+    setSelectedCategory: (category: ProjectCategory | null) => void;
+    setSelectedStatus: (status: ProjectStatus | null) => void;
+    clearFilter: () => void;
+    clearStatusFilter: () => void;
     fetchProjects: () => Promise<void>;
     fetchMyProjects: () => Promise<void>;
     fetchTrendingProjects: () => Promise<void>;
@@ -27,7 +34,57 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     const [trendingProjects, setTrendingProjects] = useState<Project[]>([]);
     const [spotlightProjects, setSpotlightProjects] = useState<Project[]>([]);
     const [currentProject, setCurrentProject] = useState<Project | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<ProjectCategory | null>(null);
+    const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | null>(null);
     const [loading, setLoading] = useState(false);
+
+    // Filter projects based on selected category and status
+    const filteredProjects = useMemo(() => {
+        let filtered = projects;
+        
+        // Filter by category if selected
+        if (selectedCategory) {
+            filtered = filtered.filter(project => {
+                const projectCategory = project.category;
+                
+                // Direct comparison (for numeric enum values)
+                if (projectCategory === selectedCategory) {
+                    return true;
+                }
+                
+                // String to enum comparison (backend sends strings like "FINANCE")
+                if (typeof projectCategory === 'string' && typeof selectedCategory === 'number') {
+                    const enumKey = ProjectCategory[selectedCategory] as string;
+                    return projectCategory === enumKey;
+                }
+                
+                // Number string to enum comparison (backend sends "2")
+                if (typeof projectCategory === 'string' && !isNaN(Number(projectCategory))) {
+                    return Number(projectCategory) === selectedCategory;
+                }
+                
+                return false;
+            });
+        }
+        
+        // Filter by status if selected
+        if (selectedStatus) {
+            filtered = filtered.filter(project => {
+                return project.status === selectedStatus;
+            });
+        }
+        
+        return filtered;
+    }, [projects, selectedCategory, selectedStatus]);
+
+    // Clear filter functions
+    const clearFilter = () => {
+        setSelectedCategory(null);
+    };
+
+    const clearStatusFilter = () => {
+        setSelectedStatus(null);
+    };
 
     const fetchProjects = async () => {
         try {
@@ -128,12 +185,19 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     return (
         <ProjectContext.Provider value={{ 
             projects, 
+            filteredProjects,
             myProjects,
             trendingProjects,
             spotlightProjects,
             currentProject, 
+            selectedCategory,
+            selectedStatus,
             loading,
             setCurrentProject,
+            setSelectedCategory,
+            setSelectedStatus,
+            clearFilter,
+            clearStatusFilter,
             fetchProjects,
             fetchMyProjects,
             fetchTrendingProjects,

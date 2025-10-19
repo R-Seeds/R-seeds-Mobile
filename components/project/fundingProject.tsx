@@ -10,7 +10,7 @@ export default function FundingProject({ project }: { project: Project }) {
     const progress = project.fundingInfo.raised / project.fundingInfo.goal
     return (
         <View className="w-full rounded-2xl overflow-hidden border-2 border-gray-300">
-            <Image source={require('@/assets/auth/main.png')}
+            <Image source={{ uri: project.logo }}
                 className="w-full h-36"
                 resizeMode="cover" />
             <View className="p-4 items-center gap-y-2">

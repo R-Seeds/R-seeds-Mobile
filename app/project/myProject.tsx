@@ -7,7 +7,7 @@ import { router } from "expo-router";
 import { useProjects } from "@/contexts/ProjectContext";
 
 export default function MyProjectScreen() {
-    const{myProjects}=useProjects()
+    const { myProjects } = useProjects()
     return (
         <View className="flex-1 bg-white">
             <Header />
