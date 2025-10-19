@@ -13,7 +13,7 @@ export default function SpotlightProject() {
                 onPress={() => router.back()}>
                 <Ionicons name="close" color={'white'} size={25} />
             </TouchableOpacity>
-            <Image source={require('@/assets/auth/main.png')}
+            <Image source={{ uri: currentProject?.logo }}
                 className="w-full h-[70%]"
                 resizeMode="cover"
             />
@@ -23,7 +23,7 @@ export default function SpotlightProject() {
                     <Text className="text-sm font-semibold">{currentProject?.description}</Text>
                 </View>
                 <View className="items-center">
-                    <Image source={require('@/assets/auth/main.png')}
+                    <Image source={{ uri: currentProject?.logo }}
                         className="w-24 h-24 rounded-full p-4 bg-white bottom-10 border-4 border-white"
                         resizeMode="cover"
                     />

@@ -8,7 +8,7 @@ export default function ExploreProject({ large, project }: { large: boolean, pro
     return (
         <TouchableOpacity className={`relative ${large ? "w-48" : "w-40"} h-full items-center  border-2 border-teal-500 rounded-xl`}
             onPress={() => {setCurrentProject(project);router.push('/project/detail')}}>
-            <Image source={require("@/assets/auth/main.png")}
+            <Image source={{ uri: project.logo }}
                 resizeMode="cover"
                 className="absolute w-full h-full rounded-xl " />
             <Text className="absolute bottom-0 bg-black/50 p-2 w-full text-center text-white font-semibold  rounded-b-xl ">{project.title}</Text>

@@ -13,7 +13,7 @@ export default function CardProject({ project }: { project: Project }) {
         <View className=" w-full items-center border border-gray-300 rounded-2xl ">
             <View className="flex-row justify-between items-center p-4 w-full ">
                 <View className="flex-row  items-center gap-x-2">
-                    <Image source={require("@/assets/auth/main.png")}
+                    <Image source={{ uri: project.logo }}
                         resizeMode="cover"
                         className="w-10 h-10 rounded-full " />
                     <Text className="text-lg font-bold">{project.title}</Text>
@@ -22,7 +22,7 @@ export default function CardProject({ project }: { project: Project }) {
                     <Entypo name="dots-three-horizontal" size={20} color="black" />
                 </TouchableOpacity>
             </View>
-            <Image source={require("@/assets/auth/main.png")}
+            <Image source={{ uri: project.logo }}
                 resizeMode="cover"
                 className="w-full h-96 rounded-2xl " />
             <View className="items-center flex-row gap-x-6 bg-white rounded-2xl bottom-10 p-4">

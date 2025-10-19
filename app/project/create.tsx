@@ -96,25 +96,20 @@ export default function CreateProjectScreen() {
     };
 
     const handleSubmit = async () => {
-        // Validation
-        if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo) {
+        // Validation - Photo is now required
+        if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo || !projectImage) {
             return;
         }
 
         try {
-            let logoUrl = "";
-            
-            // Step 1: Upload photo if selected
-            if (projectImage) {
-                setUploading(true);
-                const uploadResponse = await projectService.uploadProjectAvatar(projectImage);
-                if (uploadResponse.success && uploadResponse.data) {
-                    logoUrl = uploadResponse.data;
-                } else {
-                    throw new Error('Failed to upload project photo');
-                }
-                setUploading(false);
+            // Step 1: Upload photo (required)
+            setUploading(true);
+            const uploadResponse = await projectService.uploadProjectAvatar(projectImage);
+            if (!uploadResponse.success || !uploadResponse.data) {
+                throw new Error('Failed to upload project photo');
             }
+            const logoUrl = uploadResponse.data;
+            setUploading(false);
 
             // Step 2: Create project with logo URL
             const projectData: ProjectCreateRequest = {
@@ -166,7 +161,7 @@ export default function CreateProjectScreen() {
                 
                 {/* Project Photo Upload Section */}
                 <View className="gap-y-4">
-                    <Text className="text-lg font-semibold">Project Photo</Text>
+                    <Text className="text-lg font-semibold">Project Photo <Text className="text-red-500">*</Text></Text>
                     {projectImage ? (
                         <View className="relative">
                             <Image 
