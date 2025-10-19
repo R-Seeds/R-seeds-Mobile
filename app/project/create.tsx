@@ -12,9 +12,11 @@ import { FundingInfo, Graduate, Milestone, ProjectCategory, ProjectCreateRequest
 import useProjectAction from "@/hooks/useProjectAction";
 import DropdownInput from "@/components/ui/DropDownInput";
 import * as ImagePicker from 'expo-image-picker';
+import { projectService } from "@/services";
 
 export default function CreateProjectScreen() {
     const { createProject } = useProjectAction()
+    const [uploading, setUploading] = useState(false);
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState<ProjectCategory>(ProjectCategory.EDUCATION);
     const [description, setDescription] = useState("");
@@ -94,25 +96,49 @@ export default function CreateProjectScreen() {
     };
 
     const handleSubmit = async () => {
-
+        // Validation
         if (!title || !category || !description || !mission || !vision || !keyFeature || !fundingInfo) {
-            return
+            return;
         }
-        const projectData: ProjectCreateRequest = {
-            title,
-            status: ProjectStatus.ACTIVE,
-            category,
-            description,
-            mission,
-            vision,
-            keyFeature,
-            team: members,
-            milestones,
-            fundingInfo,
-            links
+
+        try {
+            let logoUrl = "";
+            
+            // Step 1: Upload photo if selected
+            if (projectImage) {
+                setUploading(true);
+                const uploadResponse = await projectService.uploadProjectAvatar(projectImage);
+                if (uploadResponse.success && uploadResponse.data) {
+                    logoUrl = uploadResponse.data;
+                } else {
+                    throw new Error('Failed to upload project photo');
+                }
+                setUploading(false);
+            }
+
+            // Step 2: Create project with logo URL
+            const projectData: ProjectCreateRequest = {
+                title,
+                status: ProjectStatus.ACTIVE,
+                category,
+                description,
+                mission,
+                vision,
+                keyFeature,
+                logo: logoUrl,
+                team: members,
+                milestones,
+                fundingInfo,
+                links
+            };
+            
+            await createProject(projectData);
+        } catch (error) {
+            setUploading(false);
+            console.error('Project creation error:', error);
+            // Error handling is done in useProjectAction hook
         }
-        await createProject(projectData)
-    }
+    };
 
     return (
         <View className="flex-1 p-4 pb-10 bg-white">
@@ -148,9 +174,16 @@ export default function CreateProjectScreen() {
                                 className="w-full h-48 rounded-lg"
                                 resizeMode="cover"
                             />
+                            {uploading && (
+                                <View className="absolute inset-0 bg-black/50 rounded-lg items-center justify-center">
+                                    <Ionicons name="cloud-upload" size={32} color="white" />
+                                    <Text className="text-white mt-2 font-semibold">Uploading...</Text>
+                                </View>
+                            )}
                             <TouchableOpacity 
                                 onPress={removeProjectImage}
                                 className="absolute top-2 right-2 bg-red-500 rounded-full p-2"
+                                disabled={uploading}
                             >
                                 <Ionicons name="close" size={20} color="white" />
                             </TouchableOpacity>
@@ -213,9 +246,21 @@ export default function CreateProjectScreen() {
                 </View>
 
             </ScrollView>
-            <TouchableOpacity className="bg-teal-500 rounded-full py-4 flex-row items-center gap-x-2 justify-center "
-                onPress={handleSubmit}>
-                <Text className="text-white text-lg font-semibold">Create Project</Text>
+            <TouchableOpacity 
+                className={`rounded-full py-4 flex-row items-center gap-x-2 justify-center ${
+                    uploading ? 'bg-gray-400' : 'bg-teal-500'
+                }`}
+                onPress={handleSubmit}
+                disabled={uploading}
+            >
+                {uploading ? (
+                    <>
+                        <Ionicons name="cloud-upload" size={20} color="white" />
+                        <Text className="text-white text-lg font-semibold">Uploading Photo...</Text>
+                    </>
+                ) : (
+                    <Text className="text-white text-lg font-semibold">Create Project</Text>
+                )}
             </TouchableOpacity>
 
             {memberVisible && (<TeamMemberModal

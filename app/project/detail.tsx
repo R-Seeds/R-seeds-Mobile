@@ -8,6 +8,7 @@ import { StatusBar } from "expo-status-bar";
 
 export default function ProjectScreen() {
     const { currentProject } = useProjects()
+    console.log(currentProject)
 
     if (!currentProject) return (
         <View className="flex-1 bg-white items-center">
@@ -27,7 +28,7 @@ export default function ProjectScreen() {
                 onPress={() => router.back()}>
                 <FontAwesome5 name="chevron-left" size={24} color="white" className="text-center " />
             </TouchableOpacity>
-            <Image source={require('@/assets/auth/main.png')}
+            <Image source={{ uri: currentProject?.logo }}
                 className="w-full h-[60%]"
                 resizeMode="cover"
             />
