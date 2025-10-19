@@ -20,9 +20,9 @@ export default function TabNavigation() {
 
     const tabs: Tab[] = [
         {
-            name: '/dashboard/graduate',
-            icon: <AntDesign name="home" size={30} color={isCurrentScreen('/dashboard/graduate') ? "teal" : "gray"} />,
-            onPress: () => router.push('/dashboard/graduate')
+            name: '/dashboard',
+            icon: <AntDesign name="home" size={30} color={isCurrentScreen('/dashboard') ? "teal" : "gray"} />,
+            onPress: () => router.push('/dashboard')
         },
         {
             name: '/project',

@@ -1,12 +1,12 @@
-// toast.tsx
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { Animated, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 4000;
 
-type ToastType = "success" | "error" | "warning";
+type ToastType = "success" | "error";
 
 type Toast = {
   id: string;
@@ -21,8 +21,8 @@ const ToastContext = createContext<{
   removeToast: (id: string) => void;
 }>({
   toasts: [],
-  showToast: () => { },
-  removeToast: () => { },
+  showToast: () => {},
+  removeToast: () => {},
 });
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
@@ -62,8 +62,16 @@ function ToastContainer({
   toasts: Toast[];
   onClose: (id: string) => void;
 }) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View className="absolute top-10 left-0 z-50 flex-1 w-full items-center px-4">
+    <View
+      className="absolute left-0 right-0 items-center px-4 pointer-events-none"
+      style={{
+        top: insets.top + 10,
+        zIndex: 9999,
+      }}
+    >
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onClose={() => onClose(toast.id)} />
       ))}
@@ -72,8 +80,8 @@ function ToastContainer({
 }
 
 function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
-  const opacity = new Animated.Value(0);
-  const translateY = new Animated.Value(20);
+  const opacity = useMemo(() => new Animated.Value(0), []);
+  const translateY = useMemo(() => new Animated.Value(20), []);
 
   useEffect(() => {
     Animated.parallel([
@@ -97,34 +105,23 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
         useNativeDriver: true,
       }).start();
     };
-  }, []);
+  }, [opacity, translateY]);
+
+  const bgColor =
+    toast.type === "error" ? "bg-red-600" : toast.type === "success" ? "bg-teal-600" : "bg-gray-700";
 
   return (
     <Animated.View
-      className={`flex-row flex-1 items-center justify-between p-4 rounded-xl mb-3 shadow-lg shadow-black/20
-         ${toast.type === "error" && "bg-red-600"}
-         ${toast.type === "warning" && "bg-yellow-600"}
-         ${toast.type === "success" && "bg-teal-600"}`}
-      style={{
-        opacity,
-        transform: [{ translateY }],
-      }}
+      className={`flex-row items-center justify-between p-4 rounded-xl mb-3 shadow-lg shadow-black/20 w-full max-w-sm pointer-events-auto ${bgColor}`}
+      style={{ opacity, transform: [{ translateY }] }}
     >
       <View className="flex-1 pr-3">
         {toast.title && (
-          <Text className="text-white font-semibold text-base mb-1">
-            {toast.title}
-          </Text>
+          <Text className="text-white font-semibold text-base mb-1">{toast.title}</Text>
         )}
-        {toast.message && (
-          <Text className="text-white text-sm">{toast.message}</Text>
-        )}
+        {toast.message && <Text className="text-white text-sm">{toast.message}</Text>}
       </View>
-      <TouchableOpacity
-        onPress={onClose}
-        className="p-1 -mr-2"
-        activeOpacity={0.7}
-      >
+      <TouchableOpacity onPress={onClose} className="p-1 -mr-2" activeOpacity={0.7}>
         <Ionicons name="close" size={20} color="#fff" />
       </TouchableOpacity>
     </Animated.View>

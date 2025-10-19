@@ -1,10 +1,13 @@
+import { useProjects } from "@/contexts/ProjectContext";
 import { Project } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 
 export default function MyProject({ project }: { project: Project }) {
+    const { setCurrentProject } = useProjects()
     return (
-        <View className="w-full rounded-2xl overflow-hidden border-2 border-gray-300 flex-row">
+        <TouchableOpacity className="w-full rounded-2xl overflow-hidden border-2 border-gray-300 flex-row"
+        onPress={()=>{setCurrentProject(project);router.push('/project/detail')}}>
             <Image source={{ uri: project.logo }}
                 className="w-32 h-full"
                 resizeMode="cover" />
@@ -24,6 +27,6 @@ export default function MyProject({ project }: { project: Project }) {
                 </View>
 
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }

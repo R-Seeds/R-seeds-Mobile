@@ -1,5 +1,5 @@
 import { authService } from "@/services"
-import { User, LoginRequest, SignupRequest } from "@/types"
+import { User, LoginRequest, SignupRequest, UserType } from "@/types"
 import { createContext, useContext, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 import { Alert } from "react-native"
@@ -14,6 +14,8 @@ interface AuthContextType {
     login: (request: LoginRequest) => Promise<void>
     register: (request: SignupRequest) => Promise<void>
     initializeAuth: () => Promise<void>
+    logout: () => Promise<void>
+    userType:UserType 
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -23,20 +25,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [userType, setUserType] = useState<UserType >(UserType.USER)
 
     const initializeAuth = async () => {
         try {
             const token = await SecureStore.getItemAsync("auth_token")
-            console.log(token)
-            if (token) {
+            const data = await SecureStore.getItemAsync("user")
+            const user = JSON.parse(data!) as User
+            if (token && user) {
                 setIsAuthenticated(true)
-                router.push('/dashboard/graduate')
-            }else router.push('/auth/login')
-            showToast({
-                type: "success",
-                title: "Success",
-                message: "User authenticated successfully!"
-            })
+                setUser(user)
+                setUserType(user.role)
+                router.push('/dashboard')
+            }else router.push('/auth')
+          
         } catch (error) {
             console.error(error)
             showToast({
@@ -58,6 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
+            await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
             router.push('/')
         } catch (error) {
             console.error(error)
@@ -78,8 +81,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    const logout = async () => {
+        try {
+            await SecureStore.deleteItemAsync('auth_token')
+            await SecureStore.deleteItemAsync('user')
+            setIsAuthenticated(false)
+            setUser(null)
+            router.push('/auth')
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, loading, setUser, login, register, initializeAuth }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, loading, setUser, login, register, initializeAuth, logout, userType }}>
             {children}
         </AuthContext.Provider>
     )

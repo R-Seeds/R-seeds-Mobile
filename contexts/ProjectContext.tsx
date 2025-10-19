@@ -180,6 +180,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         fetchProjects();
         fetchTrendingProjects();
         fetchSpotlighProjects();
+        fetchMyProjects();
     }, []);
 
     return (

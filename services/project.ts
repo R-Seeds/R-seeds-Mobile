@@ -1,4 +1,4 @@
-import { Project, ProjectCreateRequest, ApiResponse } from '@/types';
+import { Project, ProjectCreateRequest, ApiResponse, ProjectUpdateRequest } from '@/types';
 import { client } from './client';
 import { API_ENDPOINTS } from './constants';
 import { AxiosProgressEvent, CancelToken } from 'axios';
@@ -40,7 +40,8 @@ class ProjectService {
     return await client.post<Project>(API_ENDPOINTS.PROJECT.CREATE, data);
   }
 
-  async updateProject(id: string | number, data: ProjectCreateRequest): Promise<ApiResponse<Project>> {
+  async updateProject(id: string | number, data: ProjectUpdateRequest): Promise<ApiResponse<Project>> {
+    console.log('service layer',data)
     return await client.put<Project>(API_ENDPOINTS.PROJECT.UPDATE(id), data);
   }
 
