@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, TextInput, TouchableOpacity } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { ConversationItem } from '@/components/chat';
 import { useChat } from '@/contexts/ChatContext';
 import { Conversation } from '@/types';

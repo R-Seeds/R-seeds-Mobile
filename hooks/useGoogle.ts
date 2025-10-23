@@ -1,8 +1,5 @@
 import {
     GoogleSignin,
-    GoogleSigninButton,
-    isErrorWithCode,
-    statusCodes,
 } from '@react-native-google-signin/google-signin';
 
 
@@ -17,25 +14,32 @@ export default function GoogleAuth() {
     });
 
     const GoogleLogin = async () => {
-        // check if users' device has google play services
-        await GoogleSignin.hasPlayServices();
+        try {
+            await GoogleSignin.hasPlayServices();
 
-        // initiates signIn process
-        const userInfo = await GoogleSignin.signIn();
-        return userInfo;
+            // initiates signIn process
+            const userInfo = await GoogleSignin.signIn();
+            return userInfo;
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const googleSignIn = async () => {
         try {
             const response = await GoogleLogin();
+            if (!response) return null
 
             // retrieve user data
             const { idToken, user } = response.data ?? {};
             if (idToken) {
-                console.log(response.data) // Server call to validate the token & process the user data for signing In
+                console.log( user) // Server call to validate the token & process the user data for signing In
+                return response; // Return the response for further processing
             }
+            return null;
         } catch (error) {
             console.log('Error', error);
+            return null;
         }
     };
 
@@ -49,7 +53,9 @@ export default function GoogleAuth() {
         }
     };
 
-    return (
-        <GoogleSigninButton onPress={googleSignIn} />
-    )
+    return {
+        googleSignIn,
+        googleSignOut,
+    };
+
 }
