@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { Animated, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 4000;
@@ -62,13 +61,12 @@ function ToastContainer({
   toasts: Toast[];
   onClose: (id: string) => void;
 }) {
-  const insets = useSafeAreaInsets();
 
   return (
     <View
       className="absolute left-0 right-0 items-center px-4 pointer-events-none"
       style={{
-        top: insets.top + 10,
+        top: 10,
         zIndex: 9999,
       }}
     >

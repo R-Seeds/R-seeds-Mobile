@@ -1,4 +1,4 @@
-import { Graduate, User } from "./user";
+import { Graduate, Sponsor, User } from "./user";
 
 export enum MilestoneStatus {
     IN_PROGRESS = "IN_PROGRESS",
@@ -45,7 +45,6 @@ export const ProjectStatusOptions: DropdownOption<ProjectStatus>[] = [
 export interface FundingInfo {
     goal: number;
     raised: number;
-    donors: number;
 }
 
 export interface Milestone {
@@ -75,11 +74,12 @@ export interface Project {
     description: string;
     mission: string;
     vision: string;
-    logo:string
+    logo: string
     keyFeature: string;
     status: ProjectStatus;
     owner: User;
     fundingInfo: FundingInfo;
+    donors: Sponsor[]
     interaction: ProjectInteraction;
     links: ProjectLink[];
     team: Graduate[];

@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { FundingInfo } from "@/types";
 import { useState } from "react";
 
@@ -24,7 +23,6 @@ export default function FundingInfoModal({ visible, onClose, fundingInfo, setFun
         const newFundingInfo: FundingInfo = {
             goal: Number(goal) || 0,
             raised: Number(raised) || 0,
-            donors: Number(donors) || 0,
         };
         addFundingInfo(newFundingInfo);
         onClose();
@@ -32,7 +30,6 @@ export default function FundingInfoModal({ visible, onClose, fundingInfo, setFun
 
     const [goal, setGoal] = useState(fundingInfo?.goal?.toString() || "");
     const [raised, setRaised] = useState(fundingInfo?.raised?.toString() || "");
-    const [donors, setDonors] = useState(fundingInfo?.donors?.toString() || "");
 
     return (
         <Modal
@@ -70,17 +67,6 @@ export default function FundingInfoModal({ visible, onClose, fundingInfo, setFun
                                         keyboardType="numeric"
                                         value={raised}
                                         onChangeText={setRaised}
-                                    />
-                                </View>
-
-                                <View>
-                                    <Text className="text-sm font-medium text-gray-700 mb-2">Number of Donors</Text>
-                                    <TextInput
-                                        placeholder="Enter number of donors"
-                                        className="bg-white rounded-lg px-3 py-3 border border-gray-200"
-                                        keyboardType="numeric"
-                                        value={donors}
-                                        onChangeText={setDonors}
                                     />
                                 </View>
                             </View>
