@@ -15,6 +15,7 @@ interface AuthContextType {
     register: (request: SignupRequest) => Promise<void>
     initializeAuth: () => Promise<void>
     logout: () => Promise<void>
+    google: (request: {token:string}) => Promise<void>
     userType:UserType 
 }
 
@@ -81,6 +82,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    const google = async (request: {token:string}) => {
+        try {
+            const response = await authService.google(request)
+            if (!response.success) {
+                Alert.alert("Error", response.message)
+            }
+           console.log(response)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const logout = async () => {
         try {
             await SecureStore.deleteItemAsync('auth_token')
@@ -94,7 +107,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, loading, setUser, login, register, initializeAuth, logout, userType }}>
+        <AuthContext.Provider value={{ isAuthenticated, 
+        user, 
+        loading,
+         setUser, 
+         login,
+          register,
+           initializeAuth, logout, userType, google }}>
             {children}
         </AuthContext.Provider>
     )

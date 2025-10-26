@@ -11,6 +11,10 @@ export class AuthService {
         return await client.post<AuthResponse>(API_ENDPOINTS.AUTH.SIGNUP, data)
     }
 
+    async google(data: {token:string}): Promise<ApiResponse<void>> {
+        return await client.post<void>(API_ENDPOINTS.AUTH.GOOGLE, data)
+    }
+
 
 }
 
