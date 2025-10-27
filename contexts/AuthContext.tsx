@@ -1,5 +1,5 @@
 import { authService } from "@/services"
-import { User, LoginRequest, SignupRequest, UserType } from "@/types"
+import { User, LoginRequest, SignupRequest, UserType, GoogleAuthRequest } from "@/types"
 import { createContext, useContext, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 import { Alert } from "react-native"
@@ -15,8 +15,8 @@ interface AuthContextType {
     register: (request: SignupRequest) => Promise<void>
     initializeAuth: () => Promise<void>
     logout: () => Promise<void>
-    google: (request: {token:string}) => Promise<void>
-    userType:UserType 
+    google: (request: GoogleAuthRequest) => Promise<void>
+    userType: UserType
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [loading, setLoading] = useState(true)
-    const [userType, setUserType] = useState<UserType >(UserType.USER)
+    const [userType, setUserType] = useState<UserType>(UserType.USER)
 
     const initializeAuth = async () => {
         try {
@@ -38,8 +38,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setUser(user)
                 setUserType(user.role)
                 router.push('/dashboard')
-            }else router.push('/auth')
-          
+            } else router.push('/auth')
+
         } catch (error) {
             console.error(error)
             showToast({
@@ -82,13 +82,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
-    const google = async (request: {token:string}) => {
+    const google = async (request: GoogleAuthRequest) => {
         try {
             const response = await authService.google(request)
             if (!response.success) {
                 Alert.alert("Error", response.message)
             }
-           console.log(response)
+            console.log(response)
         } catch (error) {
             console.error(error)
         }
@@ -107,13 +107,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, 
-        user, 
-        loading,
-         setUser, 
-         login,
-          register,
-           initializeAuth, logout, userType, google }}>
+        <AuthContext.Provider value={{
+            isAuthenticated,
+            user,
+            loading,
+            setUser,
+            login,
+            register,
+            initializeAuth,
+            logout,
+            userType,
+            google
+        }}>
             {children}
         </AuthContext.Provider>
     )

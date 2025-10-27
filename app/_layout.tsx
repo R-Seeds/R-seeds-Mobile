@@ -10,15 +10,15 @@ import { ChatProvider } from "@/contexts/ChatContext";
 export default function RootLayout() {
   return (
     <ToastProvider>
-      <ChatProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <ChatProvider>
           <UserProvider>
             <ProjectProvider>
               <Stack screenOptions={{ headerShown: false }} />
             </ProjectProvider>
           </UserProvider>
-        </AuthProvider>
-      </ChatProvider>
+        </ChatProvider>
+      </AuthProvider>
     </ToastProvider>
   )
 }

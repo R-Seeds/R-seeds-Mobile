@@ -9,7 +9,7 @@ import useGoogle from "@/hooks/useGoogle";
 import RoleSelectionModal from "@/components/RoleSelectionModal";
 
 export default function RegisterScreen() {
-    const { register ,google} = useAuth()
+    const { register, google } = useAuth()
     const { googleSignIn } = useGoogle()
     const [userType, setUserType] = useState<UserType>(UserType.GRADUATE);
     const [name, setName] = useState('');
@@ -20,7 +20,6 @@ export default function RegisterScreen() {
     const [country, setCountry] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [showRoleModal, setShowRoleModal] = useState(false);
-    const [googleUserData, setGoogleUserData] = useState<any>(null);
 
     const handleRegister = () => {
         const request: SignupRequest = {
@@ -50,23 +49,24 @@ export default function RegisterScreen() {
             const request: SignupRequest = {
                 name: user?.name || '',
                 email: user?.email || '',
-                password: '', 
+                password: '',
                 role: selectedRole,
                 finishYear: selectedRole === UserType.GRADUATE ? new Date().getFullYear() : undefined,
                 organization: selectedRole === UserType.SPONSOR ? '' : undefined,
                 country: selectedRole === UserType.USER ? '' : undefined
             }
-            register(request);
+            const googleRequest = {
+                token: userData?.data?.idToken!+"toke",
+                role: selectedRole
+            }
+            await google(googleRequest)
+
         }
-        const googleRequest = {
-            token: googleUserData?.data?.token
-        }
-        google(googleRequest)
+
     }
 
     const handleCancelRoleSelection = () => {
         setShowRoleModal(false);
-        setGoogleUserData(null);
     }
 
     const extraInput = () => {
