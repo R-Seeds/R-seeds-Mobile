@@ -13,7 +13,8 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
     SIGNUP: '/auth/register',
-    GOOGLE_REGISTER: '/auth/google',
+    GOOGLE_REGISTER: '/auth/google/register',
+    GOOGLE_LOGIN: '/auth/google/login',
   },
   PROJECT: {
     ALL: '/projects',

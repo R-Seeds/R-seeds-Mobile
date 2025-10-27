@@ -15,7 +15,8 @@ interface AuthContextType {
     register: (request: SignupRequest) => Promise<void>
     initializeAuth: () => Promise<void>
     logout: () => Promise<void>
-    google: (request: GoogleAuthRequest) => Promise<void>
+    googleRegister: (request: GoogleAuthRequest) => Promise<void>
+    googleLogin: (request: string) => Promise<void>
     userType: UserType
 }
 
@@ -55,9 +56,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = async (request: LoginRequest) => {
         try {
+            setLoading(true)
             const response = await authService.login(request)
             if (!response.success) {
                 Alert.alert("Error", response.message)
+                return
             }
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
@@ -65,32 +68,68 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             router.push('/')
         } catch (error) {
             console.error(error)
+        } finally {
+            setLoading(false)
         }
     }
 
     const register = async (request: SignupRequest) => {
         try {
+            setLoading(true)
+
             const response = await authService.signup(request)
             if (!response.success) {
                 Alert.alert("Error", response.message)
+                return
+            }
+            const token = response.data.token
+            await SecureStore.setItemAsync('auth_token', token)
+            await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
+
+            router.push('/')
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const googleRegister = async (request: GoogleAuthRequest) => {
+        try {
+            console.log(request)
+            setLoading(true)
+            const response = await authService.googleRegister(request)
+            if (!response.success) {
+                Alert.alert("Error", response.message)
+                return
             }
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
             router.push('/')
         } catch (error) {
             console.error(error)
+        } finally {
+            setLoading(false)
         }
     }
 
-    const google = async (request: GoogleAuthRequest) => {
+    const googleLogin = async (request: string) => {
         try {
-            const response = await authService.google(request)
+            setLoading(true)
+
+            const response = await authService.googleLogin(request)
             if (!response.success) {
                 Alert.alert("Error", response.message)
             }
-            console.log(response)
+            const token = response.data.token
+            await SecureStore.setItemAsync('auth_token', token)
+            await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
+
+            router.push('/')
         } catch (error) {
             console.error(error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -117,7 +156,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             initializeAuth,
             logout,
             userType,
-            google
+            googleRegister,
+            googleLogin
         }}>
             {children}
         </AuthContext.Provider>

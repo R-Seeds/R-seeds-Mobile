@@ -22,18 +22,12 @@ export default function RoleSelectionModal({ visible, onSelectRole, onCancel }: 
 
     const handleRoleSelect = (role: UserType) => {
         setSelectedRole(role);
-        if (role === UserType.USER) {
-            // For USER role, we might want country but it's optional
-            setShowInputs(true);
-        } else {
-            // For GRADUATE and SPONSOR roles, show additional inputs
-            setShowInputs(true);
-        }
+        setShowInputs(true);
     };
 
     const handleConfirm = () => {
         if (!selectedRole) return;
-        
+
         const additionalData: {
             finishYear?: number;
             organization?: string;
@@ -87,7 +81,7 @@ export default function RoleSelectionModal({ visible, onSelectRole, onCancel }: 
                         />
                     </View>
                 )}
-                
+
                 {selectedRole === UserType.SPONSOR && (
                     <View>
                         <Text className="text-white/80 text-sm mb-2">Organization</Text>
@@ -100,7 +94,7 @@ export default function RoleSelectionModal({ visible, onSelectRole, onCancel }: 
                         />
                     </View>
                 )}
-                
+
                 {selectedRole === UserType.USER && (
                     <View>
                         <Text className="text-white/80 text-sm mb-2">Country (Optional)</Text>
@@ -137,8 +131,8 @@ export default function RoleSelectionModal({ visible, onSelectRole, onCancel }: 
                                 {showInputs ? 'Additional Information' : 'Select Your Role'}
                             </Text>
                             <Text className="text-white/70 text-center mt-2">
-                                {showInputs 
-                                    ? `Complete your ${selectedRole?.toLowerCase()} profile` 
+                                {showInputs
+                                    ? `Complete your ${selectedRole?.toLowerCase()} profile`
                                     : 'Choose how you\'d like to join R-Seeds'
                                 }
                             </Text>
@@ -190,12 +184,12 @@ export default function RoleSelectionModal({ visible, onSelectRole, onCancel }: 
                                 <View className="p-4 rounded-2xl bg-teal-600/20 border border-white/20 mb-4">
                                     <View className="flex-row items-center">
                                         <Text className="text-2xl mr-3">
-                                            {selectedRole === UserType.GRADUATE ? '🎓' : 
-                                             selectedRole === UserType.SPONSOR ? '💰' : '👥'}
+                                            {selectedRole === UserType.GRADUATE ? '🎓' :
+                                                selectedRole === UserType.SPONSOR ? '💰' : '👥'}
                                         </Text>
                                         <Text className="text-white font-bold text-lg">
-                                            {selectedRole === UserType.GRADUATE ? 'Graduate' : 
-                                             selectedRole === UserType.SPONSOR ? 'Sponsor' : 'User'}
+                                            {selectedRole === UserType.GRADUATE ? 'Graduate' :
+                                                selectedRole === UserType.SPONSOR ? 'Sponsor' : 'User'}
                                         </Text>
                                     </View>
                                 </View>
@@ -212,7 +206,7 @@ export default function RoleSelectionModal({ visible, onSelectRole, onCancel }: 
                                     <Text className="text-white font-semibold text-center">Continue</Text>
                                 </TouchableOpacity>
                             )}
-                            
+
                             <TouchableOpacity
                                 className="p-3 rounded-2xl border border-white/20 bg-red-600/40"
                                 onPress={handleCancel}

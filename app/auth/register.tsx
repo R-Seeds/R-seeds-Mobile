@@ -7,9 +7,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/contexts/AuthContext";
 import useGoogle from "@/hooks/useGoogle";
 import RoleSelectionModal from "@/components/RoleSelectionModal";
+import LoadingModal from "@/components/modals/Loading";
 
 export default function RegisterScreen() {
-    const { register, google } = useAuth()
+    const { register, googleRegister, loading } = useAuth()
     const { googleSignIn } = useGoogle()
     const [userType, setUserType] = useState<UserType>(UserType.GRADUATE);
     const [name, setName] = useState('');
@@ -56,7 +57,7 @@ export default function RegisterScreen() {
                 organization: additionalData?.organization,
                 country: additionalData?.country
             }
-            await google(googleRequest)
+            await googleRegister(googleRequest)
         }
     }
 
@@ -207,6 +208,7 @@ export default function RegisterScreen() {
                     </View>
                 </View>
             </KeyboardAvoidingView>
+            {loading && <LoadingModal visible={loading} />}
             <RoleSelectionModal
                 visible={showRoleModal}
                 onSelectRole={handleRoleSelection}
