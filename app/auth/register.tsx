@@ -1,7 +1,7 @@
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView } from "react-native";
 import { BlurView } from "expo-blur";
 import { useState } from "react";
-import { SignupRequest, UserType } from "@/types";
+import { GoogleAuthRequest, SignupRequest, UserType } from "@/types";
 import Svg, { Path } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/contexts/AuthContext";
@@ -41,28 +41,23 @@ export default function RegisterScreen() {
         return userData
     }
 
-    const handleRoleSelection = async (selectedRole: UserType) => {
+    const handleRoleSelection = async (selectedRole: UserType, additionalData?: {
+        finishYear?: number;
+        organization?: string;
+        country?: string;
+    }) => {
         setShowRoleModal(false)
         const userData = await handleGoogleSignIn()
         if (userData) {
-            const { user } = userData.data ?? {};
-            const request: SignupRequest = {
-                name: user?.name || '',
-                email: user?.email || '',
-                password: '',
+            const googleRequest: GoogleAuthRequest = {
+                token: userData.data?.idToken!,
                 role: selectedRole,
-                finishYear: selectedRole === UserType.GRADUATE ? new Date().getFullYear() : undefined,
-                organization: selectedRole === UserType.SPONSOR ? '' : undefined,
-                country: selectedRole === UserType.USER ? '' : undefined
-            }
-            const googleRequest = {
-                token: userData?.data?.idToken!+"toke",
-                role: selectedRole
+                finishYear: additionalData?.finishYear,
+                organization: additionalData?.organization,
+                country: additionalData?.country
             }
             await google(googleRequest)
-
         }
-
     }
 
     const handleCancelRoleSelection = () => {

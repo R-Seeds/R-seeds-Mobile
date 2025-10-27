@@ -18,4 +18,7 @@ export interface LoginRequest {
 export interface GoogleAuthRequest {
     token: string
     role: UserType
+    finishYear?: number
+    organization?: string
+    country?: string
 }
