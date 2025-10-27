@@ -14,3 +14,11 @@ export interface LoginRequest {
     email: string;
     password: string;
 }
+
+export interface GoogleAuthRequest {
+    token: string
+    role: UserType
+    finishYear?: number
+    organization?: string
+    country?: string
+}

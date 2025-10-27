@@ -1,6 +1,6 @@
 import { userService } from "@/services"
-import { ApiError, Graduate, Sponsor, User } from "@/types"
-import { router } from "expo-router"
+import { Graduate, Sponsor, User } from "@/types"
+import { useAuth } from "./AuthContext"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 
 interface UserContextType {
@@ -17,6 +17,7 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | null>(null)
 
 export function UserProvider({ children }: { children: ReactNode }) {
+    const {isAuthenticated}=useAuth()
     const [users, setUsers] = useState<User[]>([]);
     const [graduates, setGraduates] = useState<Graduate[]>([]);
     const [sponsors, setSponsors] = useState<Sponsor[]>([]);
@@ -31,9 +32,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
             setGraduates(data);
         } catch (error: any) {
             console.error("Error fetching graduates:", error);
-            if (error.status === 401) {
-                router.push('/auth/login');
-            }
         } finally {
             setLoading(false);
         }
@@ -59,17 +57,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
             setCurrentUser(data);
         } catch (error: any) {
             console.error("Error fetching current user:", error);
-            if (error.status === 401) {
-                router.push('/auth/login');
-            }
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchGraduates();
-    }, []);
+        if(isAuthenticated){
+            fetchGraduates();
+            fetchSponsors();
+            fetchCurrentUser();
+        }
+    }, [isAuthenticated]);
 
     return (
         <UserContext.Provider value={{ 

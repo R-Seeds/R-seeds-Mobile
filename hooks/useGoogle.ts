@@ -21,7 +21,7 @@ export default function GoogleAuth() {
             const userInfo = await GoogleSignin.signIn();
             return userInfo;
         } catch (error) {
-            console.log(error);
+            console.log(error+"from google");
         }
     };
 
@@ -33,12 +33,11 @@ export default function GoogleAuth() {
             // retrieve user data
             const { idToken, user } = response.data ?? {};
             if (idToken) {
-                console.log( user) // Server call to validate the token & process the user data for signing In
-                return response; // Return the response for further processing
+                return response; 
             }
             return null;
         } catch (error) {
-            console.log('Error', error);
+            console.log('Error on google', error);
             return null;
         }
     };

@@ -1,6 +1,6 @@
 // API Configuration Constants
 
-const SERVER_URL = 'https://r-seeds-backend-production.up.railway.app'
+const SERVER_URL = 'http://10.12.74.188:5050'
 
 export const API_CONFIG = {
   BASE_URL: SERVER_URL,
@@ -13,6 +13,8 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
     SIGNUP: '/auth/register',
+    GOOGLE_REGISTER: '/auth/google/register',
+    GOOGLE_LOGIN: '/auth/google/login',
   },
   PROJECT: {
     ALL: '/projects',
