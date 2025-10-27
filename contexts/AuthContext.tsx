@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = await SecureStore.getItemAsync("auth_token")
             const data = await SecureStore.getItemAsync("user")
             const user = JSON.parse(data!) as User
+            console.log(token,data)
             if (token && user) {
                 setIsAuthenticated(true)
                 setUser(user)
@@ -67,7 +68,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
             router.push('/')
         } catch (error) {
-            console.error(error)
+            showToast({
+                type: "error",
+                title: "Error",
+                message: "Failed to authenticate user. Please try again."
+            })
         } finally {
             setLoading(false)
         }
@@ -79,7 +84,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             const response = await authService.signup(request)
             if (!response.success) {
-                Alert.alert("Error", response.message)
+                showToast({
+                    type: "error",
+                    title: "Error",
+                    message: "Failed to authenticate user. Please try again."
+                })
                 return
             }
             const token = response.data.token
@@ -88,7 +97,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             router.push('/')
         } catch (error) {
-            console.error(error)
+            showToast({
+                type: "error",
+                title: "Error",
+                message: "Failed to authenticate user. Please try again."
+            })
         } finally {
             setLoading(false)
         }
@@ -100,14 +113,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(true)
             const response = await authService.googleRegister(request)
             if (!response.success) {
-                Alert.alert("Error", response.message)
+                showToast({
+                    type: "error",
+                    title: "Error",
+                    message: "Failed to authenticate user. Please try again."
+                })
                 return
             }
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
+            await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
             router.push('/')
         } catch (error) {
-            console.error(error)
+            showToast({
+                type: "error",
+                title: "Error",
+                message: "Failed to authenticate user. Please try again."
+            })
         } finally {
             setLoading(false)
         }
@@ -119,15 +141,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
             const response = await authService.googleLogin(request)
             if (!response.success) {
-                Alert.alert("Error", response.message)
+                showToast({
+                    type: "error",
+                    title: "Error",
+                    message: "Failed to authenticate user. Please try again."
+                })
+                return
             }
+            console.log(response.data)
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
             await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
-
             router.push('/')
         } catch (error) {
-            console.error(error)
+            console.log(error)
+            showToast({
+                type: "error",
+                title: "Error",
+                message: "Failed to authenticate user. Please try again."
+            })
         } finally {
             setLoading(false)
         }
@@ -141,7 +173,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setUser(null)
             router.push('/auth')
         } catch (error) {
-            console.error(error)
+            showToast({
+                type: "error",
+                title: "Error",
+                message: "Failed to authenticate user. Please try again."
+            })
         }
     }
 
