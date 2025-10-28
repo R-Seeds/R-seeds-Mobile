@@ -11,12 +11,12 @@ export class AuthService {
         return await client.post<AuthResponse>(API_ENDPOINTS.AUTH.SIGNUP, data)
     }
 
-    async googleRegister(data:GoogleAuthRequest): Promise<ApiResponse<AuthResponse>> {
+    async googleRegister(data: GoogleAuthRequest): Promise<ApiResponse<AuthResponse>> {
         return await client.post<AuthResponse>(API_ENDPOINTS.AUTH.GOOGLE_REGISTER, data)
     }
 
-    async googleLogin(data:string): Promise<ApiResponse<AuthResponse>> {
-        return await client.post<AuthResponse>(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, data)
+    async googleLogin(data: string): Promise<ApiResponse<AuthResponse>> {
+        return await client.post<AuthResponse>(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, { token: data })
     }
 
 }
