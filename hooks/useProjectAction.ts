@@ -48,7 +48,7 @@ export default function useProjectAction() {
 
             console.log('updating project', data)
             const response = await projectService.updateProject(id, data);
-  if (!response.success || !response.data) {
+            if (!response.success || !response.data) {
                 showToast({
                     type: "error",
                     title: "Error",
@@ -61,7 +61,7 @@ export default function useProjectAction() {
                 title: "Success",
                 message: "Project updated successfully!"
             });
-                editProject(response.data)
+            editProject(response.data)
             router.back();
         } catch (error) {
             console.error(error);
@@ -79,7 +79,7 @@ export default function useProjectAction() {
         try {
             setLoading(true);
             const response = await projectService.likeProject(id)
-              if (!response.success || !response.data) {
+            if (!response.success || !response.data) {
                 showToast({
                     type: "error",
                     title: "Error",
@@ -87,13 +87,13 @@ export default function useProjectAction() {
                 });
                 return
             }
+            console.log('liking project',response)
             showToast({
                 type: "success",
                 title: "Success",
                 message: "Project liked successfully!"
             });
             editProject(response.data)
-            router.back();
         } catch (error) {
             console.error(error)
             showToast({
@@ -110,7 +110,7 @@ export default function useProjectAction() {
         try {
             setLoading(true);
             const response = await projectService.unlikeProject(id)
-              if (!response.success || !response.data) {
+            if (!response.success || !response.data) {
                 showToast({
                     type: "error",
                     title: "Error",
@@ -123,9 +123,8 @@ export default function useProjectAction() {
                 title: "Success",
                 message: "Project unliked successfully!"
             });
-                            editProject(response.data)
+            editProject(response.data)
 
-            router.back();
         } catch (error) {
             console.error(error)
             showToast({
@@ -142,7 +141,7 @@ export default function useProjectAction() {
         try {
             setLoading(true);
             const response = await projectService.commentProject(id, data)
-              if (!response.success || !response.data) {
+            if (!response.success || !response.data) {
                 showToast({
                     type: "error",
                     title: "Error",
@@ -155,9 +154,8 @@ export default function useProjectAction() {
                 title: "Success",
                 message: "Project commented successfully!"
             });
-                            editProject(response.data)
+            editProject(response.data)
 
-            router.back();
         } catch (error) {
             console.error(error)
             showToast({
@@ -176,7 +174,7 @@ export default function useProjectAction() {
             await share(id)
 
             const response = await projectService.shareProject(id)
-              if (!response.success || !response.data) {
+            if (!response.success || !response.data) {
                 showToast({
                     type: "error",
                     title: "Error",
@@ -190,9 +188,8 @@ export default function useProjectAction() {
                 title: "Success",
                 message: "Project shared successfully!"
             });
-                            editProject(response.data)
+            editProject(response.data)
 
-            router.back();
         } catch (error) {
             console.error(error)
             showToast({
@@ -209,7 +206,7 @@ export default function useProjectAction() {
         try {
             setLoading(true);
             const response = await projectService.addDonor(id, data)
-              if (!response.success || !response.data) {
+            if (!response.success || !response.data) {
                 showToast({
                     type: "error",
                     title: "Error",
@@ -222,7 +219,7 @@ export default function useProjectAction() {
                 title: "Success",
                 message: "Project donor added successfully!"
             });
-                            editProject(response.data)
+            editProject(response.data)
 
             router.back();
         } catch (error) {

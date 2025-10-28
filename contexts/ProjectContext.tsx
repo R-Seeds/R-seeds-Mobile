@@ -210,13 +210,13 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     }
 
     const updateProject = (project: Project) => {
-        setMyProjects(prev => prev.map(project => project.id === project.id ? project : project))
-        setProjects(prev => prev.map(project => project.id === project.id ? project : project))
+        setMyProjects(prev => prev.map(p => project.id === project.id ? project : p))
+        setProjects(prev => prev.map(p => project.id === project.id ? project : p))
     }
 
     const deleteProject = (id: string) => {
-        setMyProjects(prev => prev.filter(project => project.id !== id))
-        setProjects(prev => prev.filter(project => project.id !== id))
+        setMyProjects(prev => prev.filter(p => p.id !== id))
+        setProjects(prev => prev.filter(p => p.id !== id))
     }
 
     useEffect(() => {
