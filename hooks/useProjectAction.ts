@@ -3,6 +3,7 @@ import { ProjectCreateRequest, ProjectUpdateRequest } from "@/types";
 import { useToast } from "@/contexts/ToastContext";
 import { router } from "expo-router";
 import { useState } from "react";
+import { projectToLinkData, share } from "@/lib/share";
 
 export default function useProjectAction() {
     const { showToast } = useToast();
@@ -30,13 +31,13 @@ export default function useProjectAction() {
         }
     }
 
-    const updateProject = async (id: string | number, data: ProjectUpdateRequest) => {
+    const updateProject = async (id: string, data: ProjectUpdateRequest) => {
         try {
             setLoading(true);
 
-            console.log('updating project',data)
+            console.log('updating project', data)
             const response = await projectService.updateProject(id, data);
-      
+
             showToast({
                 type: "success",
                 title: "Success",
@@ -55,7 +56,7 @@ export default function useProjectAction() {
         }
     }
 
-    const likeProject=async(id:string)=>{
+    const likeProject = async (id: string) => {
         try {
             setLoading(true);
             const response = await projectService.likeProject(id)
@@ -77,7 +78,7 @@ export default function useProjectAction() {
         }
     }
 
-    const unlikeProject=async(id:string)=>{
+    const unlikeProject = async (id: string) => {
         try {
             setLoading(true);
             const response = await projectService.unlikeProject(id)
@@ -99,10 +100,10 @@ export default function useProjectAction() {
         }
     }
 
-    const commentProject=async(id:string,data:string)=>{
+    const commentProject = async (id: string, data: string) => {
         try {
             setLoading(true);
-            const response = await projectService.commentProject(id,data)
+            const response = await projectService.commentProject(id, data)
             showToast({
                 type: "success",
                 title: "Success",
@@ -121,10 +122,13 @@ export default function useProjectAction() {
         }
     }
 
-    const shareProject=async(id:string)=>{
+    const shareProject = async (id: string) => {
         try {
             setLoading(true);
+            await share(id)
+
             const response = await projectService.shareProject(id)
+            // projectToLinkData(id)
             showToast({
                 type: "success",
                 title: "Success",
@@ -143,10 +147,10 @@ export default function useProjectAction() {
         }
     }
 
-    const addDonor=async(id:string,data:string)=>{
+    const addDonor = async (id: string, data: string) => {
         try {
             setLoading(true);
-            const response = await projectService.addDonor(id,data)
+            const response = await projectService.addDonor(id, data)
             showToast({
                 type: "success",
                 title: "Success",

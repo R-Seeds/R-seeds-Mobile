@@ -57,15 +57,15 @@ class ProjectService {
   }
 
   async commentProject(id: string, data: string): Promise<ApiResponse<void>> {
-    return await client.post<void>(API_ENDPOINTS.PROJECT.COMMENT(id), { comment: data });
+    return await client.put<void>(API_ENDPOINTS.PROJECT.COMMENT(id), { comment: data });
   }
 
   async shareProject(id: string): Promise<ApiResponse<void>> {
-    return await client.post<void>(API_ENDPOINTS.PROJECT.SHARE(id));
+    return await client.put<void>(API_ENDPOINTS.PROJECT.SHARE(id));
   }
 
   async addDonor(id: string, data: string): Promise<ApiResponse<void>> {
-    return await client.post<void>(API_ENDPOINTS.PROJECT.ADD_DONOR(id), { donor: data });
+    return await client.put<void>(API_ENDPOINTS.PROJECT.ADD_DONOR(id), { donor: data });
   }
 
   async uploadProjectAvatar(

@@ -15,10 +15,6 @@ export default function CardProject({ project }: { project: Project }) {
     const { userType } = useAuth()
     console.log(project)
     const { likeProject, unlikeProject, commentProject, shareProject, addDonor } = useProjectAction()
-    const handleShare = async() => {
-       const res=await share(project)
-       console.log(res)
-    }
     return (
         <View className=" w-full items-center border border-gray-300 rounded-2xl ">
             <View className="flex-row justify-between items-center p-4 w-full ">
@@ -52,7 +48,7 @@ export default function CardProject({ project }: { project: Project }) {
                     <Text className="text-sm text-teal-500 font-semibold">0</Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="items-center flex-col gap-y-2"
-                    onPress={handleShare}>
+                    onPress={() => shareProject(project.id)}>
                     <Entypo name="forward" size={24} color="white" className="bg-teal-500 p-1 rounded-full" />
                     <Text className="text-sm text-teal-500 font-semibold">{project.interaction.shares}</Text>
                 </TouchableOpacity>

@@ -6,31 +6,23 @@ import ProjectMember from "@/components/project/projectMember";
 import { useProjects } from "@/contexts/ProjectContext";
 import { StatusBar } from "expo-status-bar";
 import { useAuth } from "@/contexts/AuthContext";
-import { projectToLinkData } from "@/lib/share";
 import { useEffect } from "react";
+import useProjectAction from "@/hooks/useProjectAction";
 
 export default function ProjectScreen() {
-    const { currentProject, loading } = useProjects()
-    const { findById } = useProjects()
+    const { currentProject, loading, findById } = useProjects()
+    const { shareProject } = useProjectAction()
     const params = useLocalSearchParams()
     const id = params.id as string
     const { userType } = useAuth()
 
     useEffect(() => {
+        if (!id) return
         findById(id)
     }, [id])
-    const handleShare = async () => {
-        if (currentProject) {
-            try {
-                projectToLinkData(currentProject)
-              
-            } catch (error) {
-                console.error('Error sharing project:', error)
-            }
-        }
-    }
 
-      if (loading) return (
+
+    if (loading) return (
         <View className="flex-1 bg-white items-center justify-center">
             <Text className="text-gray-500 text-center">Loading...</Text>
             <TouchableOpacity className="absolute left-5 top-10 bg-gray-500/80 rounded-full z-10 p-2 w-12 h-12"
@@ -48,7 +40,7 @@ export default function ProjectScreen() {
             </TouchableOpacity>
         </View>
     )
-  
+
     const progress = currentProject.fundingInfo.raised / currentProject.fundingInfo.goal
 
     return (
@@ -71,7 +63,7 @@ export default function ProjectScreen() {
                     </View>
                     <View className="flex-row items-center gap-x-2">
                         <TouchableOpacity
-                            onPress={handleShare}
+                            onPress={() => shareProject(currentProject.id)}
                             className="bg-blue-600 p-2 rounded-full"
                         >
                             <Ionicons name="share-social" size={16} color="white" />
