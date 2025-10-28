@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.rseeds.rseeds",
+            "sha256_cert_fingerprints": [
+                "8B:B3:84:EB:25:65:54:EF:91:C8:9E:97:35:0F:68:2F:D9:77:7C:91:E5:42:DF:D3:8A:8E:E0:28:0E:A2:6F:32"
+            ]
+        }
+    }
+]

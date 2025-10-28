@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useContext, useState, useEffect, useMemo } from "react"
 import { Project, ProjectCategory, ProjectStatus } from "@/types"
 import { projectService } from "@/services"
-import { router } from "expo-router"
 import { useAuth } from "./AuthContext"
+import { useToast } from "./ToastContext"
 
 interface ProjectContextType {
     projects: Project[]
@@ -14,6 +14,7 @@ interface ProjectContextType {
     selectedCategory: ProjectCategory | null
     selectedStatus: ProjectStatus | null
     loading: boolean
+    findById: (id: string) => Promise<void>
     setCurrentProject: (project: Project | null) => void
     setSelectedCategory: (category: ProjectCategory | null) => void
     setSelectedStatus: (status: ProjectStatus | null) => void
@@ -30,6 +31,7 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | null>(null)
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
+    const { showToast } = useToast()
     const { isAuthenticated } = useAuth()
     const [projects, setProjects] = useState<Project[]>([])
     const [myProjects, setMyProjects] = useState<Project[]>([])
@@ -172,8 +174,35 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    const findById = async (id: string) => {
+        try {
+            console.log('loading project of ours',id)
+            setLoading(true)
+            const response = await projectService.getProjectById(id)
+            console.log('project of ours',response)
+            if (!response.success || !response.data) {
+                showToast({
+                    title: "Error",
+                    message: "Failed to find project",
+                    type: "error"
+                })
+                return
+            }
+            const project = response.data
+            setCurrentProject(project)
+        } catch (error) {
+            showToast({
+                title: "Error",
+                message: "Failed to find project",
+                type: "error"
+            })
+        } finally {
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
-        if(isAuthenticated){
+        if (isAuthenticated) {
             fetchProjects()
             fetchTrendingProjects()
             fetchSpotlighProjects()
@@ -183,6 +212,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
     return (
         <ProjectContext.Provider value={{
+            findById,
             projects,
             filteredProjects,
             myProjects,

@@ -138,8 +138,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const googleLogin = async (request: string) => {
         try {
             setLoading(true)
-
             const response = await authService.googleLogin(request)
+            console.log(response)
             if (!response.success) {
                 showToast({
                     type: "error",
@@ -180,6 +180,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             })
         }
     }
+
 
     return (
         <AuthContext.Provider value={{

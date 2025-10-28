@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAM_ID.com.rseeds.rseeds",
+        "paths": [
+          "/project/spotlight/*",
+          "/project/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAM_ID.com.rseeds.rseeds"
+    ]
+  }
+}
