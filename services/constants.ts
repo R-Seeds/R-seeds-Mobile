@@ -32,6 +32,12 @@ export const API_ENDPOINTS = {
     STATISTICS: '/projects/statistics',
     OVERVIEW: '/projects/overview',
     UPLOAD: '/upload/projects',
+    LIKE: (id: string) => `/projects/${id}/like`,
+    DISLIKE: (id: string) => `/projects/${id}/unlike`,
+    COMMENT: (id: string) => `/projects/${id}/comment`,
+    SHARE: (id: string) => `/projects/${id}/share`,
+    ADD_DONOR: (id: string) => `/projects/${id}/donor`,
+    
   },
   USER: {
     ALL: '/users',

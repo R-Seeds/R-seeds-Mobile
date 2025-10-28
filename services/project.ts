@@ -41,7 +41,7 @@ class ProjectService {
   }
 
   async updateProject(id: string | number, data: ProjectUpdateRequest): Promise<ApiResponse<Project>> {
-    console.log('service layer',data)
+    console.log('service layer', data)
     return await client.put<Project>(API_ENDPOINTS.PROJECT.UPDATE(id), data);
   }
 
@@ -49,13 +49,33 @@ class ProjectService {
     return await client.delete<void>(API_ENDPOINTS.PROJECT.DELETE(id));
   }
 
-   async uploadProjectAvatar(
+  async likeProject(id: string): Promise<ApiResponse<void>> {
+    return await client.put<void>(API_ENDPOINTS.PROJECT.LIKE(id));
+  }
+
+  async unlikeProject(id: string): Promise<ApiResponse<void>> {
+    return await client.put<void>(API_ENDPOINTS.PROJECT.DISLIKE(id));
+  }
+
+  async commentProject(id: string, data: string): Promise<ApiResponse<void>> {
+    return await client.post<void>(API_ENDPOINTS.PROJECT.COMMENT(id), { comment: data });
+  }
+
+  async shareProject(id: string): Promise<ApiResponse<void>> {
+    return await client.post<void>(API_ENDPOINTS.PROJECT.SHARE(id));
+  }
+
+  async addDonor(id: string, data: string): Promise<ApiResponse<void>> {
+    return await client.post<void>(API_ENDPOINTS.PROJECT.ADD_DONOR(id), { donor: data });
+  }
+
+  async uploadProjectAvatar(
     file: string,
     onUploadProgress?: (event: AxiosProgressEvent) => void,
     cancelToken?: CancelToken,
     timeout: number = 60000
   ): Promise<ApiResponse<string>> {
-    
+
     return await client.uploadFile<string>(API_ENDPOINTS.PROJECT.UPLOAD, file, onUploadProgress, cancelToken, timeout);
   }
 

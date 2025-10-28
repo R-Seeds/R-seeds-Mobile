@@ -5,20 +5,23 @@ import { UserProvider } from "@/contexts/UserContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { ChatProvider } from "@/contexts/ChatContext";
+import { LinksProvider } from "@/contexts/LinksContext";
 
 
 export default function RootLayout() {
   return (
     <ToastProvider>
-      <AuthProvider>
-        <ChatProvider>
-          <UserProvider>
-            <ProjectProvider>
-              <Stack screenOptions={{ headerShown: false }} />
-            </ProjectProvider>
-          </UserProvider>
-        </ChatProvider>
-      </AuthProvider>
+      <LinksProvider>
+        <AuthProvider>
+          <ChatProvider>
+            <UserProvider>
+              <ProjectProvider>
+                <Stack screenOptions={{ headerShown: false }} />
+              </ProjectProvider>
+            </UserProvider>
+          </ChatProvider>
+        </AuthProvider>
+      </LinksProvider>
     </ToastProvider>
   )
 }

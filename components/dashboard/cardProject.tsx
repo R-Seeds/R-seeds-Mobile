@@ -7,10 +7,18 @@ import { router } from "expo-router";
 import { Project } from "@/types";
 import { useProjects } from "@/contexts/ProjectContext";
 import { useAuth } from "@/contexts/AuthContext";
+import useProjectAction from "@/hooks/useProjectAction";
+import { share } from "@/lib/share";
 
 export default function CardProject({ project }: { project: Project }) {
     const { setCurrentProject } = useProjects()
     const { userType } = useAuth()
+    console.log(project)
+    const { likeProject, unlikeProject, commentProject, shareProject, addDonor } = useProjectAction()
+    const handleShare = async() => {
+       const res=await share(project)
+       console.log(res)
+    }
     return (
         <View className=" w-full items-center border border-gray-300 rounded-2xl ">
             <View className="flex-row justify-between items-center p-4 w-full ">
@@ -28,19 +36,23 @@ export default function CardProject({ project }: { project: Project }) {
                 resizeMode="cover"
                 className="w-full h-96 rounded-2xl " />
             <View className="items-center flex-row gap-x-6 bg-white rounded-2xl bottom-10 p-4">
-                <TouchableOpacity className="items-center flex-col gap-y-2">
+                <TouchableOpacity className="items-center flex-col gap-y-2"
+                    onPress={() => likeProject(project.id)}>
                     <Entypo name="heart-outlined" size={24} color="white" className="bg-teal-500 p-1 rounded-full" />
                     <Text className="text-sm text-teal-500 font-semibold">{project.interaction.likes}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex-col gap-y-2">
+                <TouchableOpacity className="items-center flex-col gap-y-2"
+                    onPress={() => commentProject(project.id, "test")}>
                     <Ionicons name="chatbubble-outline" size={24} color="white" className="bg-teal-500 p-1 rounded-full" />
                     <Text className="text-sm text-teal-500 font-semibold">{project.interaction.comments.length}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex-col gap-y-2">
+                <TouchableOpacity className="items-center flex-col gap-y-2"
+                    onPress={() => console.log("Not implemented")}>
                     <FontAwesome6 name="bookmark" size={24} color="white" className="bg-teal-500 p-1 rounded-full h-10 w-10 text-center" />
                     <Text className="text-sm text-teal-500 font-semibold">0</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex-col gap-y-2">
+                <TouchableOpacity className="items-center flex-col gap-y-2"
+                    onPress={handleShare}>
                     <Entypo name="forward" size={24} color="white" className="bg-teal-500 p-1 rounded-full" />
                     <Text className="text-sm text-teal-500 font-semibold">{project.interaction.shares}</Text>
                 </TouchableOpacity>
