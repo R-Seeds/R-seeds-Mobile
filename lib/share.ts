@@ -3,7 +3,7 @@ import { Share } from "react-native"
 
 // Legacy functions - consider using useLinks hook instead
 export function getSharePath(data: Project) {
-	return `/project/${data.id}`
+	return `/project/detail?id=${data.id}`
 }
 
 export function getShareUrl(data: Project) {
@@ -21,6 +21,6 @@ export function projectToLinkData(project: Project) {
 	return {
 		id: project.id,
 		type: 'project' as const,
-		path: '/project'
+		path: '/project/details'
 	}
 }

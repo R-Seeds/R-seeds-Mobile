@@ -8,7 +8,7 @@ class ProjectService {
     return await client.get<Project[]>(API_ENDPOINTS.PROJECT.ALL);
   }
 
-  async getProjectById(id: string | number): Promise<ApiResponse<Project>> {
+  async getProjectById(id: string): Promise<ApiResponse<Project>> {
     return await client.get<Project>(API_ENDPOINTS.PROJECT.BY_ID(id));
   }
 
@@ -40,12 +40,11 @@ class ProjectService {
     return await client.post<Project>(API_ENDPOINTS.PROJECT.CREATE, data);
   }
 
-  async updateProject(id: string | number, data: ProjectUpdateRequest): Promise<ApiResponse<Project>> {
-    console.log('service layer', data)
+  async updateProject(id: string, data: ProjectUpdateRequest): Promise<ApiResponse<Project>> {
     return await client.put<Project>(API_ENDPOINTS.PROJECT.UPDATE(id), data);
   }
 
-  async deleteProject(id: string | number): Promise<ApiResponse<void>> {
+  async deleteProject(id: string): Promise<ApiResponse<void>> {
     return await client.delete<void>(API_ENDPOINTS.PROJECT.DELETE(id));
   }
 

@@ -5,7 +5,6 @@ import { UserProvider } from "@/contexts/UserContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { ChatProvider } from "@/contexts/ChatContext";
-import { LinksProvider } from "@/contexts/LinksContext";
 
 
 export default function RootLayout() {
@@ -14,13 +13,11 @@ export default function RootLayout() {
 
       <AuthProvider>
         <ProjectProvider>
-          <LinksProvider>
             <ChatProvider>
               <UserProvider>
                 <Stack screenOptions={{ headerShown: false }} />
               </UserProvider>
             </ChatProvider>
-          </LinksProvider>
         </ProjectProvider>
       </AuthProvider>
     </ToastProvider>
