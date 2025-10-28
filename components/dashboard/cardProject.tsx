@@ -19,7 +19,7 @@ export default function CardProject({ project }: { project: Project }) {
 
     const { likeProject, unlikeProject, commentProject, shareProject, addDonor } = useProjectAction()
 
-      const handleCommentSubmit = async () => {
+    const handleCommentSubmit = async () => {
         if (comment.trim()) {
             await commentProject(project.id, comment)
             setComment('')

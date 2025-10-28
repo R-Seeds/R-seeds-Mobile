@@ -12,6 +12,8 @@
     ]
   },
   "webcredentials": {
-    "apps": ["TEAM_ID.com.rseeds.rseeds"]
+    "apps": [
+      "TEAM_ID.com.rseeds.rseeds"
+    ]
   }
 }
