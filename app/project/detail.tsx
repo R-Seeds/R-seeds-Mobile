@@ -6,10 +6,24 @@ import ProjectMember from "@/components/project/projectMember";
 import { useProjects } from "@/contexts/ProjectContext";
 import { StatusBar } from "expo-status-bar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLinks } from "@/contexts/LinksContext";
+import { projectToLinkData } from "@/lib/share";
 
 export default function ProjectScreen() {
     const { currentProject } = useProjects()
     const { userType } = useAuth()
+    const { shareLink } = useLinks()
+
+    const handleShare = async () => {
+        if (currentProject) {
+            try {
+                const linkData = projectToLinkData(currentProject)
+                await shareLink(linkData, `Check out ${currentProject.title} on R-Seeds!`)
+            } catch (error) {
+                console.error('Error sharing project:', error)
+            }
+        }
+    }
 
     if (!currentProject) return (
         <View className="flex-1 bg-white items-center">
@@ -41,6 +55,12 @@ export default function ProjectScreen() {
                         <Text className="font-bold text-xl">{currentProject?.title}</Text>
                     </View>
                     <View className="flex-row items-center gap-x-2">
+                        <TouchableOpacity
+                            onPress={handleShare}
+                            className="bg-blue-600 p-2 rounded-full"
+                        >
+                            <Ionicons name="share-social" size={16} color="white" />
+                        </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => router.push(`/project/edit`)}
                             className="bg-teal-600 p-2 rounded-full"

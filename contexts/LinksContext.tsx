@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { Linking, Share } from 'react-native'
 import { router } from 'expo-router'
 import { LinkData, ShareableLink, LinksContextType } from '@/types/links'
+import { useProjects } from './ProjectContext'
 
 const LinksContext = createContext<LinksContextType | undefined>(undefined)
 
@@ -12,6 +13,7 @@ interface LinksProviderProps {
 export function LinksProvider({ children }: LinksProviderProps) {
     const [lastHandledLink, setLastHandledLink] = useState<LinkData | null>(null)
     const [isProcessingLink, setIsProcessingLink] = useState(false)
+    const { findById } = useProjects()
 
     // Generate shareable link with both web and deep link versions
     const generateShareLink = (data: LinkData): ShareableLink => {
@@ -40,7 +42,7 @@ export function LinksProvider({ children }: LinksProviderProps) {
         return `${scheme}${path.substring(1)}` // Remove leading slash
     }
 
-    // Build path from LinkData
+    // Build path from LinkData - simplified for /project/id format
     const buildPath = (data: LinkData): string => {
         let path = data.path
 
@@ -92,14 +94,14 @@ export function LinksProvider({ children }: LinksProviderProps) {
 
             if (pathSegments.length < 2) return null
 
-            const [type, action, id] = pathSegments
+            const [type, id] = pathSegments
 
-            // Handle project links
-            if (type === 'project' && action === 'spotlight' && id) {
+            // Handle project links - simplified to /project/id
+            if (type === 'project' && id) {
                 return {
                     id,
                     type: 'project',
-                    path: '/project/spotlight',
+                    path: '/project',
                     params: Object.fromEntries(parsedUrl.searchParams)
                 }
             }
@@ -131,37 +133,19 @@ export function LinksProvider({ children }: LinksProviderProps) {
         }
     }
 
-    // Handle incoming deep link
-    const handleIncomingLink = async (url: string): Promise<boolean> => {
-        setIsProcessingLink(true)
-
-        try {
-            const linkData = parseLink(url)
-            if (!linkData) {
-                console.warn('Unable to parse link:', url)
-                return false
-            }
-            console.log(url)
-
-            setLastHandledLink(linkData)
-            navigateToLink(linkData)
-            return true
-        } catch (error) {
-            console.error('Error handling incoming link:', error)
-            return false
-        } finally {
-            setIsProcessingLink(false)
-        }
-    }
+    // Use ProjectContext findById method
+    const findProjectById = useCallback((projectId: string) => {
+        findById(projectId)
+    }, [findById])
 
     // Navigate to link destination
-    const navigateToLink = (data: LinkData) => {
+    const navigateToLink = useCallback((data: LinkData) => {
         try {
             let route = ''
 
             switch (data.type) {
                 case 'project':
-                    route = `/project/detail?id=${data.id}`
+                    route = `/project/detail`
                     break
                 case 'user':
                     route = `/user/profile?id=${data.id}`
@@ -178,7 +162,36 @@ export function LinksProvider({ children }: LinksProviderProps) {
         } catch (error) {
             console.error('Error navigating to link:', error)
         }
-    }
+    }, [])
+
+    // Handle incoming deep link
+    const handleIncomingLink = useCallback(async (url: string): Promise<boolean> => {
+        setIsProcessingLink(true)
+
+        try {
+            const linkData = parseLink(url)
+            if (!linkData) {
+                console.warn('Unable to parse link:', url)
+                return false
+            }
+            console.log('Handling deep link:', url)
+
+            // Find and set current project if it's a project link
+            if (linkData.type === 'project' && linkData.id) {
+                console.log('Using ProjectContext findById for project:', linkData.id)
+                findProjectById(linkData.id)
+            }
+
+            setLastHandledLink(linkData)
+            navigateToLink(linkData)
+            return true
+        } catch (error) {
+            console.error('Error handling incoming link:', error)
+            return false
+        } finally {
+            setIsProcessingLink(false)
+        }
+    }, [findProjectById, navigateToLink])
 
     // Share link using native share
     const shareLink = async (data: LinkData, customMessage?: string): Promise<void> => {

@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useContext, useState, useEffect, useMemo } from "react"
 import { Project, ProjectCategory, ProjectStatus } from "@/types"
 import { projectService } from "@/services"
-import { router } from "expo-router"
 import { useAuth } from "./AuthContext"
 
 interface ProjectContextType {
@@ -14,6 +13,7 @@ interface ProjectContextType {
     selectedCategory: ProjectCategory | null
     selectedStatus: ProjectStatus | null
     loading: boolean
+    findById: (id: string) => void
     setCurrentProject: (project: Project | null) => void
     setSelectedCategory: (category: ProjectCategory | null) => void
     setSelectedStatus: (status: ProjectStatus | null) => void
@@ -172,8 +172,17 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    const findById = (id: string) => {
+        const project = projects.find(project => project.id === id)
+        if(!project){
+            console.log("project lost")
+            return
+        }
+        setCurrentProject(project)
+    }
+
     useEffect(() => {
-        if(isAuthenticated){
+        if (isAuthenticated) {
             fetchProjects()
             fetchTrendingProjects()
             fetchSpotlighProjects()
@@ -183,6 +192,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
     return (
         <ProjectContext.Provider value={{
+            findById,
             projects,
             filteredProjects,
             myProjects,

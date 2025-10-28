@@ -11,17 +11,18 @@ import { LinksProvider } from "@/contexts/LinksContext";
 export default function RootLayout() {
   return (
     <ToastProvider>
-      <LinksProvider>
-        <AuthProvider>
-          <ChatProvider>
-            <UserProvider>
-              <ProjectProvider>
+
+      <AuthProvider>
+        <ProjectProvider>
+          <LinksProvider>
+            <ChatProvider>
+              <UserProvider>
                 <Stack screenOptions={{ headerShown: false }} />
-              </ProjectProvider>
-            </UserProvider>
-          </ChatProvider>
-        </AuthProvider>
-      </LinksProvider>
+              </UserProvider>
+            </ChatProvider>
+          </LinksProvider>
+        </ProjectProvider>
+      </AuthProvider>
     </ToastProvider>
   )
 }
