@@ -48,24 +48,24 @@ class ProjectService {
     return await client.delete<void>(API_ENDPOINTS.PROJECT.DELETE(id));
   }
 
-  async likeProject(id: string): Promise<ApiResponse<void>> {
-    return await client.put<void>(API_ENDPOINTS.PROJECT.LIKE(id));
+  async likeProject(id: string): Promise<ApiResponse<Project>> {
+    return await client.put<Project>(API_ENDPOINTS.PROJECT.LIKE(id));
   }
 
-  async unlikeProject(id: string): Promise<ApiResponse<void>> {
-    return await client.put<void>(API_ENDPOINTS.PROJECT.DISLIKE(id));
+  async unlikeProject(id: string): Promise<ApiResponse<Project>> {
+    return await client.put<Project>(API_ENDPOINTS.PROJECT.DISLIKE(id));
   }
 
-  async commentProject(id: string, data: string): Promise<ApiResponse<void>> {
-    return await client.put<void>(API_ENDPOINTS.PROJECT.COMMENT(id), { comment: data });
+  async commentProject(id: string, data: string): Promise<ApiResponse<Project>> {
+    return await client.put<Project>(API_ENDPOINTS.PROJECT.COMMENT(id), { comment: data });
   }
 
-  async shareProject(id: string): Promise<ApiResponse<void>> {
-    return await client.put<void>(API_ENDPOINTS.PROJECT.SHARE(id));
+  async shareProject(id: string): Promise<ApiResponse<Project>> {
+    return await client.put<Project>(API_ENDPOINTS.PROJECT.SHARE(id));
   }
 
-  async addDonor(id: string, data: string): Promise<ApiResponse<void>> {
-    return await client.put<void>(API_ENDPOINTS.PROJECT.ADD_DONOR(id), { donor: data });
+  async addDonor(id: string, data: string): Promise<ApiResponse<Project>> {
+    return await client.put<Project>(API_ENDPOINTS.PROJECT.ADD_DONOR(id), { donor: data });
   }
 
   async uploadProjectAvatar(

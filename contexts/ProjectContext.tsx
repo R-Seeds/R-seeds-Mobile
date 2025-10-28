@@ -26,6 +26,9 @@ interface ProjectContextType {
     fetchProjectsByCategory: (category: string) => Promise<void>
     fetchProjectsByStatus: (status: string) => Promise<void>
     searchProjects: (title: string) => Promise<void>
+    addProject: (project: Project) => void
+    updateProject: (project: Project) => void
+    deleteProject: (id: string) => void
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null)
@@ -176,10 +179,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
     const findById = async (id: string) => {
         try {
-            console.log('loading project of ours',id)
+            console.log('loading project of ours', id)
             setLoading(true)
             const response = await projectService.getProjectById(id)
-            console.log('project of ours',response)
+            console.log('project of ours', response)
             if (!response.success || !response.data) {
                 showToast({
                     title: "Error",
@@ -199,6 +202,21 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         } finally {
             setLoading(false)
         }
+    }
+
+    const addProject = (project: Project) => {
+        setMyProjects(prev => [...prev, project])
+        setProjects(prev => [...prev, project])
+    }
+
+    const updateProject = (project: Project) => {
+        setMyProjects(prev => prev.map(project => project.id === project.id ? project : project))
+        setProjects(prev => prev.map(project => project.id === project.id ? project : project))
+    }
+
+    const deleteProject = (id: string) => {
+        setMyProjects(prev => prev.filter(project => project.id !== id))
+        setProjects(prev => prev.filter(project => project.id !== id))
     }
 
     useEffect(() => {
@@ -232,7 +250,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             fetchTrendingProjects,
             fetchProjectsByCategory,
             fetchProjectsByStatus,
-            searchProjects
+            searchProjects,
+            addProject,
+            updateProject,
+            deleteProject
         }}>
             {children}
         </ProjectContext.Provider>
