@@ -50,7 +50,7 @@ export default function ProjectScreen() {
                 onPress={() => router.back()}>
                 <FontAwesome5 name="chevron-left" size={24} color="white" className="text-center " />
             </TouchableOpacity>
-            <Image source={{ uri: currentProject?.logo }}
+            <Image source={{ uri: currentProject.logo }}
                 className="w-full h-[60%]"
                 resizeMode="cover"
             />
@@ -59,7 +59,7 @@ export default function ProjectScreen() {
                 showsVerticalScrollIndicator={false}>
                 <View className="flex-row justify-between items-center">
                     <View className="flex-1">
-                        <Text className="font-bold text-xl">{currentProject?.title}</Text>
+                        <Text className="font-bold text-xl">{currentProject.title}</Text>
                     </View>
                     <View className="flex-row items-center gap-x-2">
                         <TouchableOpacity
@@ -74,7 +74,9 @@ export default function ProjectScreen() {
                         >
                             <Ionicons name="pencil" size={16} color="white" />
                         </TouchableOpacity>
-                        <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">{currentProject?.category}</Text>
+                        <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">
+                            {currentProject.category}
+                            </Text>
                     </View>
                 </View>
                 <View className="flex-col gap-y-2">
@@ -83,19 +85,20 @@ export default function ProjectScreen() {
                             className="h-full bg-teal-500 rounded-full"
                             style={{ width: `${Math.min(progress * 100, 100)}%` }}
                         />
-                    </View>  <View className="flex-row justify-between">
+                    </View>  
+                    <View className="flex-row justify-between">
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Fund Raised</Text>
-                            <Text className="font-bold text-lg">${currentProject?.fundingInfo.raised}</Text>
+                            <Text className="font-bold text-lg">${currentProject.fundingInfo.raised}</Text>
                         </View>
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Target</Text>
-                            <Text className="font-bold text-lg text-teal-500">${currentProject?.fundingInfo.goal}</Text>
+                            <Text className="font-bold text-lg text-teal-500">${currentProject.fundingInfo.goal}</Text>
                         </View>
                     </View>
                 </View>
                 <Text className="font-semibold">
-                    {currentProject?.description}
+                    {currentProject.description}
                 </Text>
                 <View className="flex-row gap-x-2 items-start">
                     <View className=" flex-row gap-x-1 items-center">
@@ -116,12 +119,12 @@ export default function ProjectScreen() {
                         <Ionicons name="arrow-forward" size={15} color="black" />
                     </View>
                     <Text className=" test-sm flex-1">
-                        {currentProject?.vision}
+                        {currentProject.vision}
                     </Text>
                 </View>
                 <View className="items-center gap-y-2">
                     <Text className="font-bold text-xl text-teal-500">Key Features</Text>
-                    {currentProject?.keyFeature.split(',').map((feature, index) => (
+                    {currentProject.keyFeature.split(',').map((feature, index) => (
                         <View className="flex-row gap-x-2 items-center" key={index}>
                             <Octicons name="dot-fill" size={15} color="black" />
                             <Text className="test-sm flex-1">
@@ -134,7 +137,7 @@ export default function ProjectScreen() {
                     <Text className="font-bold text-xl text-teal-500 w-full">Team</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
                         contentContainerClassName="gap-x-4">
-                        {currentProject?.team && currentProject.team.length > 0 ? (
+                        {currentProject.team && currentProject.team.length > 0 ? (
                             currentProject.team.map((member, index) => (
                                 <ProjectMember key={index} member={member} />
                             ))
@@ -192,7 +195,7 @@ export default function ProjectScreen() {
                                 <View className="flex-row gap-x-2 items-center">
                                     <Text className="font-bold text-teal-500 ">Total funds:
                                     </Text>
-                                    <Text className="">${currentProject?.milestones[0].budget}</Text>
+                                    <Text className="">${currentProject.milestones[0].budget}</Text>
                                 </View>
                             </View>
                         </View>
@@ -203,19 +206,19 @@ export default function ProjectScreen() {
                     <View className="w-full ml-4">
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Project Name:</Text>
-                            <Text>{currentProject?.title}</Text>
+                            <Text>{currentProject.title}</Text>
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Funding Goal:</Text>
-                            <Text>${currentProject?.fundingInfo.goal}</Text>
+                            <Text>${currentProject.fundingInfo.goal}</Text>
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Current raised:</Text>
-                            <Text>${currentProject?.fundingInfo.raised}</Text>
+                            <Text>${currentProject.fundingInfo.raised}</Text>
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Donors:</Text>
-                            <Text>{currentProject?.donors.length} contributors</Text>
+                            <Text>{currentProject.donors.length} contributors</Text>
                         </View>
                     </View>
                 </View>
