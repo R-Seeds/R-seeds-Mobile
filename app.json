@@ -11,7 +11,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rseeds.rseeds",
-      "associatedDomains": ["applinks:rseeds.app"]
+      "associatedDomains": [
+        "applinks:rseeds.app"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +36,10 @@
               "pathPrefix": "/project"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -63,7 +68,8 @@
           "iosUrlScheme": "com.googleusercontent.apps."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
