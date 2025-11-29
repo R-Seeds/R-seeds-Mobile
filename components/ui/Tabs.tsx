@@ -7,6 +7,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, usePathname } from "expo-router";
 import { JSX } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserType } from "@/types";
 
 interface Tab {
     name: string,
@@ -15,6 +17,7 @@ interface Tab {
 }
 
 export default function TabNavigation() {
+    const { userType } = useAuth()
     const pathname = usePathname();
     const isCurrentScreen = (data: string) => pathname === data
 
@@ -30,9 +33,9 @@ export default function TabNavigation() {
             onPress: () => router.push('/project')
         },
         {
-            name: '/project/funding',
-            icon: <Octicons name="database" size={30} color={isCurrentScreen('/project/funding') ? "teal" : "gray"} />,
-            onPress: () => router.push('/project/funding')
+            name: userType === UserType.SPONSOR ? '/project/contribution' : '/project/funding',
+            icon: <Octicons name="database" size={30} color={isCurrentScreen(userType === UserType.SPONSOR ? '/project/contribution' : '/project/funding') ? "teal" : "gray"} />,
+            onPress: () => router.push(userType === UserType.SPONSOR ? '/project/contribution' : '/project/funding')
         },
         {
             name: '/chat',

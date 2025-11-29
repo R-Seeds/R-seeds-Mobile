@@ -36,6 +36,12 @@ export const ProjectCategoryOptions: DropdownOption<ProjectCategory>[] = [
     { label: "Government", value: ProjectCategory.GOVERNMENT },
 ];
 
+export const PaymentMethodOptions:DropdownOption<string>[] = [
+    { label: "Bank Transfer", value: "Bank Transfer" },
+    { label: "Mobile Money", value: "Mobile Money" },
+    { label: "Cash", value: "Cash" },
+]
+
 export const ProjectStatusOptions: DropdownOption<ProjectStatus>[] = [
     { label: "Active", value: ProjectStatus.ACTIVE },
     { label: "Archived", value: ProjectStatus.ARCHIVED },

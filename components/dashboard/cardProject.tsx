@@ -9,12 +9,14 @@ import { useProjects } from "@/contexts/ProjectContext";
 import { useAuth } from "@/contexts/AuthContext";
 import useProjectAction from "@/hooks/useProjectAction";
 import { useState } from "react";
+import FundingModal from "../modals/FundingModal";
 
 export default function CardProject({ project }: { project: Project }) {
     const { setCurrentProject } = useProjects()
     const { userType } = useAuth()
 
     const [modalVisible, setModalVisible] = useState(false)
+    const [showFundingModal, setShowFundingModal] = useState(false)
     const [comment, setComment] = useState('')
 
     const { likeProject, unlikeProject, commentProject, shareProject, addDonor } = useProjectAction()
@@ -91,12 +93,18 @@ export default function CardProject({ project }: { project: Project }) {
                     onPress={() => { setCurrentProject(project); router.push('/project/spotlight') }}>
                     <Text className="text-teal-500 font-semibold">View Project</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="bg-teal-500 flex-1 px-4 py-2 rounded-xl items-center">
+                <TouchableOpacity className="bg-teal-500 flex-1 px-4 py-2 rounded-xl items-center"
+                    onPress={() => setShowFundingModal(true)}>
                     <Text className="text-white font-semibold">
                         {userType === "SPONSOR" ? "Fund Now" : "Follow"}
                     </Text>
                 </TouchableOpacity>
             </View>
+            {showFundingModal && <FundingModal
+                onClose={() => setShowFundingModal(false)}
+                project={project}
+                visible={showFundingModal}
+            />}
             <Modal
                 animationType="slide"
                 transparent={true}

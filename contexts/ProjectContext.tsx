@@ -8,6 +8,7 @@ interface ProjectContextType {
     projects: Project[]
     filteredProjects: Project[]
     myProjects: Project[]
+    contributionProjects: Project[]
     trendingProjects: Project[]
     spotlightProjects: Project[]
     currentProject: Project | null
@@ -38,6 +39,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useAuth()
     const [projects, setProjects] = useState<Project[]>([])
     const [myProjects, setMyProjects] = useState<Project[]>([])
+    const [contributionProjects, setContributionProjects] = useState<Project[]>([])
     const [trendingProjects, setTrendingProjects] = useState<Project[]>([])
     const [spotlightProjects, setSpotlightProjects] = useState<Project[]>([])
     const [currentProject, setCurrentProject] = useState<Project | null>(null)
@@ -239,6 +241,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             projects,
             filteredProjects,
             myProjects,
+            contributionProjects,
             trendingProjects,
             spotlightProjects,
             currentProject,

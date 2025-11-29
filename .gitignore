@@ -8,5 +8,4 @@ expo-env.d.ts
 .expo
 .vscode
 android/
-android
 ios
