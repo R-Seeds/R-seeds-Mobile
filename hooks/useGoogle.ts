@@ -29,7 +29,6 @@ export default function GoogleAuth() {
         try {
             const response = await GoogleLogin();
             if (!response) return null
-
             // retrieve user data
             const { idToken, user } = response.data ?? {};
             if (idToken) {
