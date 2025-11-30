@@ -1,5 +1,5 @@
 import { Donation } from "./donation"
-import { Graduate, Sponsor, User } from "./user"
+import { Graduate, User } from "./user"
 
 export enum MilestoneStatus {
     IN_PROGRESS = "IN_PROGRESS",

@@ -5,9 +5,14 @@ import { UserProvider } from "@/contexts/UserContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { ChatProvider } from "@/contexts/ChatContext";
+import * as NavigationBar from "expo-navigation-bar";
+import { useEffect } from "react";
 
 
 export default function RootLayout() {
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync('hidden')
+  }, []);
   return (
     <ToastProvider>
 
