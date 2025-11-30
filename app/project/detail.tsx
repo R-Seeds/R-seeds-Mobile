@@ -31,6 +31,7 @@ export default function ProjectScreen() {
             </TouchableOpacity>
         </View>
     )
+    console.log(currentProject)
     if (!currentProject) return (
         <View className="flex-1 bg-white items-center justify-center">
             <Text className="text-gray-500 text-center">No project selected</Text>
@@ -218,7 +219,7 @@ export default function ProjectScreen() {
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Donors:</Text>
-                            <Text>{currentProject.donors.length} contributors</Text>
+                            <Text>{currentProject.donations.length} contributors</Text>
                         </View>
                     </View>
                 </View>
