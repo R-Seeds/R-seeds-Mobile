@@ -36,9 +36,10 @@ export const API_ENDPOINTS = {
     DISLIKE: (id: string) => `/projects/${id}/unlike`,
     COMMENT: (id: string) => `/projects/${id}/comment`,
     SHARE: (id: string) => `/projects/${id}/share`,
-    ADD_DONOR: (id: string) => `/projects/${id}/donor`,
-    
-  },
+  }, DONATION: {
+    DONATE: '/donations'
+  }
+  ,
   USER: {
     ALL: '/users',
     ME: '/users/me',

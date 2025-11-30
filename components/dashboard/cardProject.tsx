@@ -19,7 +19,7 @@ export default function CardProject({ project }: { project: Project }) {
     const [showFundingModal, setShowFundingModal] = useState(false)
     const [comment, setComment] = useState('')
 
-    const { likeProject, unlikeProject, commentProject, shareProject, addDonor } = useProjectAction()
+    const { likeProject, commentProject, shareProject } = useProjectAction()
 
     const handleCommentSubmit = async () => {
         if (comment.trim()) {

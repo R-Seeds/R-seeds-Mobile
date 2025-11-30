@@ -1,4 +1,4 @@
-import { PaymentMethodOptions, Project } from "@/types";
+import { CreateDonation, PaymentMethodOptions, Project } from "@/types";
 import { useEffect, useState } from "react";
 import {
     Modal,
@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 import DropdownInput from "../ui/DropDownInput";
+import { useDonation } from "@/hooks/useDonation";
 
 // ============================================================================
 // Types & Interfaces
@@ -22,7 +23,7 @@ interface Props {
 
 interface ConfirmationViewProps {
     project: Project;
-    amount: string;
+    amount: number;
     paymentMethod: string;
     ready: boolean;
     buttonClassName: string;
@@ -36,11 +37,11 @@ interface ConfirmationRowProps {
 
 interface FundingFormViewProps {
     project: Project;
-    amount: string;
+    amount: number;
     paymentMethod: string;
     ready: boolean;
     buttonClassName: string;
-    onAmountChange: (value: string) => void;
+    onAmountChange: (value: number) => void;
     onPaymentMethodChange: (value: string) => void;
     onContinue: () => void;
 }
@@ -55,8 +56,10 @@ interface PaymentSuccessfulProps {
 // ============================================================================
 
 export default function FundingModal({ visible, project, onClose }: Props) {
+
+    const { donate } = useDonation()
     // State management
-    const [amount, setAmount] = useState("");
+    const [amount, setAmount] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState("");
     const [ready, setReady] = useState(false);
     const [showConfirmBox, setShowConfirmBox] = useState(false);
@@ -77,7 +80,13 @@ export default function FundingModal({ visible, project, onClose }: Props) {
         setShowConfirmBox(true);
     };
 
-    const handleSuccessClose = () => {
+    const handleSuccessClose = async () => {
+        const data: CreateDonation = {
+            projectId: project.id,
+            paymentMethod,
+            amount
+        }
+        await donate(data)
         setShowSuccessBox(false);
         onClose();
     };
@@ -170,8 +179,8 @@ function FundingFormView({
                         placeholder="Enter funding goal amount"
                         className="bg-white rounded-lg px-3 py-3 border border-gray-200"
                         keyboardType="numeric"
-                        value={amount}
-                        onChangeText={onAmountChange}
+                        value={amount.toString()}
+                        onChangeText={(data) => onAmountChange(Number(data))}
                     />
                 </View>
 
@@ -219,7 +228,7 @@ function ConfirmationView({
 
             <View className="space-y-4">
                 <ConfirmationRow label="Project" value={project.title} />
-                <ConfirmationRow label="Amount" value={amount} />
+                <ConfirmationRow label="Amount" value={amount.toString()} />
                 <ConfirmationRow label="Payment Method" value={paymentMethod} />
             </View>
 

@@ -3,4 +3,4 @@ export * from './client'
 export * from './constants'
 export * from './project'
 export * from './user'
-
+export * from './donation'

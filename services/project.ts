@@ -64,9 +64,6 @@ class ProjectService {
     return await client.put<Project>(API_ENDPOINTS.PROJECT.SHARE(id));
   }
 
-  async addDonor(id: string, data: string): Promise<ApiResponse<Project>> {
-    return await client.put<Project>(API_ENDPOINTS.PROJECT.ADD_DONOR(id), { donor: data });
-  }
 
   async uploadProjectAvatar(
     file: string,

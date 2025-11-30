@@ -9,7 +9,7 @@ import { useProjects } from "@/contexts/ProjectContext";
 export default function GraduateDashboard() {
     const data = useProjects();
     const spotlightProjects = data?.spotlightProjects
-    const projects=data?.projects
+    const projects = data?.projects
     return (
         <View className="flex-1 bg-white">
             <Header />
