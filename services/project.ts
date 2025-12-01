@@ -1,4 +1,4 @@
-import { Project, ProjectCreateRequest, ApiResponse, ProjectUpdateRequest } from '@/types';
+import { Project, ProjectCreateRequest, ApiResponse, ProjectUpdateRequest, DonorProject } from '@/types';
 import { client } from './client';
 import { API_ENDPOINTS } from './constants';
 import { AxiosProgressEvent, CancelToken } from 'axios';
@@ -6,6 +6,10 @@ import { AxiosProgressEvent, CancelToken } from 'axios';
 class ProjectService {
   async getProjects(): Promise<ApiResponse<Project[]>> {
     return await client.get<Project[]>(API_ENDPOINTS.PROJECT.ALL);
+  }
+
+  async getDonorProjects(): Promise<ApiResponse<DonorProject[]>> {
+    return await client.get<DonorProject[]>(API_ENDPOINTS.PROJECT.DONOR);
   }
 
   async getProjectById(id: string): Promise<ApiResponse<Project>> {
@@ -64,9 +68,6 @@ class ProjectService {
     return await client.put<Project>(API_ENDPOINTS.PROJECT.SHARE(id));
   }
 
-  async addDonor(id: string, data: string): Promise<ApiResponse<Project>> {
-    return await client.put<Project>(API_ENDPOINTS.PROJECT.ADD_DONOR(id), { donor: data });
-  }
 
   async uploadProjectAvatar(
     file: string,

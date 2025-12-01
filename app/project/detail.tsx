@@ -6,21 +6,31 @@ import ProjectMember from "@/components/project/projectMember";
 import { useProjects } from "@/contexts/ProjectContext";
 import { StatusBar } from "expo-status-bar";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useProjectAction from "@/hooks/useProjectAction";
+import FundingModal from "@/components/modals/FundingModal";
 
 export default function ProjectScreen() {
     const { currentProject, loading, findById } = useProjects()
     const { shareProject } = useProjectAction()
+    const [showFundingModal, setShowFundingModal] = useState(false)
+
     const params = useLocalSearchParams()
     const id = params.id as string
-    const { userType } = useAuth()
+    const { userType, user } = useAuth()
 
     useEffect(() => {
         if (!id) return
         findById(id)
     }, [id])
 
+    const handleFundFollowBtn = () => {
+        if (userType === "SPONSOR") {
+            setShowFundingModal(true)
+        } else {
+
+        }
+    }
 
     if (loading) return (
         <View className="flex-1 bg-white items-center justify-center">
@@ -40,7 +50,8 @@ export default function ProjectScreen() {
             </TouchableOpacity>
         </View>
     )
-
+    const isOwner = user && (user.id === currentProject.owner.id)
+    console.log(user, currentProject.owner)
     const progress = currentProject.fundingInfo.raised / currentProject.fundingInfo.goal
 
     return (
@@ -68,15 +79,16 @@ export default function ProjectScreen() {
                         >
                             <Ionicons name="share-social" size={16} color="white" />
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        {isOwner && <TouchableOpacity
                             onPress={() => router.push(`/project/edit`)}
                             className="bg-teal-600 p-2 rounded-full"
                         >
                             <Ionicons name="pencil" size={16} color="white" />
                         </TouchableOpacity>
+                        }
                         <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">
                             {currentProject.category}
-                            </Text>
+                        </Text>
                     </View>
                 </View>
                 <View className="flex-col gap-y-2">
@@ -85,7 +97,7 @@ export default function ProjectScreen() {
                             className="h-full bg-teal-500 rounded-full"
                             style={{ width: `${Math.min(progress * 100, 100)}%` }}
                         />
-                    </View>  
+                    </View>
                     <View className="flex-row justify-between">
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Fund Raised</Text>
@@ -218,7 +230,7 @@ export default function ProjectScreen() {
                         </View>
                         <View className="gap-x-2 items-center w-full flex-row">
                             <Text className="font-bold">Donors:</Text>
-                            <Text>{currentProject.donors.length} contributors</Text>
+                            <Text>{currentProject.donations.length} contributors</Text>
                         </View>
                     </View>
                 </View>
@@ -234,7 +246,14 @@ export default function ProjectScreen() {
                     </View>
                 </View>
             </ScrollView>
-            <TouchableOpacity className="absolute bottom-14  bg-teal-500/80 py-4 px-8 rounded-full">
+            {showFundingModal && <FundingModal
+                onClose={() => setShowFundingModal(false)}
+                project={currentProject}
+                visible={showFundingModal}
+            />}
+            <TouchableOpacity className="absolute bottom-14  bg-teal-500/80 py-4 px-8 rounded-full"
+                onPress={handleFundFollowBtn}
+            >
                 <Text className="text-white font-semibold text-lg">
                     {userType === "SPONSOR" ? "Contribute" : "Follow"}
                 </Text>

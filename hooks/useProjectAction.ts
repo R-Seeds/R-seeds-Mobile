@@ -7,7 +7,7 @@ import { share } from "@/lib/share";
 import { useProjects } from "@/contexts/ProjectContext";
 
 export default function useProjectAction() {
-    const { addProject, updateProject: editProject, deleteProject } = useProjects()
+    const { addProject, updateProject: editProject } = useProjects()
     const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
 
@@ -46,7 +46,6 @@ export default function useProjectAction() {
         try {
             setLoading(true);
 
-            console.log('updating project', data)
             const response = await projectService.updateProject(id, data);
             if (!response.success || !response.data) {
                 showToast({
@@ -87,7 +86,6 @@ export default function useProjectAction() {
                 });
                 return
             }
-            console.log('liking project',response)
             showToast({
                 type: "success",
                 title: "Success",
@@ -202,38 +200,6 @@ export default function useProjectAction() {
         }
     }
 
-    const addDonor = async (id: string, data: string) => {
-        try {
-            setLoading(true);
-            const response = await projectService.addDonor(id, data)
-            if (!response.success || !response.data) {
-                showToast({
-                    type: "error",
-                    title: "Error",
-                    message: "Failed to create project. Please try again."
-                });
-                return
-            }
-            showToast({
-                type: "success",
-                title: "Success",
-                message: "Project donor added successfully!"
-            });
-            editProject(response.data)
-
-            router.back();
-        } catch (error) {
-            console.error(error)
-            showToast({
-                type: "error",
-                title: "Error",
-                message: "Failed to add donor. Please try again."
-            });
-        } finally {
-            setLoading(false);
-        }
-    }
-
     return {
         createProject,
         updateProject,
@@ -242,7 +208,6 @@ export default function useProjectAction() {
         unlikeProject,
         commentProject,
         shareProject,
-        addDonor
     }
 
 }

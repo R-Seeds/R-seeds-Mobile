@@ -19,7 +19,7 @@ export default function CardProject({ project }: { project: Project }) {
     const [showFundingModal, setShowFundingModal] = useState(false)
     const [comment, setComment] = useState('')
 
-    const { likeProject, unlikeProject, commentProject, shareProject, addDonor } = useProjectAction()
+    const { likeProject, commentProject, shareProject } = useProjectAction()
 
     const handleCommentSubmit = async () => {
         if (comment.trim()) {
@@ -28,6 +28,14 @@ export default function CardProject({ project }: { project: Project }) {
             setModalVisible(false)
         } else {
             Alert.alert('Error', 'Please enter a comment')
+        }
+    }
+
+    const handleFundFollowBtn = () => {
+        if (userType === "SPONSOR") {
+            setShowFundingModal(true)
+        } else {
+
         }
     }
 
@@ -94,7 +102,7 @@ export default function CardProject({ project }: { project: Project }) {
                     <Text className="text-teal-500 font-semibold">View Project</Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="bg-teal-500 flex-1 px-4 py-2 rounded-xl items-center"
-                    onPress={() => setShowFundingModal(true)}>
+                    onPress={() => handleFundFollowBtn()}>
                     <Text className="text-white font-semibold">
                         {userType === "SPONSOR" ? "Fund Now" : "Follow"}
                     </Text>

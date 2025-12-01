@@ -127,7 +127,6 @@ class ApiClient {
             const response = await this.axiosInstance.post<ApiResponse<T>>(endpoint, data);
             return response.data;
         } catch (error) {
-
             throw error;
         }
     }

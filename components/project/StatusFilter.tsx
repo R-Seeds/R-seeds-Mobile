@@ -8,7 +8,7 @@ export default function StatusFilter() {
 
     const handleStatusPress = (status: ProjectStatus) => {
         if (selectedStatus === status) {
-            clearStatusFilter(); // If same status is pressed, clear filter
+            clearStatusFilter();
         } else {
             setSelectedStatus(status);
         }

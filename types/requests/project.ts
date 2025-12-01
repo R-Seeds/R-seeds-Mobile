@@ -31,3 +31,9 @@ export interface ProjectUpdateRequest {
     milestones: Milestone[];
     logo: string
 }
+
+export interface CreateDonation {
+    projectId: string
+    amount: number
+    paymentMethod: string
+}
