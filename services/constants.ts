@@ -1,7 +1,7 @@
 // API Configuration Constants
 
-// const SERVER_URL="https://r-seeds-backend.onrender.com"
-const SERVER_URL = 'http://10.12.72.132:5050'
+const SERVER_URL="https://r-seeds-backend.onrender.com"
+// const SERVER_URL = 'http://10.12.72.132:5050'
 
 export const API_CONFIG = {
   BASE_URL: SERVER_URL,
