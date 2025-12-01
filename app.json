@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "R-SEEDS",
-    "slug": "mobile",
+    "slug": "rseeds",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -78,9 +78,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "a1cbd8ef-35ad-4aad-bfe6-eb15a461f2c7"
+        "projectId": "c7c257ea-c666-46e0-ac44-0169ea50e66b"
       }
     },
-    "owner": "rseeds"
+    "owner": "contribution"
   }
 }
