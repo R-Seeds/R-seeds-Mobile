@@ -17,7 +17,7 @@ export default function ProjectScreen() {
 
     const params = useLocalSearchParams()
     const id = params.id as string
-    const { userType } = useAuth()
+    const { userType, user } = useAuth()
 
     useEffect(() => {
         if (!id) return
@@ -50,7 +50,8 @@ export default function ProjectScreen() {
             </TouchableOpacity>
         </View>
     )
-
+    const isOwner = user && (user.id === currentProject.owner.id)
+    console.log(user, currentProject.owner)
     const progress = currentProject.fundingInfo.raised / currentProject.fundingInfo.goal
 
     return (
@@ -78,12 +79,13 @@ export default function ProjectScreen() {
                         >
                             <Ionicons name="share-social" size={16} color="white" />
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        {isOwner && <TouchableOpacity
                             onPress={() => router.push(`/project/edit`)}
                             className="bg-teal-600 p-2 rounded-full"
                         >
                             <Ionicons name="pencil" size={16} color="white" />
                         </TouchableOpacity>
+                        }
                         <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">
                             {currentProject.category}
                         </Text>
