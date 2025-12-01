@@ -6,11 +6,14 @@ import { useToast } from "@/contexts/ToastContext";
 import TabNavigation from "@/components/ui/Tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProjects } from "@/contexts/ProjectContext";
+import ConfirmModal from "@/components/modals/ConfirmModal";
+import { useState } from "react";
 
 export default function ProfileScreen() {
     const { showToast } = useToast();
     const { logout, user, userType } = useAuth();
     const { myProjects } = useProjects();
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const handleSavedProjectsPress = () => {
         router.push('/project/myProject');
@@ -57,12 +60,12 @@ export default function ProfileScreen() {
     };
 
     const handleLogoutPress = () => {
-        showToast({
-            title: "Logout",
-            message: "Are you sure you want to logout?",
-            type: "success"
-        });
+        setShowConfirmModal(true)
+    };
+
+    const handleConfirmLogout = () => {
         logout()
+        setShowConfirmModal(false)
     };
 
     if (!user) return
@@ -216,7 +219,13 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-
+            <ConfirmModal
+                visible={showConfirmModal}
+                title="Logout"
+                message="Are you sure you want to logout?"
+                onConfirm={handleConfirmLogout}
+                onCancel={() => setShowConfirmModal(false)}
+            />
             <TabNavigation />
         </View>
     )

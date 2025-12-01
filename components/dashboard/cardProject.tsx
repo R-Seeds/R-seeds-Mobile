@@ -31,6 +31,14 @@ export default function CardProject({ project }: { project: Project }) {
         }
     }
 
+    const handleFundFollowBtn = () => {
+        if (userType === "SPONSOR") {
+            setShowFundingModal(true)
+        } else {
+
+        }
+    }
+
     const handleCommentCancel = () => {
         setComment('')
         setModalVisible(false)
@@ -94,7 +102,7 @@ export default function CardProject({ project }: { project: Project }) {
                     <Text className="text-teal-500 font-semibold">View Project</Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="bg-teal-500 flex-1 px-4 py-2 rounded-xl items-center"
-                    onPress={() => setShowFundingModal(true)}>
+                    onPress={() => handleFundFollowBtn()}>
                     <Text className="text-white font-semibold">
                         {userType === "SPONSOR" ? "Fund Now" : "Follow"}
                     </Text>

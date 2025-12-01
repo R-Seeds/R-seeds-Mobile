@@ -17,11 +17,14 @@ export default function GoogleAuth() {
         try {
             await GoogleSignin.hasPlayServices();
 
-            // initiates signIn process
+            // Sign out first to clear cached account selection
+            await GoogleSignin.signOut();
+
+            // initiates signIn process with account picker
             const userInfo = await GoogleSignin.signIn();
             return userInfo;
         } catch (error) {
-            console.log(error+"from google");
+            console.log(error + "from google");
         }
     };
 
@@ -32,7 +35,7 @@ export default function GoogleAuth() {
             // retrieve user data
             const { idToken, user } = response.data ?? {};
             if (idToken) {
-                return response; 
+                return response;
             }
             return null;
         } catch (error) {

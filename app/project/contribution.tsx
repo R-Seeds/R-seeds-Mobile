@@ -6,23 +6,22 @@ import { useProjects } from "@/contexts/ProjectContext";
 import { ScrollView, Text, View } from "react-native";
 
 export default function MyContribution() {
-    const { contributionProjects, selectedStatus } = useProjects()
+    const { donorProjects, selectedStatus } = useProjects()
+    console.log(donorProjects)
     return (
         <View className="flex-1 bg-white">
             <Header />
             <View className="flex-1 gap-y-4 px-3">
                 <View className="gap-y-4">
                     <Text className="font-bold text-lg">My Contribution</Text>
-
-                    {/* Status Filter */}
                     <StatusFilter />
                 </View>
 
                 <ScrollView contentContainerClassName="pb-40 gap-y-4"
                     showsVerticalScrollIndicator={false}>
 
-                    {contributionProjects && contributionProjects.length > 0 ? (
-                        contributionProjects.map((project) => (
+                    {donorProjects && donorProjects.length > 0 ? (
+                        donorProjects.map((project) => (
                             <FundingProject key={project.id} project={project} />
                         ))
                     ) : (

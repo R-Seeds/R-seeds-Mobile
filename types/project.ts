@@ -95,6 +95,10 @@ export interface Project {
     updatedAt: string
 }
 
+export interface DonorProject extends Project {
+    totalDonated: number
+}
+
 
 export type TabProps = 'all' | 'finance' | 'business' | 'education' | 'health' | 'agriculture' | 'transportaion' | 'social' | 'e-commerce' | 'government'
 export const Tabs: TabProps[] = ['all', 'finance', 'business', 'education', 'health', 'agriculture', 'transportaion', 'social', 'e-commerce', 'government']

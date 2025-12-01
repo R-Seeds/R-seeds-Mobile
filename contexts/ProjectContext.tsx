@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState, useEffect, useMemo } from "react"
-import { Project, ProjectCategory, ProjectStatus } from "@/types"
+import { DonorProject, Project, ProjectCategory, ProjectStatus, UserType } from "@/types"
 import { projectService } from "@/services"
 import { useAuth } from "./AuthContext"
 import { useToast } from "./ToastContext"
@@ -8,7 +8,7 @@ interface ProjectContextType {
     projects: Project[]
     filteredProjects: Project[]
     myProjects: Project[]
-    contributionProjects: Project[]
+    donorProjects: DonorProject[]
     trendingProjects: Project[]
     spotlightProjects: Project[]
     currentProject: Project | null
@@ -36,10 +36,10 @@ const ProjectContext = createContext<ProjectContextType | null>(null)
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
     const { showToast } = useToast()
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, userType } = useAuth()
     const [projects, setProjects] = useState<Project[]>([])
     const [myProjects, setMyProjects] = useState<Project[]>([])
-    const [contributionProjects, setContributionProjects] = useState<Project[]>([])
+    const [donorProjects, setDonorProjects] = useState<DonorProject[]>([])
     const [trendingProjects, setTrendingProjects] = useState<Project[]>([])
     const [spotlightProjects, setSpotlightProjects] = useState<Project[]>([])
     const [currentProject, setCurrentProject] = useState<Project | null>(null)
@@ -60,7 +60,6 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
                 if (projectCategory === selectedCategory) {
                     return true
                 }
-
                 // String to enum comparison (backend sends strings like "FINANCE")
                 if (typeof projectCategory === 'string' && typeof selectedCategory === 'number') {
                     const enumKey = ProjectCategory[selectedCategory] as string
@@ -107,6 +106,18 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    const fetchDonorProjects = async () => {
+        try {
+            setLoading(true)
+            const { data } = await projectService.getDonorProjects()
+            setDonorProjects(data)
+        } catch (error: any) {
+            console.error("Error fetching donor projects:", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const fetchMyProjects = async () => {
         try {
             setLoading(true)
@@ -119,7 +130,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    const fetchSpotlighProjects = async () => {
+    const fetchSpotlightProjects = async () => {
         try {
             setLoading(true)
             const { data } = await projectService.getSpotlightProjects()
@@ -230,10 +241,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         if (isAuthenticated) {
             fetchProjects()
             fetchTrendingProjects()
-            fetchSpotlighProjects()
+            fetchSpotlightProjects()
             fetchMyProjects()
+            if (userType === UserType.SPONSOR) fetchDonorProjects()
         }
-    }, [isAuthenticated])
+    }, [isAuthenticated, userType])
 
     return (
         <ProjectContext.Provider value={{
@@ -241,7 +253,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             projects,
             filteredProjects,
             myProjects,
-            contributionProjects,
+            donorProjects,
             trendingProjects,
             spotlightProjects,
             currentProject,
