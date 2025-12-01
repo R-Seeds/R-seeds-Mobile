@@ -7,6 +7,7 @@ import { useToast } from "./ToastContext"
 interface ProjectContextType {
     projects: Project[]
     filteredProjects: Project[]
+    filteredDonorProjects: DonorProject[]
     myProjects: Project[]
     donorProjects: DonorProject[]
     trendingProjects: Project[]
@@ -84,6 +85,43 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
         return filtered
     }, [projects, selectedCategory, selectedStatus])
+
+    const filteredDonorProjects = useMemo(() => {
+        let filtered = donorProjects
+
+        // Filter by category if selected
+        if (selectedCategory) {
+            filtered = filtered.filter(project => {
+                const projectCategory = project.category
+
+                // Direct comparison (for numeric enum values)
+                if (projectCategory === selectedCategory) {
+                    return true
+                }
+                // String to enum comparison (backend sends strings like "FINANCE")
+                if (typeof projectCategory === 'string' && typeof selectedCategory === 'number') {
+                    const enumKey = ProjectCategory[selectedCategory] as string
+                    return projectCategory === enumKey
+                }
+
+                // Number string to enum comparison (backend sends "2")
+                if (typeof projectCategory === 'string' && !isNaN(Number(projectCategory))) {
+                    return Number(projectCategory) === selectedCategory
+                }
+
+                return false
+            })
+        }
+
+        // Filter by status if selected
+        if (selectedStatus) {
+            filtered = filtered.filter(project => {
+                return project.status === selectedStatus
+            })
+        }
+
+        return filtered
+    }, [donorProjects, selectedCategory, selectedStatus])
 
     // Clear filter functions
     const clearFilter = () => {
@@ -250,6 +288,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             findById,
             projects,
             filteredProjects,
+            filteredDonorProjects,
             myProjects,
             donorProjects,
             trendingProjects,

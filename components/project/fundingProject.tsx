@@ -1,11 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import { useProjects } from "@/contexts/ProjectContext";
-import { DonorProject } from "@/types";
+import { DonorProject, Project } from "@/types";
 import { router } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 
-export default function FundingProject({ project }: { project: DonorProject }) {
+interface Props {
+    project: DonorProject | Project
+}
+
+export default function FundingProject({ project }: Props) {
     const { setCurrentProject } = useProjects()
     const { userType } = useAuth()
 
@@ -24,7 +28,7 @@ export default function FundingProject({ project }: { project: DonorProject }) {
                     <View className="flex-row gap-x-1">
                         <Text className="text-black font-bold">{userType === "SPONSOR" ? "You gave" : "Donors"}:</Text>
                         <Text className="text-teal-500 font-bold">
-                            {userType === "SPONSOR" ? project.totalDonated : project.donations.length}
+                            {userType === "SPONSOR" ? (project as DonorProject).totalDonated : project.donations.length}
                         </Text>
                     </View>
                     <View className="flex-row gap-x-1">
