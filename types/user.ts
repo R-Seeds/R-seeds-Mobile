@@ -1,3 +1,5 @@
+import { Project } from "./project";
+
 export enum UserType {
     GRADUATE = 'GRADUATE',
     SPONSOR = 'SPONSOR',
@@ -10,7 +12,8 @@ export interface User {
     email: string;
     password: string;
     role: UserType;
-    country: string|null;
+    followingProjects: number
+    country: string | null;
     createdAt: string;
     updatedAt: string;
 }
@@ -19,10 +22,12 @@ export interface Graduate {
     id: string;
     user: User
     finishYear: number
+    totalProjects: number
 }
 
 export interface Sponsor {
     id: string;
     user: User
     organization: string
+    totalFunded:number
 }
