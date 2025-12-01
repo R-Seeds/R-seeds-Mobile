@@ -4,6 +4,7 @@ import { useProjects } from "@/contexts/ProjectContext";
 import { DonorProject, Project } from "@/types";
 import { router } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
+import { formatSmart } from "@/lib/moneyFormatter";
 
 interface Props {
     project: DonorProject | Project
@@ -28,13 +29,13 @@ export default function FundingProject({ project }: Props) {
                     <View className="flex-row gap-x-1">
                         <Text className="text-black font-bold">{userType === "SPONSOR" ? "You gave" : "Donors"}:</Text>
                         <Text className="text-teal-500 font-bold">
-                            {userType === "SPONSOR" ? (project as DonorProject).totalDonated : project.donations.length}
+                            {userType === "SPONSOR" ? formatSmart((project as DonorProject).totalDonated) : project.donations.length}
                         </Text>
                     </View>
                     <View className="flex-row gap-x-1">
                         <Text className="text-black font-semibold">Raised:</Text>
-                        <Text className="text-teal-500 font-bold">{project.fundingInfo.raised}</Text>
-                        <Text className="text-black font-semibold">of {project.fundingInfo.goal}</Text>
+                        <Text className="text-teal-500 font-bold">{formatSmart(project.fundingInfo.raised)}</Text>
+                        <Text className="text-black font-semibold">of {formatSmart(project.fundingInfo.goal)}</Text>
                     </View>
                 </View>
                 <View className="w-full h-3 bg-gray-200 rounded-full overflow-hidden border border-gray-50">

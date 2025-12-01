@@ -46,8 +46,11 @@ export const API_ENDPOINTS = {
   USER: {
     ALL: '/users',
     ME: '/users/me',
+    SPONSOR_ME:'/users/me/sponsor',
+    GRADUATE_ME:'/users/me/graduate',
     GRADUATE: '/users/graduates',
     SPONSORS: '/users/sponsors',
+    SAVED_PROJECTS:'/users/me/saved-projects',
     CREATE: '/users',
     REPORTS: '/worker-reports',
     REPORT: (id: string) => `/worker-reports/${id}`,

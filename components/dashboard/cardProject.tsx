@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import useProjectAction from "@/hooks/useProjectAction";
 import { useState } from "react";
 import FundingModal from "../modals/FundingModal";
+import { formatSmart } from "@/lib/moneyFormatter";
 
 export default function CardProject({ project }: { project: Project }) {
     const { setCurrentProject } = useProjects()
@@ -73,7 +74,7 @@ export default function CardProject({ project }: { project: Project }) {
                 <TouchableOpacity className="items-center flex-col gap-y-2"
                     onPress={() => console.log("Not implemented")}>
                     <FontAwesome6 name="bookmark" size={24} color="white" className="bg-teal-500 p-1 rounded-full h-10 w-10 text-center" />
-                    <Text className="text-sm text-teal-500 font-semibold">0</Text>
+                    <Text className="text-sm text-teal-500">Save</Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="items-center flex-col gap-y-2"
                     onPress={() => shareProject(project.id)}>
@@ -93,7 +94,7 @@ export default function CardProject({ project }: { project: Project }) {
                     {project.description}
                 </Text>
                 <Text className="text-sm text-black font-semibold">
-                    Raised ${project.fundingInfo.raised} of {project.fundingInfo.goal}
+                    Raised {formatSmart(project.fundingInfo.raised)} of {formatSmart(project.fundingInfo.goal)}
                 </Text>
             </View>
             <View className="flex-row justify-between items-center gap-x-10 px-4 pb-4">
