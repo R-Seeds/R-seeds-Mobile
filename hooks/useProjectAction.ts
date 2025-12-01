@@ -46,7 +46,6 @@ export default function useProjectAction() {
         try {
             setLoading(true);
 
-            console.log('updating project', data)
             const response = await projectService.updateProject(id, data);
             if (!response.success || !response.data) {
                 showToast({
@@ -87,7 +86,6 @@ export default function useProjectAction() {
                 });
                 return
             }
-            console.log('liking project',response)
             showToast({
                 type: "success",
                 title: "Success",

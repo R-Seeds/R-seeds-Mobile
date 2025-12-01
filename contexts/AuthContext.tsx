@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = await SecureStore.getItemAsync("auth_token")
             const data = await SecureStore.getItemAsync("user")
             const user = JSON.parse(data!) as User
-            console.log(token,data)
             if (token && user) {
                 setIsAuthenticated(true)
                 setUser(user)
@@ -109,7 +108,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const googleRegister = async (request: GoogleAuthRequest) => {
         try {
-            console.log(request)
             setLoading(true)
             const response = await authService.googleRegister(request)
             if (!response.success) {
@@ -139,7 +137,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             setLoading(true)
             const response = await authService.googleLogin(request)
-            console.log(response)
             if (!response.success) {
                 showToast({
                     type: "error",
@@ -148,13 +145,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 })
                 return
             }
-            console.log(response.data)
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
             await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
             router.push('/')
         } catch (error) {
-            console.log(error)
             showToast({
                 type: "error",
                 title: "Error",

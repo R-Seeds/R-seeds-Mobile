@@ -28,7 +28,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
         try {
             setLoading(true);
             const { data } = await userService.getGraduates();
-            console.log("Graduates:", data);
             setGraduates(data);
         } catch (error: any) {
             console.error("Error fetching graduates:", error);
@@ -41,7 +40,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
         try {
             setLoading(true);
             const { data } = await userService.getSponsors();
-            console.log("Sponsors:", data);
             setSponsors(data);
         } catch (error: any) {
             console.error("Error fetching sponsors:", error);

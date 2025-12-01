@@ -192,10 +192,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
     const findById = async (id: string) => {
         try {
-            console.log('loading project of ours', id)
             setLoading(true)
             const response = await projectService.getProjectById(id)
-            console.log('project of ours', response)
             if (!response.success || !response.data) {
                 showToast({
                     title: "Error",

@@ -7,7 +7,6 @@ import { ScrollView, Text, View } from "react-native";
 
 export default function MyContribution() {
     const { donorProjects, selectedStatus } = useProjects()
-    console.log(donorProjects)
     return (
         <View className="flex-1 bg-white">
             <Header />

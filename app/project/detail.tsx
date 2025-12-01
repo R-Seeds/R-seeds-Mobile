@@ -6,12 +6,15 @@ import ProjectMember from "@/components/project/projectMember";
 import { useProjects } from "@/contexts/ProjectContext";
 import { StatusBar } from "expo-status-bar";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useProjectAction from "@/hooks/useProjectAction";
+import FundingModal from "@/components/modals/FundingModal";
 
 export default function ProjectScreen() {
     const { currentProject, loading, findById } = useProjects()
     const { shareProject } = useProjectAction()
+    const [showFundingModal, setShowFundingModal] = useState(false)
+
     const params = useLocalSearchParams()
     const id = params.id as string
     const { userType } = useAuth()
@@ -21,6 +24,13 @@ export default function ProjectScreen() {
         findById(id)
     }, [id])
 
+    const handleFundFollowBtn = () => {
+        if (userType === "SPONSOR") {
+            setShowFundingModal(true)
+        } else {
+
+        }
+    }
 
     if (loading) return (
         <View className="flex-1 bg-white items-center justify-center">
@@ -31,7 +41,6 @@ export default function ProjectScreen() {
             </TouchableOpacity>
         </View>
     )
-    console.log(currentProject)
     if (!currentProject) return (
         <View className="flex-1 bg-white items-center justify-center">
             <Text className="text-gray-500 text-center">No project selected</Text>
@@ -77,7 +86,7 @@ export default function ProjectScreen() {
                         </TouchableOpacity>
                         <Text className="text-black bg-teal-100 text-xs border border-teal-500  px-2 py-1 rounded-full">
                             {currentProject.category}
-                            </Text>
+                        </Text>
                     </View>
                 </View>
                 <View className="flex-col gap-y-2">
@@ -86,7 +95,7 @@ export default function ProjectScreen() {
                             className="h-full bg-teal-500 rounded-full"
                             style={{ width: `${Math.min(progress * 100, 100)}%` }}
                         />
-                    </View>  
+                    </View>
                     <View className="flex-row justify-between">
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Fund Raised</Text>
@@ -235,7 +244,14 @@ export default function ProjectScreen() {
                     </View>
                 </View>
             </ScrollView>
-            <TouchableOpacity className="absolute bottom-14  bg-teal-500/80 py-4 px-8 rounded-full">
+            {showFundingModal && <FundingModal
+                onClose={() => setShowFundingModal(false)}
+                project={currentProject}
+                visible={showFundingModal}
+            />}
+            <TouchableOpacity className="absolute bottom-14  bg-teal-500/80 py-4 px-8 rounded-full"
+                onPress={handleFundFollowBtn}
+            >
                 <Text className="text-white font-semibold text-lg">
                     {userType === "SPONSOR" ? "Contribute" : "Follow"}
                 </Text>
