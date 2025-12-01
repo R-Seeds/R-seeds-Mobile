@@ -1,4 +1,4 @@
-import { authService, userService } from "@/services"
+import { authService} from "@/services"
 import { User, LoginRequest, SignupRequest, UserType, GoogleAuthRequest } from "@/types"
 import { createContext, useContext, useState } from "react"
 import * as SecureStore from "expo-secure-store"
@@ -52,25 +52,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(false)
         }
     }
-    const fetchUser = async () => {
-        try {
-            const response = await userService.getMe()
-            if (!response.success) {
-                Alert.alert("Error", response.message)
-                return
-            }
-            setUser(response.data)
-            setUserType(response.data.role)
-        } catch (error) {
-            console.error(error)
-            showToast({
-                type: "error",
-                title: "Error",
-                message: "Failed to fetch user. Please try again."
-            })
-        }
-    }
-
 
     const login = async (request: LoginRequest) => {
         try {

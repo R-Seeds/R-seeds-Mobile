@@ -31,6 +31,7 @@ interface ProjectContextType {
     addProject: (project: Project) => void
     updateProject: (project: Project) => void
     deleteProject: (id: string) => void
+    updateDonorProject: (data: DonorProject) => void
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null)
@@ -259,11 +260,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     }
 
     const updateProject = (project: Project) => {
-        setMyProjects(prev => prev.map(p => project.id === project.id ? project : p))
-        setProjects(prev => prev.map(p => project.id === project.id ? project : p))
+        setMyProjects(prev => prev.map(p => p.id === project.id ? project : p))
+        setProjects(prev => prev.map(p => p.id === project.id ? project : p))
         setCurrentProject(project)
-        setSpotlightProjects(prev => prev.map(p => project.id === project.id ? project : p))
-        setTrendingProjects(prev => prev.map(p => project.id === project.id ? project : p))
+        setSpotlightProjects(prev => prev.map(p => p.id === project.id ? project : p))
+        setTrendingProjects(prev => prev.map(p => p.id === project.id ? project : p))
     }
 
     const deleteProject = (id: string) => {
@@ -273,6 +274,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         setTrendingProjects(prev => prev.filter(p => p.id !== id))
     }
 
+    const updateDonorProject = (project: DonorProject) => {
+        setDonorProjects(prev => {
+            const exists = prev.some(p => p.id === project.id)
+            if (exists) {
+                return prev.map(p => p.id === project.id ? project : p)
+            }
+            return [project, ...prev]
+        })
+    }
     useEffect(() => {
         if (isAuthenticated) {
             fetchProjects()
@@ -310,7 +320,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             searchProjects,
             addProject,
             updateProject,
-            deleteProject
+            deleteProject,
+            updateDonorProject
         }}>
             {children}
         </ProjectContext.Provider>

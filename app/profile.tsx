@@ -106,7 +106,7 @@ export default function ProfileScreen() {
                                     {userType === "SPONSOR" ? formatDonation(sponsorMe?.totalFunded) : '0'}
                                 </Text>
                                 <Text className="text-gray-500 text-xs font-medium text-center">{userType === "SPONSOR" ? "Funded" : "Raised funds"}</Text>
-                            </View>
+                            <w/View>
                             <View className="w-px bg-gray-200 my-4" />
                         </>
                     )}

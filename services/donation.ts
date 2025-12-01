@@ -1,10 +1,10 @@
-import { ApiResponse, CreateDonation,Donation } from "@/types";
+import { ApiResponse, CreateDonation,Donation, DonorProject } from "@/types";
 import { client } from "./client";
 import { API_ENDPOINTS } from "./constants";
 
 class DonationService {
-    async donate(data: CreateDonation): Promise<ApiResponse<Donation>> {
-        return await client.post<Donation>(API_ENDPOINTS.DONATION.DONATE, data)
+    async donate(data: CreateDonation): Promise<ApiResponse<DonorProject>> {
+        return await client.post<DonorProject>(API_ENDPOINTS.DONATION.DONATE, data)
     }
 }
 
