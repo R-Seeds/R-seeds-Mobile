@@ -7,9 +7,10 @@ import { useEffect } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function MyContribution() {
-    const { donorProjects, selectedStatus, clearFilter } = useProjects()
+    const { filteredDonorProjects:donorProjects, selectedStatus, clearFilter ,clearStatusFilter} = useProjects()
 
     useEffect(() => {
+        clearStatusFilter()
         clearFilter()
     }, [])
     return (
