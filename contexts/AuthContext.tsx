@@ -1,4 +1,4 @@
-import { authService } from "@/services"
+import { authService} from "@/services"
 import { User, LoginRequest, SignupRequest, UserType, GoogleAuthRequest } from "@/types"
 import { createContext, useContext, useState } from "react"
 import * as SecureStore from "expo-secure-store"
@@ -52,7 +52,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(false)
         }
     }
-
 
     const login = async (request: LoginRequest) => {
         try {

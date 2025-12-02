@@ -37,7 +37,7 @@ export default function MyContribution() {
                                     : 'No contribution projects available'
                                 }
                             </Text>
-                            <Text className="text-gray-400 text-center text-sm mt-2">Check back later for new opportunities</Text>
+                            <Text className="text-gray-400 text-center text-sm mt-2">Donate to Project to show it here.</Text>
                         </View>
                     )}
                 </ScrollView>

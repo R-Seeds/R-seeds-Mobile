@@ -71,7 +71,13 @@ export default function FundingModal({ visible, project, onClose }: Props) {
     }, [amount, paymentMethod]);
 
     // Event handlers
-    const handleSave = () => {
+    const handleSave = async () => {
+        const data: CreateDonation = {
+            projectId: project.id,
+            paymentMethod,
+            amount
+        }
+        await donate(data)
         setShowConfirmBox(false);
         setShowSuccessBox(true);
     };
@@ -80,13 +86,7 @@ export default function FundingModal({ visible, project, onClose }: Props) {
         setShowConfirmBox(true);
     };
 
-    const handleSuccessClose = async () => {
-        const data: CreateDonation = {
-            projectId: project.id,
-            paymentMethod,
-            amount
-        }
-        await donate(data)
+    const handleSuccessClose = () => {
         setShowSuccessBox(false);
         onClose();
     };
@@ -179,7 +179,7 @@ function FundingFormView({
                         placeholder="Enter funding goal amount"
                         className="bg-white rounded-lg px-3 py-3 border border-gray-200"
                         keyboardType="numeric"
-                        value={amount.toString()}
+                        value={amount ? amount.toString() : ''}
                         onChangeText={(data) => onAmountChange(Number(data))}
                     />
                 </View>

@@ -1,7 +1,7 @@
 // API Configuration Constants
 
-// const SERVER_URL="https://r-seeds-backend.onrender.com"
-const SERVER_URL = 'http://10.12.72.132:5050'
+const SERVER_URL="https://r-seeds-backend.onrender.com"
+// const SERVER_URL = 'http://10.12.72.132:5050'
 
 export const API_CONFIG = {
   BASE_URL: SERVER_URL,
@@ -46,8 +46,11 @@ export const API_ENDPOINTS = {
   USER: {
     ALL: '/users',
     ME: '/users/me',
+    SPONSOR_ME:'/users/me/sponsor',
+    GRADUATE_ME:'/users/me/graduate',
     GRADUATE: '/users/graduates',
     SPONSORS: '/users/sponsors',
+    SAVED_PROJECTS:'/users/me/saved-projects',
     CREATE: '/users',
     REPORTS: '/worker-reports',
     REPORT: (id: string) => `/worker-reports/${id}`,

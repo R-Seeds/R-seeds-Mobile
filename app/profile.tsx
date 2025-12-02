@@ -8,15 +8,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProjects } from "@/contexts/ProjectContext";
 import ConfirmModal from "@/components/modals/ConfirmModal";
 import { useState } from "react";
+import { useUser } from "@/contexts/UserContext";
+import { UserType } from "@/types";
+import { formatDonation } from "@/lib/moneyFormatter";
 
 export default function ProfileScreen() {
     const { showToast } = useToast();
-    const { logout, user, userType } = useAuth();
+    const { userMe, sponsorMe, graduateMe } = useUser()
+    const { logout, userType } = useAuth();
     const { myProjects } = useProjects();
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const handleSavedProjectsPress = () => {
-        router.push('/project/myProject');
+        if (userType === "GRADUATE") router.push('/project/myProject');
     };
 
     const handleAccountPress = () => {
@@ -68,7 +72,7 @@ export default function ProfileScreen() {
         setShowConfirmModal(false)
     };
 
-    if (!user) return
+    if (!userMe) return
 
     return (
         <View className="flex-1 bg-white">
@@ -89,26 +93,34 @@ export default function ProfileScreen() {
 
                 {/* User Info */}
                 <View className="mt-4 items-center">
-                    <Text className="font-bold text-xl text-gray-800">{user?.name}</Text>
-                    <Text className="text-teal-500 font-medium text-base">{user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}</Text>
+                    <Text className="font-bold text-xl text-gray-800">{userMe?.name}</Text>
+                    <Text className="text-teal-500 font-medium text-base">{userType.charAt(0).toUpperCase() + userType.slice(1)}</Text>
                 </View>
 
                 {/* Stats Section */}
                 <View className="flex-row mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mx-2">
-                    {userType !== "USER" && (<View className="flex-1 items-center py-4 px-6">
-                        <Text className="font-bold text-xl text-gray-800">$0</Text>
-                        <Text className="text-gray-500 text-sm font-medium">{userType === "SPONSOR" ? "Funded" : "Raised funds"}</Text>
-                    </View>)}
+                    {userType !== "USER" && (
+                        <>
+                            <View className="flex-1 items-center py-4 px-2">
+                                <Text className="font-semibold text-lg text-gray-800 text-center" numberOfLines={1}>
+                                    {userType === "SPONSOR" ? formatDonation(sponsorMe?.totalFunded) : '0'}
+                                </Text>
+                                <Text className="text-gray-500 text-xs font-medium text-center">{userType === "SPONSOR" ? "Funded" : "Raised funds"}</Text>
+                            </View>
+                            <View className="w-px bg-gray-200 my-4" />
+                        </>
+                    )}
 
-                    <View className="w-px bg-gray-200" />
-                    <View className="flex-1 items-center py-4 px-6">
-                        <Text className="font-bold text-xl text-gray-800">{myProjects?.length}</Text>
-                        <Text className="text-gray-500 text-sm font-medium">Projects</Text>
+                    <View className="flex-1 items-center py-4 px-2">
+                        <Text className="font-bold text-xl text-gray-800">{userType === "GRADUATE" ? graduateMe?.totalProjects : myProjects?.length}</Text>
+                        <Text className="text-gray-500 text-xs font-medium">Projects</Text>
                     </View>
-                    <View className="w-px bg-gray-200" />
-                    <View className="flex-1 items-center py-4 px-6">
-                        <Text className="font-bold text-xl text-gray-800">10</Text>
-                        <Text className="text-gray-500 text-sm font-medium">Following</Text>
+
+                    <View className="w-px bg-gray-200 my-4" />
+
+                    <View className="flex-1 items-center py-4 px-2">
+                        <Text className="font-bold text-xl text-gray-800">{userMe?.followingProjects}</Text>
+                        <Text className="text-gray-500 text-xs font-medium">Following</Text>
                     </View>
                 </View>
             </View>
@@ -130,7 +142,9 @@ export default function ProfileScreen() {
                             <View className="w-10 h-10 bg-teal-100 rounded-full items-center justify-center">
                                 <AntDesign name="save" size={20} color="#14b8a6" />
                             </View>
-                            <Text className="text-gray-800 text-lg font-medium">My projects</Text>
+                            <Text className="text-gray-800 text-lg font-medium">
+                                {userType === UserType.GRADUATE ? 'My projects' : 'Saved Projects'}
+                            </Text>
                         </View>
                         <Ionicons name="chevron-forward" size={20} color="#6b7280" />
                     </TouchableOpacity>

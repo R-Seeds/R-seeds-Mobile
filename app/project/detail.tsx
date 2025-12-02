@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import useProjectAction from "@/hooks/useProjectAction";
 import FundingModal from "@/components/modals/FundingModal";
+import { formatSmart } from "@/lib/moneyFormatter";
 
 export default function ProjectScreen() {
     const { currentProject, loading, findById } = useProjects()
@@ -51,7 +52,6 @@ export default function ProjectScreen() {
         </View>
     )
     const isOwner = user && (user.id === currentProject.owner.id)
-    console.log(user, currentProject.owner)
     const progress = currentProject.fundingInfo.raised / currentProject.fundingInfo.goal
 
     return (
@@ -101,11 +101,11 @@ export default function ProjectScreen() {
                     <View className="flex-row justify-between">
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Fund Raised</Text>
-                            <Text className="font-bold text-lg">${currentProject.fundingInfo.raised}</Text>
+                            <Text className="font-bold text-lg">{formatSmart(currentProject.fundingInfo.raised)}</Text>
                         </View>
                         <View className="flex-col gap-y-0">
                             <Text className="text-sm">Target</Text>
-                            <Text className="font-bold text-lg text-teal-500">${currentProject.fundingInfo.goal}</Text>
+                            <Text className="font-bold text-lg text-teal-500">{formatSmart(currentProject.fundingInfo.goal)}</Text>
                         </View>
                     </View>
                 </View>
@@ -207,7 +207,7 @@ export default function ProjectScreen() {
                                 <View className="flex-row gap-x-2 items-center">
                                     <Text className="font-bold text-teal-500 ">Total funds:
                                     </Text>
-                                    <Text className="">${currentProject.milestones[0].budget}</Text>
+                                    <Text className="">{formatSmart(currentProject.milestones[0].budget)}</Text>
                                 </View>
                             </View>
                         </View>

@@ -1,9 +1,11 @@
+import { useProjects } from "@/contexts/ProjectContext"
 import { useToast } from "@/contexts/ToastContext"
 import { donationService } from "@/services"
 import { CreateDonation } from "@/types"
 
 export function useDonation() {
     const { showToast } = useToast()
+    const { updateDonorProject } = useProjects()
     const donate = async (data: CreateDonation) => {
         try {
             const response = await donationService.donate(data)
@@ -13,9 +15,14 @@ export function useDonation() {
                     title: 'Donated Successfully',
                     message: 'You have donated successfully!'
                 })
+                updateDonorProject(response.data)
             }
-        } catch (error) {
-            console.error(error)
+        } catch  {
+            showToast({
+                type: 'error',
+                title: 'Donation Failed',
+                message: 'Something went wrong! Please try again later.'
+            })
         }
     }
 
