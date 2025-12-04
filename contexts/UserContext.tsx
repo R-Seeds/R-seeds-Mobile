@@ -5,7 +5,7 @@ import { useAuth } from "./AuthContext"
 
 interface UserContextType {
     users: User[]
-    savedProjects:Project[]
+    savedProjects: Project[]
     graduates: Graduate[]
     sponsors: Sponsor[]
     currentUser: User | null
@@ -16,6 +16,8 @@ interface UserContextType {
     fetchGraduates: () => Promise<void>
     fetchSponsors: () => Promise<void>
     fetchCurrentUser: () => Promise<void>
+    updateGraduate: (data: number) => void
+    updateSponsor: (data: number) => void
 }
 
 const UserContext = createContext<UserContextType | null>(null)
@@ -30,6 +32,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const [sponsors, setSponsors] = useState<Sponsor[]>([])
     const [currentUser, setCurrentUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(false)
+
     const [savedProjects, setSavedProjects] = useState<Project[]>([])
     const fetchGraduates = async () => {
         try {
@@ -126,6 +129,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    const updateGraduate = (data: number) => {
+        setGraduateMe(prev => (prev ? { ...prev, totalProjects: prev.totalProjects + data } : null))
+    }
+
+    const updateSponsor = (data: number) => {
+        setSponsorMe(prev => (prev ? { ...prev, totalFunded: prev.totalFunded + data } : null))
+    }
+
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -142,6 +153,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     return (
         <UserContext.Provider value={{
+            updateGraduate,
+            updateSponsor,
             users,
             graduates,
             sponsors,

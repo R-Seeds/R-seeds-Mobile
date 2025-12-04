@@ -5,9 +5,11 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { share } from "@/lib/share";
 import { useProjects } from "@/contexts/ProjectContext";
+import { useUser } from "@/contexts/UserContext";
 
 export default function useProjectAction() {
     const { addProject, updateProject: editProject } = useProjects()
+    const { updateGraduate } = useUser()
     const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
 
@@ -29,6 +31,7 @@ export default function useProjectAction() {
                 message: "Project created successfully!"
             });
             addProject(response.data)
+            updateGraduate(1)
             router.back();
         } catch (error) {
             console.error(error)
