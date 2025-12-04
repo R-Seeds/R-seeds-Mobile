@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo, useRef, useCallback } from 'react';
 import { ChatContextType, Conversation, Message, ChatUser, userToChatUser } from '@/types';
 import { useUser } from './UserContext';
 import { useAuth } from './AuthContext';
@@ -17,11 +17,14 @@ export function ChatProvider({ children }: ChatProviderProps) {
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
   const [loading] = useState(false);
 
+  // Track if we've already initialized to prevent infinite loops
+  const hasInitialized = useRef(false);
+
   // Convert current user to ChatUser format
   const currentUser: ChatUser | null = useMemo(() => {
     if (!userMe) return null;
     return userToChatUser(userMe);
-  }, [userMe]);
+  }, [userMe?.id]); // Only depend on userMe.id, not the whole object
 
   // Convert all users to ChatUser format (excluding current user)
   const availableUsers: ChatUser[] = useMemo(() => {
@@ -29,11 +32,18 @@ export function ChatProvider({ children }: ChatProviderProps) {
     return users
       .filter(user => user.id !== userMe.id)
       .map(user => userToChatUser(user));
-  }, [users, userMe]);
+  }, [users?.length, userMe?.id]); // Only depend on array length and userMe id
 
-  // Initialize conversations when users are loaded
+  // Initialize conversations when users are loaded (only once)
   useEffect(() => {
-    if (isAuthenticated && availableUsers.length > 0 && currentUser && conversations.length === 0) {
+    if (
+      isAuthenticated &&
+      availableUsers.length > 0 &&
+      currentUser &&
+      !hasInitialized.current
+    ) {
+      hasInitialized.current = true;
+
       // Create initial sample conversations with first few users
       const initialConversations: Conversation[] = availableUsers.slice(0, 3).map((user, index) => ({
         id: `conv_${user.id}`,
@@ -43,7 +53,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
             id: `msg_${index}_1`,
             text: `Hi! I'm ${user.name}. Great to connect with you on R-Seeds!`,
             senderId: user.id,
-            timestamp: new Date(Date.now() - Math.random() * 86400000), // Random time within last 24h
+            timestamp: new Date(Date.now() - (index + 1) * 3600000), // Stagger by hours
             isRead: false
           }
         ],
@@ -58,10 +68,18 @@ export function ChatProvider({ children }: ChatProviderProps) {
 
       setConversations(conversationsWithLastMessage);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, availableUsers.length, currentUser]);
+  }, [isAuthenticated, availableUsers.length > 0, currentUser?.id]);
 
-  const addMessage = (conversationId: string, text: string) => {
+  // Reset initialization when user logs out
+  useEffect(() => {
+    if (!isAuthenticated) {
+      hasInitialized.current = false;
+      setConversations([]);
+      setCurrentConversation(null);
+    }
+  }, [isAuthenticated]);
+
+  const addMessage = useCallback((conversationId: string, text: string) => {
     if (!currentUser) return;
 
     const newMessage: Message = {
@@ -86,16 +104,19 @@ export function ChatProvider({ children }: ChatProviderProps) {
     );
 
     // Update current conversation if it's the active one
-    if (currentConversation?.id === conversationId) {
-      setCurrentConversation(prev => prev ? {
-        ...prev,
-        messages: [...prev.messages, newMessage],
-        lastMessage: newMessage
-      } : null);
-    }
-  };
+    setCurrentConversation(prev => {
+      if (prev?.id === conversationId) {
+        return {
+          ...prev,
+          messages: [...prev.messages, newMessage],
+          lastMessage: newMessage
+        };
+      }
+      return prev;
+    });
+  }, [currentUser]);
 
-  const markAsRead = (conversationId: string) => {
+  const markAsRead = useCallback((conversationId: string) => {
     setConversations(prev =>
       prev.map(conv => {
         if (conv.id === conversationId) {
@@ -108,38 +129,40 @@ export function ChatProvider({ children }: ChatProviderProps) {
         return conv;
       })
     );
-  };
+  }, []);
 
-  const createConversation = (participant: ChatUser) => {
+  const createConversation = useCallback((participant: ChatUser) => {
     if (!currentUser) return;
 
     // Check if conversation already exists
-    const existingConv = conversations.find(conv =>
-      conv.participants.some(p => p.id === participant.id)
-    );
+    setConversations(prev => {
+      const existingConv = prev.find(conv =>
+        conv.participants.some(p => p.id === participant.id)
+      );
 
-    if (existingConv) {
-      setCurrentConversation(existingConv);
-      return;
-    }
+      if (existingConv) {
+        setCurrentConversation(existingConv);
+        return prev;
+      }
 
-    const newConversation: Conversation = {
-      id: `conv_${Date.now()}`,
-      participants: [currentUser, participant],
-      messages: [],
-      unreadCount: 0
-    };
+      const newConversation: Conversation = {
+        id: `conv_${Date.now()}`,
+        participants: [currentUser, participant],
+        messages: [],
+        unreadCount: 0
+      };
 
-    setConversations(prev => [...prev, newConversation]);
-    setCurrentConversation(newConversation);
-  };
+      setCurrentConversation(newConversation);
+      return [...prev, newConversation];
+    });
+  }, [currentUser]);
 
-  const startConversationWithUser = (userId: string) => {
+  const startConversationWithUser = useCallback((userId: string) => {
     const user = availableUsers.find(u => u.id === userId);
     if (user) {
       createConversation(user);
     }
-  };
+  }, [availableUsers, createConversation]);
 
   const value: ChatContextType = {
     conversations,
