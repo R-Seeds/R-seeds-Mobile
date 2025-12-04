@@ -7,7 +7,7 @@ import InputArea from "@/components/ui/InputArea";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View, TouchableOpacity, Text, ScrollView, Image } from "react-native";
+import { View, TouchableOpacity, Text, ScrollView, Image, ActivityIndicator } from "react-native";
 import { FundingInfo, Graduate, Milestone, ProjectCategory, ProjectCreateRequest, ProjectLink, ProjectStatus, ProjectCategoryOptions } from "@/types";
 import useProjectAction from "@/hooks/useProjectAction";
 import DropdownInput from "@/components/ui/DropDownInput";
@@ -15,7 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { projectService } from "@/services";
 
 export default function CreateProjectScreen() {
-    const { createProject } = useProjectAction()
+    const { createProject, loading } = useProjectAction()
     const [uploading, setUploading] = useState(false);
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState<ProjectCategory>(ProjectCategory.EDUCATION);
@@ -126,7 +126,7 @@ export default function CreateProjectScreen() {
                 fundingInfo,
                 links
             };
-            
+
             await createProject(projectData);
         } catch (error) {
             setUploading(false);
@@ -158,14 +158,14 @@ export default function CreateProjectScreen() {
                 <InputArea label="Mission" value={mission} setValue={setMission} />
                 <InputArea label="Vision" value={vision} setValue={setVision} />
                 <InputArea label="Key Features" value={keyFeature} setValue={setKeyFeature} />
-                
+
                 {/* Project Photo Upload Section */}
                 <View className="gap-y-4">
                     <Text className="text-lg font-semibold">Project Photo <Text className="text-red-500">*</Text></Text>
                     {projectImage ? (
                         <View className="relative">
-                            <Image 
-                                source={{ uri: projectImage }} 
+                            <Image
+                                source={{ uri: projectImage }}
                                 className="w-full h-48 rounded-lg"
                                 resizeMode="cover"
                             />
@@ -175,7 +175,7 @@ export default function CreateProjectScreen() {
                                     <Text className="text-white mt-2 font-semibold">Uploading...</Text>
                                 </View>
                             )}
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 onPress={removeProjectImage}
                                 className="absolute top-2 right-2 bg-red-500 rounded-full p-2"
                                 disabled={uploading}
@@ -188,14 +188,14 @@ export default function CreateProjectScreen() {
                             <Ionicons name="camera" size={48} color="#9CA3AF" />
                             <Text className="text-gray-500 text-center">Add a photo to showcase your project</Text>
                             <View className="flex-row gap-x-4">
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     onPress={takePhoto}
                                     className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
                                 >
                                     <Ionicons name="camera" size={20} color="white" />
                                     <Text className="text-white font-semibold">Camera</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     onPress={pickImage}
                                     className="bg-teal-500 rounded-lg px-6 py-3 flex-row items-center gap-x-2"
                                 >
@@ -206,7 +206,7 @@ export default function CreateProjectScreen() {
                         </View>
                     )}
                 </View>
-                
+
                 <View className="gap-y-4 ">
                     <Text className="text-lg font-semibold">Team Member</Text>
                     <TouchableOpacity onPress={() => { setMemberVisible(true) }}
@@ -241,17 +241,21 @@ export default function CreateProjectScreen() {
                 </View>
 
             </ScrollView>
-            <TouchableOpacity 
-                className={`rounded-full py-4 flex-row items-center gap-x-2 justify-center ${
-                    uploading ? 'bg-gray-400' : 'bg-teal-500'
-                }`}
+            <TouchableOpacity
+                className={`rounded-full py-4 flex-row items-center gap-x-2 justify-center ${uploading || loading ? 'bg-gray-400' : 'bg-teal-500'
+                    }`}
                 onPress={handleSubmit}
-                disabled={uploading}
+                disabled={uploading || loading}
             >
                 {uploading ? (
                     <>
                         <Ionicons name="cloud-upload" size={20} color="white" />
                         <Text className="text-white text-lg font-semibold">Uploading Photo...</Text>
+                    </>
+                ) : loading ? (
+                    <>
+                        <ActivityIndicator size="small" color="#ffffff" />
+                        <Text className="text-white text-lg font-semibold">Creating Project...</Text>
                     </>
                 ) : (
                     <Text className="text-white text-lg font-semibold">Create Project</Text>

@@ -16,13 +16,13 @@ export default function RootLayout() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <ProjectProvider>
-          <ChatProvider>
-            <UserProvider>
+        <UserProvider>
+          <ProjectProvider>
+            <ChatProvider>
               <Stack screenOptions={{ headerShown: false }} />
-            </UserProvider>
-          </ChatProvider>
-        </ProjectProvider>
+            </ChatProvider>
+          </ProjectProvider>
+        </UserProvider>
       </AuthProvider>
     </ToastProvider>
   )

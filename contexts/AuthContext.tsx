@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
             await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
-            router.push('/')
+            router.replace('/')
         } catch (error) {
             showToast({
                 type: "error",
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             await SecureStore.setItemAsync('auth_token', token)
             await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
 
-            router.push('/')
+            router.replace('/')
         } catch (error) {
             showToast({
                 type: "error",
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
             await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
-            router.push('/')
+            router.replace('/')
         } catch (error) {
             showToast({
                 type: "error",
@@ -147,7 +147,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const token = response.data.token
             await SecureStore.setItemAsync('auth_token', token)
             await SecureStore.setItemAsync('user', JSON.stringify(response.data.user))
-            router.push('/')
+            router.replace('/')
         } catch (error) {
             showToast({
                 type: "error",
@@ -165,7 +165,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             await SecureStore.deleteItemAsync('user')
             setIsAuthenticated(false)
             setUser(null)
-            router.push('/auth')
+            router.replace('/auth')
         } catch (error) {
             showToast({
                 type: "error",

@@ -386,7 +386,10 @@ export default function EditProjectScreen() {
                         <Text className="text-white text-lg font-semibold">Uploading Photo...</Text>
                     </>
                 ) : loading ? (
-                    <ActivityIndicator size="small" color="white" />
+                    <>
+                        <ActivityIndicator size="small" color="#ffffff" />
+                        <Text className="text-white text-lg font-semibold">Updating Project...</Text>
+                    </>
                 ) : (
                     <Text className="text-white text-lg font-semibold">Save Changes</Text>
                 )}

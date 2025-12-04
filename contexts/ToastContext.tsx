@@ -106,7 +106,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
   }, [opacity, translateY]);
 
   const bgColor =
-    toast.type === "error" ? "bg-red-600" : toast.type === "success" ? "bg-teal-600" : "bg-gray-700";
+    toast.type === "error" ? "bg-red-600" : toast.type === "success" ? "bg-teal-500" : "bg-gray-700";
 
   return (
     <Animated.View

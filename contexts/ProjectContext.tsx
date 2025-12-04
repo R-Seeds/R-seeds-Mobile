@@ -262,9 +262,12 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     const updateProject = (project: Project) => {
         setMyProjects(prev => prev.map(p => p.id === project.id ? project : p))
         setProjects(prev => prev.map(p => p.id === project.id ? project : p))
-        setCurrentProject(project)
         setSpotlightProjects(prev => prev.map(p => p.id === project.id ? project : p))
         setTrendingProjects(prev => prev.map(p => p.id === project.id ? project : p))
+        // Update currentProject only if it matches the project being updated
+        setCurrentProject(prev => prev?.id === project.id ? project : prev)
+        // Also update in donorProjects if it exists there (for sponsors viewing projects they've donated to)
+        setDonorProjects(prev => prev.map(p => p.id === project.id ? { ...p, ...project } as DonorProject : p))
     }
 
     const deleteProject = (id: string) => {
@@ -275,6 +278,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     }
 
     const updateDonorProject = (project: DonorProject) => {
+        // Update donorProjects array
         setDonorProjects(prev => {
             const exists = prev.some(p => p.id === project.id)
             if (exists) {
@@ -282,6 +286,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             }
             return [project, ...prev]
         })
+
+        // Also update other project arrays to keep dashboard data synchronized
+        // Extract project data from DonorProject to update regular Project arrays
+        const projectData = project as Project
+        setProjects(prev => prev.map(p => p.id === project.id ? { ...p, ...projectData } : p))
+        setMyProjects(prev => prev.map(p => p.id === project.id ? { ...p, ...projectData } : p))
+        setTrendingProjects(prev => prev.map(p => p.id === project.id ? { ...p, ...projectData } : p))
+        setSpotlightProjects(prev => prev.map(p => p.id === project.id ? { ...p, ...projectData } : p))
+        setCurrentProject(prev => prev?.id === project.id ? { ...prev, ...projectData } : prev)
     }
     useEffect(() => {
         if (isAuthenticated) {

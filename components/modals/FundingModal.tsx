@@ -7,6 +7,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    ActivityIndicator,
 } from "react-native";
 import DropdownInput from "../ui/DropDownInput";
 import { useDonation } from "@/hooks/useDonation";
@@ -26,6 +27,7 @@ interface ConfirmationViewProps {
     amount: number;
     paymentMethod: string;
     ready: boolean;
+    loading: boolean;
     buttonClassName: string;
     onSave: () => void;
 }
@@ -57,7 +59,7 @@ interface PaymentSuccessfulProps {
 
 export default function FundingModal({ visible, project, onClose }: Props) {
 
-    const { donate } = useDonation()
+    const { donate, loading } = useDonation()
     // State management
     const [amount, setAmount] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState("");
@@ -111,6 +113,7 @@ export default function FundingModal({ visible, project, onClose }: Props) {
                     amount={amount}
                     paymentMethod={paymentMethod}
                     ready={ready}
+                    loading={loading}
                     buttonClassName={buttonClassName}
                     onSave={handleSave}
                 />
@@ -217,6 +220,7 @@ function ConfirmationView({
     amount,
     paymentMethod,
     ready,
+    loading,
     buttonClassName,
     onSave,
 }: ConfirmationViewProps) {
@@ -234,12 +238,16 @@ function ConfirmationView({
 
             <TouchableOpacity
                 onPress={onSave}
-                disabled={!ready}
-                className={buttonClassName}
+                disabled={!ready || loading}
+                className={loading ? "bg-gray-400 rounded-md py-3 mt-6" : buttonClassName}
             >
-                <Text className="text-center text-white font-semibold">
-                    Save Funding Information
-                </Text>
+                {loading ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                    <Text className="text-center text-white font-semibold">
+                        Save Funding Information
+                    </Text>
+                )}
             </TouchableOpacity>
         </>
     );
