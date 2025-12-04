@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, Modal, TextInput, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Image, Modal, TextInput, Alert, ActivityIndicator } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -20,7 +20,7 @@ export default function CardProject({ project }: { project: Project }) {
     const [showFundingModal, setShowFundingModal] = useState(false)
     const [comment, setComment] = useState('')
 
-    const { likeProject, commentProject, shareProject } = useProjectAction()
+    const { likeProject, commentProject, shareProject, loading } = useProjectAction()
 
     const handleCommentSubmit = async () => {
         if (comment.trim()) {
@@ -139,10 +139,15 @@ export default function CardProject({ project }: { project: Project }) {
                                 <Text className="text-white">Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                className="bg-teal-500 px-4 py-2 rounded"
+                                className={`px-4 py-2 rounded ${loading ? 'bg-gray-400' : 'bg-teal-500'}`}
                                 onPress={handleCommentSubmit}
+                                disabled={loading}
                             >
-                                <Text className="text-white">Submit</Text>
+                                {loading ? (
+                                    <ActivityIndicator size="small" color="#ffffff" />
+                                ) : (
+                                    <Text className="text-white">Submit</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
                     </View>
