@@ -9,3 +9,4 @@ expo-env.d.ts
 .vscode
 android/
 ios
+config.bat
