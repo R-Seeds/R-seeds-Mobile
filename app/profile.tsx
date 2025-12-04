@@ -7,60 +7,48 @@ import TabNavigation from "@/components/ui/Tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProjects } from "@/contexts/ProjectContext";
 import ConfirmModal from "@/components/modals/ConfirmModal";
+import ComingSoonModal from "@/components/modals/ComingSoonModal";
 import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { UserType } from "@/types";
 import { formatDonation } from "@/lib/moneyFormatter";
 
 export default function ProfileScreen() {
-    const { showToast } = useToast();
     const { userMe, sponsorMe, graduateMe } = useUser()
     const { logout, userType } = useAuth();
     const { myProjects } = useProjects();
     const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showComingSoon, setShowComingSoon] = useState(false);
+    const [comingSoonFeature, setComingSoonFeature] = useState({ name: '', description: '' });
+
+    const openComingSoon = (name: string, description: string) => {
+        setComingSoonFeature({ name, description });
+        setShowComingSoon(true);
+    };
 
     const handleSavedProjectsPress = () => {
         if (userType === "GRADUATE") router.push('/project/myProject');
+        else openComingSoon("Saved Projects", "Save your favorite projects to easily find them later. This feature is currently being developed.");
     };
 
     const handleAccountPress = () => {
-        showToast({
-            title: "Account",
-            message: "Account settings will be available soon!",
-            type: "success"
-        });
+        openComingSoon("Account Settings", "Manage your personal information, update your profile picture, and change your password.");
     };
 
     const handlePaymentPress = () => {
-        showToast({
-            title: "Payment Methods",
-            message: "Manage your payment methods and billing information.",
-            type: "success"
-        });
+        openComingSoon("Payment Methods", "Add and manage your payment methods for seamless donations and transactions.");
     };
 
     const handleNotificationPress = () => {
-        showToast({
-            title: "Notifications",
-            message: "Notification preferences updated!",
-            type: "success"
-        });
+        openComingSoon("Notifications", "Customize your notification preferences and stay updated on projects you follow.");
     };
 
     const handleLanguagePress = () => {
-        showToast({
-            title: "Language",
-            message: "Language and region settings coming soon!",
-            type: "success"
-        });
+        openComingSoon("Language & Region", "Change your preferred language and regional settings for a personalized experience.");
     };
 
     const handlePreferencePress = () => {
-        showToast({
-            title: "Preferences",
-            message: "App preferences will be available soon!",
-            type: "success"
-        });
+        openComingSoon("Preferences", "Customize your app experience with theme settings, display options, and more.");
     };
 
     const handleLogoutPress = () => {
@@ -239,6 +227,12 @@ export default function ProfileScreen() {
                 message="Are you sure you want to logout?"
                 onConfirm={handleConfirmLogout}
                 onCancel={() => setShowConfirmModal(false)}
+            />
+            <ComingSoonModal
+                visible={showComingSoon}
+                onClose={() => setShowComingSoon(false)}
+                featureName={comingSoonFeature.name}
+                description={comingSoonFeature.description}
             />
             <TabNavigation />
         </View>
