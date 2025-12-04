@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, View, Text, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import { ChatHeader, MessageBubble, MessageInput } from '@/components/chat';
@@ -7,15 +7,15 @@ import { useChat } from '@/contexts/ChatContext';
 import { Message } from '@/types';
 
 export default function ChatDetailScreen() {
-    const { 
-        currentConversation, 
-        currentUser, 
-        addMessage, 
-        markAsRead 
+    const {
+        currentConversation,
+        currentUser,
+        addMessage,
+        markAsRead
     } = useChat();
 
     const otherParticipant = currentConversation?.participants.find(
-        p => p.id !== currentUser.id
+        p => p.id !== currentUser?.id
     );
 
     useEffect(() => {
@@ -35,32 +35,45 @@ export default function ChatDetailScreen() {
     };
 
     const renderMessage = ({ item, index }: { item: Message; index: number }) => {
-        const isCurrentUser = item.senderId === currentUser.id;
+        const isCurrentUser = item.senderId === currentUser?.id;
         const prevMessage = currentConversation?.messages[index - 1];
-        const showTime = !prevMessage || 
+        const showTime = !prevMessage ||
             new Date(item.timestamp).getTime() - new Date(prevMessage.timestamp).getTime() > 300000; // 5 minutes
 
         return (
-            <MessageBubble 
-                message={item} 
+            <MessageBubble
+                message={item}
                 isCurrentUser={isCurrentUser}
                 showTime={showTime}
             />
         );
     };
 
+    if (!currentUser) {
+        return (
+            <View className="flex-1 bg-white justify-center items-center">
+                <ActivityIndicator size="large" color="#14b8a6" />
+                <Text className="mt-4 text-gray-500">Loading...</Text>
+            </View>
+        );
+    }
+
     if (!currentConversation || !otherParticipant) {
-        return null; // or loading state
+        return (
+            <View className="flex-1 bg-white justify-center items-center">
+                <Text className="text-gray-500">No conversation selected</Text>
+            </View>
+        );
     }
 
     return (
-        <KeyboardAvoidingView 
-            className="flex-1" 
+        <KeyboardAvoidingView
+            className="flex-1"
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <View className="flex-1 bg-white pb-10">
                 <StatusBar style="light" />
-                
+
                 {/* Header */}
                 <ChatHeader
                     participant={otherParticipant}

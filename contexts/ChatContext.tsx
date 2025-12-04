@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { ChatContextType, Conversation, Message, ChatUser } from '@/types';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import { ChatContextType, Conversation, Message, ChatUser, userToChatUser } from '@/types';
+import { useUser } from './UserContext';
+import { useAuth } from './AuthContext';
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
@@ -8,98 +10,60 @@ interface ChatProviderProps {
 }
 
 export function ChatProvider({ children }: ChatProviderProps) {
-  const [conversations, setConversations] = useState<Conversation[]>([
-    // Mock data for demonstration
-    {
-      id: '1',
-      participants: [
-        { id: 'current', name: 'Me' },
-        { id: 'uwaeli', name: 'Uwaeli Nadla', avatar: 'https://via.placeholder.com/40', isOnline: true }
-      ],
-      messages: [
-        {
-          id: 'm1',
-          text: 'Hello there! How are you today?',
-          senderId: 'uwaeli',
-          timestamp: new Date('2024-10-18T15:30:00'),
-          isRead: true
-        },
-        {
-          id: 'm2',
-          text: 'Hi! I\'m doing great, thanks for asking!',
-          senderId: 'current',
-          timestamp: new Date('2024-10-18T15:31:00'),
-          isRead: true
-        },
-        {
-          id: 'm3',
-          text: 'Can you tell me about your project progress so far?',
-          senderId: 'uwaeli',
-          timestamp: new Date('2024-10-18T15:32:00'),
-          isRead: true
-        },
-        {
-          id: 'm4',
-          text: 'Sure thing! The app is really coming together nicely.',
-          senderId: 'current',
-          timestamp: new Date('2024-10-18T15:33:00'),
-          isRead: true
-        },
-        {
-          id: 'm5',
-          text: 'Wonderful! Working on the latest features now?',
-          senderId: 'uwaeli',
-          timestamp: new Date('2024-10-18T15:34:00'),
-          isRead: true
-        },
-        {
-          id: 'm6',
-          text: 'Just finished the chat functionality!',
-          senderId: 'current',
-          timestamp: new Date('2024-10-18T15:35:00'),
-          isRead: true
-        },
-        {
-          id: 'm7',
-          text: 'Nice! When will it be live?',
-          senderId: 'uwaeli',
-          timestamp: new Date('2024-10-18T15:36:00'),
-          isRead: false
-        },
-        {
-          id: 'm8',
-          text: 'Hi there',
-          senderId: 'uwaeli',
-          timestamp: new Date('2024-10-18T15:37:00'),
-          isRead: false
-        }
-      ],
-      unreadCount: 2
-    }
-  ]);
+  const { users, userMe } = useUser();
+  const { isAuthenticated } = useAuth();
 
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
-  
-  const currentUser: ChatUser = {
-    id: 'current',
-    name: 'Me'
-  };
+  const [loading] = useState(false);
 
-  // Update last message for conversations
-  const updateConversations = () => {
-    setConversations(prev => 
-      prev.map(conv => ({
+  // Convert current user to ChatUser format
+  const currentUser: ChatUser | null = useMemo(() => {
+    if (!userMe) return null;
+    return userToChatUser(userMe);
+  }, [userMe]);
+
+  // Convert all users to ChatUser format (excluding current user)
+  const availableUsers: ChatUser[] = useMemo(() => {
+    if (!users || !userMe) return [];
+    return users
+      .filter(user => user.id !== userMe.id)
+      .map(user => userToChatUser(user));
+  }, [users, userMe]);
+
+  // Initialize conversations when users are loaded
+  useEffect(() => {
+    if (isAuthenticated && availableUsers.length > 0 && currentUser && conversations.length === 0) {
+      // Create initial sample conversations with first few users
+      const initialConversations: Conversation[] = availableUsers.slice(0, 3).map((user, index) => ({
+        id: `conv_${user.id}`,
+        participants: [currentUser, user],
+        messages: [
+          {
+            id: `msg_${index}_1`,
+            text: `Hi! I'm ${user.name}. Great to connect with you on R-Seeds!`,
+            senderId: user.id,
+            timestamp: new Date(Date.now() - Math.random() * 86400000), // Random time within last 24h
+            isRead: false
+          }
+        ],
+        unreadCount: 1
+      }));
+
+      // Update last messages
+      const conversationsWithLastMessage = initialConversations.map(conv => ({
         ...conv,
         lastMessage: conv.messages[conv.messages.length - 1]
-      }))
-    );
-  };
+      }));
 
-  React.useEffect(() => {
-    updateConversations();
-  }, []);
+      setConversations(conversationsWithLastMessage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, availableUsers.length, currentUser]);
 
   const addMessage = (conversationId: string, text: string) => {
+    if (!currentUser) return;
+
     const newMessage: Message = {
       id: `msg_${Date.now()}`,
       text,
@@ -108,7 +72,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
       isRead: true
     };
 
-    setConversations(prev => 
+    setConversations(prev =>
       prev.map(conv => {
         if (conv.id === conversationId) {
           return {
@@ -125,13 +89,14 @@ export function ChatProvider({ children }: ChatProviderProps) {
     if (currentConversation?.id === conversationId) {
       setCurrentConversation(prev => prev ? {
         ...prev,
-        messages: [...prev.messages, newMessage]
+        messages: [...prev.messages, newMessage],
+        lastMessage: newMessage
       } : null);
     }
   };
 
   const markAsRead = (conversationId: string) => {
-    setConversations(prev => 
+    setConversations(prev =>
       prev.map(conv => {
         if (conv.id === conversationId) {
           return {
@@ -146,6 +111,18 @@ export function ChatProvider({ children }: ChatProviderProps) {
   };
 
   const createConversation = (participant: ChatUser) => {
+    if (!currentUser) return;
+
+    // Check if conversation already exists
+    const existingConv = conversations.find(conv =>
+      conv.participants.some(p => p.id === participant.id)
+    );
+
+    if (existingConv) {
+      setCurrentConversation(existingConv);
+      return;
+    }
+
     const newConversation: Conversation = {
       id: `conv_${Date.now()}`,
       participants: [currentUser, participant],
@@ -154,16 +131,27 @@ export function ChatProvider({ children }: ChatProviderProps) {
     };
 
     setConversations(prev => [...prev, newConversation]);
+    setCurrentConversation(newConversation);
+  };
+
+  const startConversationWithUser = (userId: string) => {
+    const user = availableUsers.find(u => u.id === userId);
+    if (user) {
+      createConversation(user);
+    }
   };
 
   const value: ChatContextType = {
     conversations,
     currentConversation,
     currentUser,
+    loading,
+    availableUsers,
     setCurrentConversation,
     addMessage,
     markAsRead,
-    createConversation
+    createConversation,
+    startConversationWithUser
   };
 
   return (
