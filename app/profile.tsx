@@ -27,8 +27,7 @@ export default function ProfileScreen() {
     };
 
     const handleSavedProjectsPress = () => {
-        if (userType === "GRADUATE") router.push('/project/myProject');
-        else openComingSoon("Saved Projects", "Save your favorite projects to easily find them later. This feature is currently being developed.");
+        router.push('/project/myProject');
     };
 
     const handleAccountPress = () => {
